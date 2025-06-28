@@ -1,0 +1,69 @@
+<CodeGroup>
+
+```bash bash
+curl 'https://router.gluex.xyz/v1/quote' \
+-H 'content-type: application/json' \
+-H 'x-api-key: <api-key>' \
+--data-raw '{
+  "inputToken": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+  "outputToken": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+  "inputAmount": "100000000",
+  "userAddress": "0x2...A9D",
+  "outputReceiver": "0x2...A9D",
+  "chainID": "ethereum",
+  "uniquePID": "<unique-pid>",
+  "isPermit2": false
+}'
+```
+
+```javascript javascript
+const axios = require("axios");
+
+const response = await axios.post(
+  "https://router.gluex.xyz/v1/quote",
+  {
+    inputToken: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    outputToken: "0xdac17f958d2ee523a2206206994597c13d831ec7",
+    inputAmount: "100000000",
+    userAddress: "0x2...A9D",
+    outputReceiver: "0x2...A9D",
+    chainID: "ethereum",
+    uniquePID: "<unique-pid>",
+    isPermit2: false,
+  },
+  {
+    headers: {
+      "content-type": "application/json",
+      "x-api-key": "<api-key-here>",
+    },
+  }
+);
+
+console.log(response.data);
+```
+
+```python python
+import requests
+
+headers = {
+  'content-type': 'application/json',
+  'x-api-key': '<api-key-here>'
+}
+
+data = {
+  "inputToken": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+  "outputToken": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+  "inputAmount": "100000000",
+  "userAddress": "0x2...A9D",
+  "outputReceiver": "0x2...A9D",
+  "chainID": "ethereum",
+  "uniquePID": "<unique-pid>",
+  "isPermit2": False
+}
+
+response = requests.post('https://router.gluex.xyz/v1/quote', headers=headers, json=data)
+
+print(response.json())
+```
+
+</CodeGroup>

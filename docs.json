@@ -1,0 +1,170 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "GlueX Documentation",
+  "colors": {
+    "primary": "#16A34A",
+    "light": "#07C983",
+    "dark": "#15803D"
+  },
+  "api": {
+    "openapi": [
+      "https://raw.githubusercontent.com/gluexprotocol/gluex-openapis/main/router-api/openapi.json",
+      "https://raw.githubusercontent.com/gluexprotocol/gluex-openapis/main/exchange-rates-api/openapi.json"
+    ]
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude"
+    ]
+  },
+  "favicon": "/public/favicon.ico",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "icon": "hand-wave",
+            "pages": [
+              "documentation/get-started/introduction",
+              "documentation/get-started/quickstart"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Products",
+        "groups": [
+          {
+            "group": "Router",
+            "pages": [
+              "products/router/overview"
+            ]
+          },
+          {
+            "group": "Exchange Rate",
+            "pages": [
+              "products/exchange-rate/overview"
+            ]
+          },
+          {
+            "group": "Yield",
+            "pages": [
+              "products/yield/overview"
+            ]
+          },
+          {
+            "group": "Widget",
+            "pages": [
+              "products/widget/overview",
+              "products/widget/features",
+              "products/widget/installation",
+              "products/widget/configuration",
+              "products/widget/customizations",
+              "products/widget/events",
+              "products/widget/wallets",
+              "products/widget/i18n"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "API Documentation",
+            "pages": [
+              "api-reference/about/overview",
+              "api-reference/about/authentication",
+              "api-reference/about/rate-limit",
+              "api-reference/about/error-codes"
+            ]
+          },
+          {
+            "group": "Router API",
+            "pages": [
+              "api-reference/router-api/get-liquidity",
+              "api-reference/router-api/post-price",
+              "api-reference/router-api/post-quote"
+            ]
+          },
+          {
+            "group": "Exchange Rates API",
+            "pages": [
+              "api-reference/exchange-rate-api/get-chains",
+              "api-reference/exchange-rate-api/post-price"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Tutorials",
+        "groups": [
+          {
+            "group": "DeFi Tutorials",
+            "pages": [
+              "tutorials/defi/deposit-to-a-lending-vault"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Troubleshooting",
+        "groups": [
+          {
+            "group": "General",
+            "pages": [
+              "troubleshooting/general/initial-steps",
+              "troubleshooting/general/common-issues"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Community",
+          "href": "https://bento.me/gluex-protocol",
+          "icon": "users"
+        },
+        {
+          "anchor": "Blog",
+          "href": "http://mirror.xyz/gluex.eth",
+          "icon": "newspaper"
+        }
+      ]
+    }
+  },
+  "logo": {
+    "light": "/public/logo/light.svg",
+    "dark": "/public/logo/dark.svg"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "https://bento.me/gluex-protocol"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Get Started for Free",
+      "href": "https://portal.gluex.xyz"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/gluexprotocol",
+      "x": "http://twitter.com/gluexprotocol",
+      "linkedin": "https://www.linkedin.com/company/gluex-protocol",
+      "discord": "https://discord.com/invite/gluex",
+      "telegram": "https://t.me/+6NrwSlEPAsA3MzE0"
+    }
+  }
+}

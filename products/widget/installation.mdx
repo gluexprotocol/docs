@@ -1,0 +1,48 @@
+---
+title: "Installation and Quickstart"
+description: "Easy installation to go onchain under 5 minutes"
+---
+
+## Installation
+
+To begin, install the necessary packages. We recommend using the latest stable versions for optimal performance and security
+
+<CodeGroup>
+
+```bash npm
+npm install wagmi @tanstack/react-query @gluex/widget @gluex/sdk
+```
+
+```bash yarn
+yarn add wagmi @tanstack/react-query @gluex/widget @gluex/sdk
+```
+
+```bash pnpm
+pnpm add wagmi @tanstack/react-query @gluex/widget @gluex/sdk
+```
+
+```bash bun
+bun add wagmi @tanstack/react-query @gluex/widget @gluex/sdk
+```
+
+</CodeGroup>
+
+## Quickstart
+
+Before you start with integration, you'll need to obtain your API Key and Integrator ID. These are essential for authenticating your application and tracking its usage with GlueX.
+You can easily generate these credentials by logging into the [GlueX Portal](https://portal.gluex.xyz).
+
+Once you have your credentials, you can integrate the GlueX Widget with just a few lines of code:
+
+```typescript
+import { GlueXWidget, WidgetConfiguration } from "@gluex/widget"
+
+const config: Partial<WidgetConfiguration> = {
+  apiKey: enviroment.GLUEX_API_KEY,
+  integrator: enviroment.INTEGRATOR_ID,
+};
+
+export const WidgetPage = () => {
+  return <GlueXWidget config={config} />;
+};
+```

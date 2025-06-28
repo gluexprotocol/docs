@@ -1,0 +1,60 @@
+---
+title: "Initial Steps"
+description: "Basic checks to quickly identify and resolve common issues with the GlueX integration or APIs"
+---
+
+If you’re experiencing any issues with the integration or APIs, please follow these initial troubleshooting steps:
+
+<Steps>
+
+    <Step title="Verify the keys">
+    Verify your keys by ensuring the headers are correctly set for all the
+    **authenticated requests** and check in the GlueX portal that your **key is
+    active** and has not been revoked or rotated
+    </Step>
+
+    <Step title="Confirm Endpoints">
+    Ensure you are targeting the correct environment by verifying the base URL.
+    Production endpoints are `https://router.gluex.xyz` for quotes and
+    `https://exchange-rates.gluex.xyz` for exchange rates
+    </Step>
+
+    <Step title="Validate Request Payload">
+    Confirm the payload matches the schema ensuring all required fields are set
+    and all the data matches the expected types
+    </Step>
+
+    <Step title="Inspect HTTP Status Codes">
+    Examine the HTTP status code returned by the API. A `400` indicates a
+    malformed request, `401`/`403` indicate authentication or authorization
+    failure, `429` signals rate limiting and any `5xx` indicates a server side
+    error
+    </Step>
+
+    <Step title="Review Rate Limits">
+    Verify that you are within your allowed request rate to avoid throttling. If
+    you receive `429` responses, implement exponential backoff and reduce request
+    frequency
+    </Step>
+
+    <Step title="Confirm Token Addresses and Chains">
+    Make sure the token contract addresses exist on the specified chain and are
+    correctly checksummed
+    </Step>
+
+    <Step title="Enable Debug Logging">
+    Turn on verbose logging in your client or SDK to capture full request and
+    response details, including headers and bodies. Look for hidden error messages
+    or stack traces in the logs
+    </Step>
+
+    <Step title="Gather Logs and Contact Support">
+    If the issue persists, collect timestamps, full request/response pairs, and
+    error details. Reach us out via [telegram](https://t.me/+6NrwSlEPAsA3MzE0) or Open a
+    support ticket via [discord](https://discord.com/invite/gluex) with your findings
+    and a summary of the steps you’ve tried
+    </Step>
+
+</Steps>
+
+If the problem persists after following the steps above, please let us know immediately via our Telegram channel or Discord server (you can find the links to these channels [here](https://bento.me/gluex-protocol)). When opening a new support thread, include the demo URL, the exact HTTP request and response (headers, body, status code), timestamps and a brief description of what you’ve tried so far. It’s also helpful to search existing Telegram and Discord conversations, chances are someone else may have already found a solution that can help you more quickly

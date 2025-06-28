@@ -1,0 +1,319 @@
+---
+title: "Customization and Whitelabel"
+description: ""
+---
+
+The GlueX Widget offers comprehensive customization options to match the application's design and functionality requirements. The widget's layout stays consistent, but you can modify colors, fonts, styles, disable or hide parts of the UI and more
+
+<Note>
+  Check out [GlueX's Widget Studio](https://studio.gluex.xyz/playground) to
+  customize and integrate the widget
+</Note>
+
+## UI Customization
+
+### Appearance
+
+Controls the widget's overall color scheme, so it can adapt to your app's light or dark mode—or follow the user's system preference automatically. Use this to ensure visual consistency and reduce "mode flicker" when users switch themes.
+
+| Property     | Type                              | Default  | Allowed Values          | Notes                                   |
+| ------------ | --------------------------------- | -------- | ----------------------- | --------------------------------------- |
+| `appearance` | `"light"` \| `"dark"` \| `"auto"` | `"auto"` | `light`, `dark`, `auto` | `auto` will match the user's OS setting |
+
+```ts
+const config = {
+  appearance: "dark",
+};
+```
+
+### Elements
+
+Fine tune which parts of the interface your users see or interact with. Disable input fields to guide user flows, hide non essential widgets for a cleaner look or mark critical fields as required to ensure data collection
+
+#### disabled
+
+| Property | Type     | Default | Notes                                        |
+| -------- | -------- | ------- | -------------------------------------------- |
+| disabled | string[] | []      | List of element keys to disable (greyed out) |
+
+```ts
+const config = {
+  disabled: ["fromAmount", "fromToken"],
+};
+```
+
+#### hidden
+
+| Property | Type     | Default | Notes                                           |
+| -------- | -------- | ------- | ----------------------------------------------- |
+| hidden   | string[] | []      | List of element keys to remove entirely from UI |
+
+```ts
+const config = {
+  hidden: ["poweredBy", "language"],
+};
+```
+
+#### required
+
+| Property | Type     | Default | Notes                                    |
+| -------- | -------- | ------- | ---------------------------------------- |
+| required | string[] | []      | List of element keys that must be filled |
+
+```ts
+const config = {
+  required: ["toAddress"],
+};
+```
+
+### Display Variants
+
+Choose how the widget is presented on your page - a compact overlay for minimal footprint or a sliding drawer for a richer, side panel experience
+
+| Property   | Type                  | Default   | Allowed Values |
+| ---------- | --------------------- | --------- | -------------- |
+| variant    | "compact" \| "drawer" | "compact" | -              |
+| subvariant | "router"              | —         | -              |
+
+```ts
+const config = {
+  variant: "drawer",
+  subvariant: "router",
+  appearance: "light",
+};
+```
+
+## Theme Customizations
+
+### Layout
+
+Override the outer container's dimensions and spacing to fit any layout fixed width/sidebar, full-page modal or embedded card. Control styling factors like height, max-height, padding, box shadow and more for a perfect visual fit
+
+| Property        | Type   | Default | Notes                          |
+| --------------- | ------ | ------- | ------------------------------ |
+| theme.container | object | —       | CSS style object for container |
+
+```ts
+const config = {
+  theme: {
+    container: {
+      width: "400px",
+      height: "600px",
+      maxHeight: "800px",
+      boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.08)",
+      padding: "16px",
+    },
+  },
+};
+```
+
+### Shape
+
+Adjust corner radii globally across cards, buttons and panels either a single radius for everything or separate values for primary (cards) and secondary (buttons) elements
+
+| Property                          | Type   | Default | Notes                      |
+| --------------------------------- | ------ | ------- | -------------------------- |
+| theme.shape.borderRadius          | number | —       | Base radius in pixels      |
+| theme.shape.borderRadiusSecondary | number | —       | Secondary (buttons) radius |
+
+```ts
+const config = {
+  theme: {
+    shape: {
+      borderRadius: 12,
+      borderRadiusSecondary: 16,
+    },
+  },
+};
+```
+
+### Typography and Fonts
+
+Define the widget's typographic scale font family, base font size and weight variants for regular, medium and bold text. Use your brand's font stack for full design cohesion
+
+| Property                           | Type   | Default | Notes                           |
+| ---------------------------------- | ------ | ------- | ------------------------------- |
+| theme.typography.fontFamily        | string | —       | CSS font-family string          |
+| theme.typography.fontSize          | number | —       | Base font size in pixels        |
+| theme.typography.fontWeightRegular | number | —       | Numeric weight for regular text |
+| theme.typography.fontWeightMedium  | number | —       | Numeric weight for medium text  |
+| theme.typography.fontWeightBold    | number | —       | Numeric weight for bold text    |
+
+```ts
+const config = {
+  theme: {
+    typography: {
+      fontFamily: "Verdana, sans-serif",
+      fontSize: 14,
+      fontWeightRegular: 400,
+      fontWeightMedium: 500,
+      fontWeightBold: 700,
+    },
+  },
+};
+```
+
+### Color System
+
+Define full light and dark palettes - primary, secondary, background, text and semantic colors (success, error, warning, info) giving you end-to-end theming control with one config object
+
+```ts
+const config = {
+  theme: {
+    colorSchemes: {
+      light: {
+        palette: {
+          primary: { main: "#02F994", review: "#02F994" },
+          secondary: { main: "#F5B5FF" },
+          background: {
+            default: "#FFFFFF",
+            paper: "#F5F5F5",
+            selected: "#E0E0E0",
+          },
+          text: { primary: "#1A1A1A", secondary: "#757575" },
+          success: { main: "#4CAF50" },
+          error: { main: "#F44336" },
+          warning: { main: "#FF9800" },
+          info: { main: "#2196F3" },
+        },
+      },
+      dark: {
+        palette: {
+          /* dark-mode overrides here */
+        },
+      },
+    },
+  },
+};
+```
+
+## Component Customization
+
+The GlueX Widget offers robust component customization through custom component overrides. This means you can tailor the look and feel of various elements to perfectly match your application's design
+
+<Accordion title="Learn how to Customize">
+
+### Step 1: Build Your Custom Component
+
+Create your own React component that matches the expected props for the widget element you want to customize
+
+For example, to customize the token selector button, you might write:
+
+```typescript
+// custom/token-selector.tsx
+import { type SelectTokenButtonProps } from "@gluex/widget";
+
+export const CustomTokenHeader: React.FC<SelectTokenButtonProps> = ({
+  formType, // "from" | "to" - Indicates if this is the source or destination token
+  token, // Selected token information
+  chain, // Selected chain information
+  isSelected, // is token selected
+  compact, // Whether to show compact view
+  onClick, // Handler for when the selector is clicked
+}) => {
+  return <div>{/* Your custom token header UI */}</div>;
+};
+```
+
+### Step 2: Apply in Configuration
+
+Simply import your custom component and include it in your widget configuration
+
+<Note>
+  For repetitive components, you can customize each of them individually (eg:
+  token selection - "from" and "to" buttons separately)
+</Note>
+
+```typescript
+import { GlueXWidget, type WidgetConfigPartialProps } from "@gluex/widget";
+import { CustomTokenHeader } from "./custom/token-selector";
+
+export const Widget = () => {
+  const config: WidgetConfigPartialProps["config"] = {
+    integrator: "YOUR_INTEGRATOR_ID",
+    apiKey: "YOUR_API_KEY",
+    appearance: "light",
+
+    // Add the custom components
+    components: {
+      // Use different components or styles for from/to
+      SelectTokenButton: {
+        from: CustomTokenHeader, // Custom component for "from" token
+        to: CustomTokenHeader, // Custom component for "to" token
+      },
+    },
+  };
+
+  return <GlueXWidget config={config} />;
+};
+```
+
+</Accordion>
+
+#### Amount Selection
+
+```tsx
+import { type PercentageAmountSelectorProps } from "@gluex/widget";
+
+export const CustomPercentageAmountSelector = ({
+  onAmountChange, // (percentage: number) => void
+  isLoading, // Whether data is loading
+}: PercentageAmountSelectorProps) => {
+  const percentages = [
+    { value: 0.25, label: "25%" },
+    { value: 0.5, label: "50%" },
+    { value: 0.75, label: "75%" },
+    { value: 1, label: "MAX" },
+  ];
+
+  return <div>{/* Your custom percentage selection UI */}</div>;
+};
+```
+
+#### Token Amount Display
+
+```tsx
+import { type TokenAmountPriceProps } from "@gluex/widget";
+
+export const CustomTokenAmountPrice = ({
+  amount, // Token amount
+  token, // Token information
+  tokenPrice, // Current token price
+  isLoading, // Whether data is loading
+}: TokenAmountPriceProps) => {
+  return <div>{/* Your custom amount display UI */}</div>;
+};
+```
+
+#### Transaction Details
+
+```tsx
+import { type TransactionDetailsProps } from "@gluex/widget";
+
+export const CustomTransactionDetails = ({
+  tokens, // From/To token information
+  fees, // Network, protocol, and total fees
+  minReceived, // Minimum amount to receive
+  providers, // List of providers used
+}: TransactionDetailsProps) => {
+  return <div>{/* Your custom transaction details UI */}</div>;
+};
+```
+
+#### Completed Transaction
+
+```tsx
+import { type CompletedTransactionDetailsProps } from "@gluex/widget";
+
+export const CustomCompletedTransaction = ({
+  tokens, // From/To token information
+  amounts, // Transaction amounts
+  fees, // Transaction fees
+  transaction, // Transaction details with hash and link
+  providers, // List of providers used
+  showRouteSection, // Whether to show route section
+  showDetailsSection, // Whether to show details section
+}: CompletedTransactionDetailsProps) => {
+  return <div>{/* Your custom completed transaction UI */}</div>;
+};
+```

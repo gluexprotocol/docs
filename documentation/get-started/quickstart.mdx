@@ -1,0 +1,93 @@
+---
+title: "Quickstart"
+description: "Start building awesome DeFi application in under 10 minutes"
+---
+
+import RouterRequest from "/snippets/code/router/request.mdx";
+import RouterResponse from "/snippets/code/router/response.mdx";
+
+Welcome to the GlueX Quickstart Guides! Whether you're a developer integrating GlueX into your platform or a partner looking to utilize our framework or embed our widget, these guides will help you get up and running quickly and efficiently
+
+- **Router**: Bridge, swap, lend, stake and compose multistep flows in one call
+- **Exchange Rates**: Fetch real time pricing across chains
+- **Yield**: Discover and optimize yield values
+- **Debt**: Borrow, repay and manage debt positions in a single transaction
+- **Widget**: Prebuilt UI components for a secure and smooth UX
+- **Swidge** _(Coming Soon)_
+- **Solve** _(Coming Soon)_
+
+## Router
+
+The Route API is a powerful and flexible automated pathfinding engine designed for developers to implement efficient onchain interaction logic and calculate optimal path between any two DeFi positions. Whether you’re swapping tokens, entering positions, adding liquidity or moving assets, the API provides everything needed for handling the complex routing logic automatically
+
+### Sample Request
+
+The first step in using the GlueX Router API to generate a quote. This can be achieved by sending a `POST` request to the `/v1/quote` endpoint. It is recommended to start with the below example request and apply more customization from (here)[/docs/router/quote]
+
+<RouterRequest />
+
+### Sample Response
+
+<RouterResponse />
+
+### How to Use
+
+Once you have the `/quote` response, you can use **any web3 library** (eg: ethers.js, web3.js, web3.py) to build, sign and send the transaction. The key fields you’ll need are:
+
+- **`calldata`**: ABI encoded function call for the router
+- **`value`**: Native token amount to attach (if input is a native token)
+- **`computationUnits`**: Simulated gas estimate (recommended - `gasLimit = computationUnits × 1.3`)
+
+Simply construct your transaction object with those fields, sign it with your EOA’s private key and broadcast it
+
+### Learn More
+
+<CardGroup cols={3}>
+  <Card title="API Reference" icon="code" href="">
+    Full specification and documentation for router API
+  </Card>
+  <Card title="Architecture" icon="play" href="">
+    Learn more about the smart routing engine and it's architecture
+  </Card>
+  <Card title="Tutorials" icon="book-open" href="">
+    Indepth integration guides and best practices
+  </Card>
+  <Card title="Parameter Reference" icon="setting" href="">
+    Full request and response field definitions
+  </Card>
+  <Card title="Examples" icon="terminal" href="">
+    Code snippets for common flows and use cases
+  </Card>
+</CardGroup>
+
+### Examples
+
+<AccordionGroup>
+  <Accordion title="Token Swap">
+
+  </Accordion>
+
+  <Accordion title="Vault Entry">
+
+  </Accordion>
+
+  <Accordion title="Lending">
+
+  </Accordion>
+
+  <Accordion title="Staking">
+
+  </Accordion>
+  
+  <Accordion title="Crosschain">
+    COMING SOON...
+  </Accordion>
+</AccordionGroup>
+
+## Exchange Rate
+
+## Yield
+
+## Debt
+
+## Widget

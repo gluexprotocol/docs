@@ -1,0 +1,82 @@
+---
+title: "Events"
+description: ""
+---
+
+The GlueX Widget provides a comprehensive event system through the `useWidgetEvents` hook that allows you to subscribe to various widget events.
+This enables users to track swap progress, monitor quote execution, observe chain and token selections, track UI interactions and more
+
+## Setup
+
+First, import the necessary types and hooks:
+
+```tsx
+import { WidgetEvent, useWidgetEvents, type Route, type RouteExecutionUpdate } from "@gluex/widget";
+
+export const WidgetEvents = () => {
+  const widgetEvents = useWidgetEvents();
+
+  useEffect(() => {
+    // Event handlers for route execution
+    const onRouteExecutionStarted = (route: Route) => {
+      // Handle route start
+    };
+
+    const onRouteExecutionUpdated = (update: RouteExecutionUpdate) => {
+      // Handle route updates
+    };
+
+    const onRouteExecutionCompleted = (route: Route) => {
+      // Handle route completion
+    };
+    
+    const onRouteExecutionFailed = (update: RouteExecutionUpdate) => {
+      // Handle route failure
+    };
+
+    // Subscribe to events
+    widgetEvents.on(WidgetEvent.RouteExecutionStarted, onRouteExecutionStarted);
+    widgetEvents.on(WidgetEvent.RouteExecutionUpdated, onRouteExecutionUpdated);
+    widgetEvents.on(WidgetEvent.RouteExecutionCompleted, onRouteExecutionCompleted);
+    widgetEvents.on(WidgetEvent.RouteExecutionFailed, onRouteExecutionFailed);
+
+    // Cleanup subscriptions
+    return () => widgetEvents.all.clear();
+  }, [widgetEvents]);
+
+  return null;
+};
+```
+
+## Available Events
+
+The widget emits various events that you can listen to:
+
+```tsx
+enum WidgetEvent {
+  // Route Events
+  RouteExecutionStarted = "routeExecutionStarted"     // When a route starts executing
+  RouteExecutionUpdated = "routeExecutionUpdated"     // Progress updates during execution
+  RouteExecutionCompleted = "routeExecutionCompleted" // When route completes successfully
+  RouteExecutionFailed = "routeExecutionFailed"       // When route execution fails
+  RouteHighValueLoss = "routeHighValueLoss"           // High value loss detection
+  RouteSelected = "routeSelected"                     // When a route is selected
+
+  // Chain and Token Events
+  SourceChainTokenSelected = "sourceChainTokenSelected"
+  DestinationChainTokenSelected = "destinationChainTokenSelected"
+
+  // Wallet Events
+  WalletConnected = "walletConnected"
+  SendToWalletToggled = "sendToWalletToggled"
+
+  // UI and Form Events
+  PageEntered = "pageEntered"
+  WidgetExpanded = "widgetExpanded"
+  FormFieldChanged = "formFieldChanged"
+  SettingUpdated = "settingUpdated"
+  TokenSearch = "tokenSearch"
+  TransactionError = "transactionError"
+}
+```
+
