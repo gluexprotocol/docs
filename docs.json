@@ -29,10 +29,30 @@
         "groups": [
           {
             "group": "Get Started",
-            "icon": "hand-wave",
             "pages": [
               "documentation/get-started/introduction",
-              "documentation/get-started/quickstart"
+              "documentation/get-started/quickstart",
+              "documentation/get-started/go-live",
+              "documentation/get-started/best-practice",
+              "documentation/get-started/integrate-ai"
+            ]
+          },
+          {
+            "group": "About",
+            "pages": [
+              "documentation/about/what-is-gluex",
+              {
+                "group": "GlueX Modules",
+                "pages": [
+                  "documentation/about/how-gluex-works",
+                  "documentation/modules/originator",
+                  "documentation/modules/intent",
+                  "documentation/modules/blockchain",
+                  "documentation/modules/liquidity"
+                ]
+              },
+              "documentation/about/why-build-with-gluex",
+              "documentation/about/powered-by"
             ]
           }
         ]
@@ -123,6 +143,15 @@
               "troubleshooting/general/common-issues"
             ]
           }
+        ]
+      },
+      {
+        "tab": "Changelog",
+        "pages": [
+          "changelog/router",
+          "changelog/exchange-rate",
+          "changelog/yield",
+          "changelog/widget"
         ]
       }
     ],

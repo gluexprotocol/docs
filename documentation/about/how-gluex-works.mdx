@@ -1,0 +1,33 @@
+---
+title: "How does it work"
+sidebarTitle: "Overview"
+description: ""
+---
+
+## GlueX Modules
+
+At the core of GlueX is the concept of "GlueX modules", which act as the essential building blocks for integrating various components needed to interact with decetralized financial applications. These modules are continuously developed and refined by a dedicated group of developers, known as "gluers" who participate in focused weekly development sessions called "glueing sprints". GlueX modules can be reused across blockchains and intent auctions. Hence, a module only needs to be onboarded once. The process is designed to ensure adaptability and continuous improvement. All this while simplifying the development process and improving performance considerably!
+
+Once completed, these modules are compiled into comprehensive SDKs that power a suite of GlueX services, including Router, Exchange Rates, Solve, Yield, Swidge and Bridge APIs. This modular architecture allows GlueX to adapt quickly to the demands of an evolving blockchain ecosystem while maintaining a focus on delivering reliable and efficient services
+
+## The GlueX Workflow: From Intent to Settlement
+
+In the GlueX ecosystem, a entity’s intent such as executing a swap or any other financial transaction flows seamlessly through four core modules. Each module plays a critical role in ensuring the entire process is executed efficiently and securely. The following section illustrates how these modules work together to fulfill the entity's request
+
+### Originator module:
+
+The process begins when the Originator module receives an intent from an entity's application. This module abstracts the settlement protocol by collecting all the necessary details, such as the tokens to be swapped, the source and destination blockchains, and protocol specific metadata. It acts as the gateway for the entity’s request into the GlueX ecosystem, converting it into a standardized format that can be processed by the subsequent modules
+
+### Intent module:
+
+Once the Originator module passes the data to the Intent module, the data is abstracted into a standardized GlueX intent object. This abstraction ensures that the entity’s request can be understood and processed in a unified way across all modules, irrespective of the originating protocol. The Intent module is responsible for ensuring that complex trade logic, such as routing, multiple order types and cross chain transactions, are handled seamlessly while preserving the entity’s original intent across all steps
+
+### Blockchain module:
+
+The Blockchain module is where GlueX adapts to the specifics of different blockchain environments. It abstracts the complexities of interacting with various blockchains, providing a unified interface for all supported networks. It handles the complexities of each blockchain’s metadata, native tokens, operational nuances and transaction requirements, ensuring seamless compatibility across multiple networks
+
+### Liquidity module:
+
+The Liquidity module abstracts the process of sourcing liquidity on each blockchain. It identifies and accesses the relevant liquidity of LPs across different protocols. The module abstracts the path to liquidity by considering factors such as liquidity pool availability, fees, and slippage, ensuring that the swap is executed efficiently
+
+Once the appropriate liquidity sources are identified, the process flows back through the Blockchain module, where the necessary blockchain details are finalized. The Intent module ensures that the data remains consistent, and the Originator module completes the settlement by executing the transaction on-chain.

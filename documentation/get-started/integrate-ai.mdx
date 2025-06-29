@@ -1,0 +1,72 @@
+---
+icon: "robot"
+title: "Integrating using AI"
+description: ""
+---
+
+AI is a powerful tool for developers and AI can supercharge your GlueX integrations whether you’re scaffolding a new project or generating code snippets on the fly. Explore the various methods below to incorporate GlueX into your AI assisted coding environment
+
+## Cursor, Copilot, Windsurf
+
+TBD
+
+## V0, Lovable
+
+TBD
+
+## Enhancing AI with Contextual Documentation
+
+To maximize the effectiveness of your AI tools (Cursor, Copilot, Windsurf, V0, Lovable) when working with GlueX, it's essential to provide them with specific contextual documentation about the integration.
+
+This guide details how you can effectively supply this crucial information
+
+<AccordionGroup>
+
+    <Accordion title="Full Documentation Bundle">
+
+    GlueX supports both the [llms.txt](https://docs.gluex.xyz/llms.txt) and [llms-full.txt](https://docs.gluex.xyz/llms-full.txt), read about those [here](https://github.com/AnswerDotAI/llms-txt). This feature means you can easily integrate GlueX documentation into **LLM** that supports external context files or even into your **custom AI tooling and scripts**
+
+    ### How to Use These Files for Context:
+
+    1.  **Understand the Files:**
+
+        - **`llms.txt`**: This file contains a curated, concise set of GlueX documentation, ideal for quick context or when token limits are a concern. It focuses on structure, core concepts and frequently used components
+        - **`llms-full.txt`**: This file provides a more extensive and detailed collection of GlueX documentation, offering a deeper well of information for complex queries or comprehensive code generation
+
+    2.  **Integrate with your AI tool:**
+        - **Direct Upload/Link:** Many AI platforms (like Cursor, Copilot, Windsurf, V0 and custom solutions) allow you to upload text files or link to external URLs. You can directly point your AI to `https://docs.gluex.xyz/llms.txt` or `https://docs.gluex.xyz/llms-full.txt`
+        - **Local Copy:** For offline use or custom environments, you can download these files and include them in your project directory
+        - **Explicit Referencing in Prompts:** When crafting your AI prompts, explicitly mention that you've provided GlueX documentation as context (Eg: "Using the context from `llms-full.txt`, generate a GlueX integration for X feature..."\)
+
+    ### When to Use This Method:
+
+    - **Broad Understanding:** This is ideal when you need the AI to have a **general understanding of GlueX** for tasks like scaffolding new projects, explaining architectural patterns, or answering high level questions
+    - **Complex Integrations:** For more intricate GlueX integrations, using `llms-full.txt` provides the depth needed for the AI to generate accurate code
+    - **Reduced Hallucinations:** By providing direct, authoritative documentation, you significantly reduce the AI's tendency to "hallucinate" incorrect information, leading to more reliable outputs
+    - **Custom AI Workflows:** If you're building custom AI agents or scripts that interact with GlueX, these files offer a read -made dataset for training or runtime context
+
+    </Accordion>
+
+    <Accordion title="Feature level Context">
+
+    The "Copy page" button offers a few powerful options to streamline your AI assisted workflow:
+
+    1.  **View Page as Markdown:**
+        - Clicking this option will display the entire content of the current documentation page in its raw Markdown format and is useful for reviewing the content structure before copying or for understanding how the page is formatted
+
+    2.  **Copy Page as Markdown:**
+        - This option instantly copies the entire page content as Markdown to your clipboard. You can then paste this directly into your AI's input field, a dedicated context window or a local file you're using to feed context to your AI. This is perfect for providing focused, relevant information without manually selecting text
+
+    3.  **Ask Claude/ChatGPT to Use Page as Context:**
+        - This is a highly integrated feature designed for direct use with LLMs like Claude or ChatGPT. When you select this, GlueX automatically formats a prompt that includes the current page's content as context and often suggests a follow up action. This significantly reduces the manual effort of copying and pasting, making it smoother to ask questions or generate code based on that specific page
+
+    ### When to Use This Method:
+
+    - **Highly Targeted Tasks:** Ideal when you want the AI to focus on a particular GlueX function, API endpoint or module without being distracted by unrelated information
+    - **Generating Precise Code Snippets:** If you need a code example for a specific GlueX method, using this feature ensures the AI has the most relevant documentation
+    - **Debugging Specific Issues:** When troubleshooting, providing the AI with the exact documentation page related to the component or error can lead to faster and more accurate solutions
+    - **Concise Explanations:** Get the AI to explain a specific concept from the docs in simpler terms or from a different perspective
+
+    </Accordion>
+
+</AccordionGroup>

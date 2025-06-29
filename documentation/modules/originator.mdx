@@ -1,0 +1,95 @@
+---
+title: "Originator Module"
+sidebarTitle: "Originator Module"
+description: ""
+---
+
+GlueX Originator modules are specialized components within the GlueX Protocol designed to seamlessly integrate with settlement protocols to fetch and manage orders. They serve as a critical link between decentralized financial applications and the GlueX ecosystem, fetching and standardizing orders from various settlement protocols. This enables a unified, protocol agnostic approach to order processing within GlueX
+
+## Overview
+
+The GlueX Originator Module maintains metadata related to settlement protocols, manages inventories needed for settlements and stores settlement specific information essential for executing swaps on-chain
+
+<img
+  className="rounded"
+  src="/images/documentation/modules/originator-1.png"
+  alt="Originator Modules in the GlueX ecosystem"
+  label="Originator Modules in the GlueX ecosystem"
+/>
+
+### Key Features
+
+1. **Order Collection**: Originator modules fetch orders from settlement protocols like UniswapX and CowSwap through their APIs, providing GlueX with real time liquidity and trade opportunities
+2. **Intent Abstraction**: Retrieved orders are converted into standardized GlueX intent objects, enabling uniform trade handling across different protocols
+3. **Metadata Retrieval**: The blockchain module gathers required blockchain details, ensuring smooth execution, especially for cross chain operations
+4. **Execution Map**: GlueX uses liquidity modules to calculate optimal execution paths, minimizing costs and maximizing efficiency
+5. **Settlement Object**: The execution map and order details are used to create settlement objects for on-chain execution
+6. **On-Chain Execution**: Settlement objects are executed on-chain, completing the transaction securely and efficiently
+
+### Subtypes
+
+- **Bridge Intent Module**:
+  - Facilitates cross chain transfers by setting up interactions between different blockchain networks
+  - Handles validations, fee estimations and execution paths for assets moving between chains
+- **Chain Intent Module**:
+  - Manages interactions limited to a single blockchain
+  - Simplifies execution and state management for native transactions, token swaps or other on-chain intents
+
+## Integrating an Originator module
+
+Integrating a settlement protocol with GlueX only requires you to furnish a few services and interfaces that GlueX can use. All other aspects will be handled by GlueX
+
+<img
+  className="rounded"
+  src="/images/documentation/modules/originator-2.png"
+  alt="Integrating an Originator module to GlueX Protocol"
+  label="Integrating an Originator module to GlueX Protocol"
+/>
+
+### Required Interfaces
+
+#### API for Order Retrieval
+
+- The protocol must expose an API that allows GlueX to fetch active orders in real time. This API should provide comprehensive details about each order, including tokens involved, amounts, deadlines and any unique order parameters
+- The response should provide comprehensive details about the order and must include:
+  - Tokens involved
+  - Amounts
+  - Deadlines / Expiration
+  - Any protocol specific parameters
+- The API should support high availability and efficient querying to handle the potential volume and frequency of requests made by GlueX
+
+#### Protocol Metadata
+
+- Each order fetched through the API should include all relevant metadata necessary for execution, such as:
+  - Blacklisted tokens or pools
+  - Fee structures
+  - Slippage tolerances
+  - Security deposits
+  - Cosigner conditions
+
+#### Contract Details
+
+- The protocol must provide comprehensive details about the on-chain contracts used for executing settlements. This includes:
+  - **Settlement Contract**: For single chain intents, the protocol must specify the settlement contract address and interface, which handles direct on-chain swaps or transfers within a single blockchain
+  - **Escrow Contracts** _(optional for cross-chain intents)_: For cross chain operations, the protocol should detail escrow contracts used to lock funds securely until conditions for release are met. These escrow contracts must handle deposit and withdrawal actions in a secure, atomic manner to facilitate cross-chain settlements
+- The protocol should ensure these contracts are well documented, including their ABI and any nuances involved in interacting with them, to allow GlueX integration and interaction
+
+### Optional Enhancements
+
+#### Security and Solvability Measures
+
+- The protocol must implement mechanisms for solvability checks, ensuring that orders can be fulfilled without risk of failure. This may involve exposing services that validate liquidity availability or support pre execution checks
+
+#### Rate and Pricing Information
+
+- If the settlement protocol provides its own pricing or exchange rate service, particularly if your settlement protocol is a bridge intent protocol, it should make these rates available for GlueX to fetch and use in its decision making processes. Accurate and timely rate information ensures that orders are priced correctly and executed efficiently
+
+#### Cross-Chain Intents/ Bridge support (if applicable)
+
+- For protocols operating on multiple chains, we will appreciate documentation on how cross chain transactions are handled, including any relayer services or secret hashing mechanisms used for secure fund transfers
+- The protocol should define processes for unlocking assets and managing cross chain liquidity securely
+
+<Note>
+  If your protocol uses different mechanisms, we can still integrate it with
+  some adjustments :)
+</Note>

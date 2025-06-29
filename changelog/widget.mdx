@@ -1,0 +1,148 @@
+---
+title: "Widget Changelog"
+sidebarTitle: "Widget"
+description: ""
+---
+
+<Update label="June 2025" description="">
+
+    ### Breaking Changes
+    - **Released v2** of the widget
+
+    <img
+      className="rounded"
+      src="/images/products/widget/widget.png"
+      alt="GlueX Widget"
+    />
+
+    ### New Features
+    - Added EIP7702 support
+    - Introduced `module filters` enabling filter references based on available liquidity modules per chain
+    - Integrated Yield API to accurately visualize the historical and diluted yield of assets
+    - Introduced new widget themes - `Sophon`, `Sakura`, `Kelp`, `Uranium`, `Bitcoin`, `Punk`, `Neon Minimal`
+    - Introduced customizable components (initially customizable for Swap completion page, Transaction details, Token price and amount display, Percentage input buttons, Token selection)
+    - Introduced a new way to track and show active transactions
+
+    ## Improvements
+    - Set up Rollup bundling for widget, SDK and wallets packages
+    - Enhanced playground color controls (alpha support, custom inputs)
+    - Updated information display for network costs and partner fees
+    - Removed default hover and ripple effects
+
+    ### Bug Fixes
+    - Fixed high value loss warning display on the main page
+    - Added HyperEVM native token support in the zero address utility
+    - Ensured tokens gracefully fallback to an empty array when none are available
+    - Resolved minor playground issues and build errors
+    - Restricted “Powered by” component size to prevent layout breakage
+    - Fixed token list skeleton and scrolling quirks
+    - Addressed type generation and build errors in widget
+    - Fixed input and receive amount font size, token overflow and "no liquidity module" issues
+
+    ### Documentation
+    - Detailed documentation added for new sdk, widget and portal
+    - Added React and Rainbowkit examples
+    - Refreshed internal changelogs and pre publish notes
+
+    ### Chores
+    - Added a surplus fee flag parameter (feature not enabled)
+    - Updated project dependencies to latest
+    - Introduced copy icons, unknown token avatar and transition support
+    - Set up changeset management for automatic migrations
+    - Updated notice and changelog files
+
+</Update>
+
+<Update label="May 2025" description="">
+
+    ### New Features
+    - Implemented a toggleable drawer component
+
+    ### Bug Fixes
+    - Fixed decimal input handling in amount fields
+    - Improved font loading logic and associated error handling
+    - Minor appearance fixes across the UI
+    - Corrected external wallet management flow
+    - Adjusted drawer variant defaults and fixed drawer height
+    - Refined appearance control logic and theme handling
+    - Updated skeleton component styling
+    - Tweaked layout and color control behaviors
+
+    ### Chores
+    - Added ignore loader and updated configuration
+    - Refactored widget layout
+
+</Update>
+
+<Update label="April 2025" description="">
+
+    ### New Features
+    - Show effective output amount in the receive box
+    - Added support for partial wallet management
+
+    ### Improvements
+    - Format input amounts with commas for better readability
+    - Added token balance checks
+
+    ### Bug Fixes
+    - Improved general error handlers
+
+    ### Chores
+    - Added notice and patch files
+
+</Update>
+
+<Update label="March 2025" description="">
+    
+    ### New Features
+    - Introduced dynamic surge protection with configurable thresholds (default 5% threshold and trade reversal)
+    - Added gas limit estimation and automatic retry on quote reverts
+    - Added block and transaction explorer buttons next to transaction hashes
+    - Configurable ChainRegistry for custom chain metadata
+
+    ### Improvements
+    - Display effective amount in the receive box
+    - Updated network cost and partner fee information displays
+
+    ### Bug Fixes
+    - Fixed type errors across sdk, widget and wallets
+    - Enhanced transaction error handling and UI events
+    - Corrected balance loading and refresh logic
+    - Removed outdated “insufficient funds” warnings and stopped “no route” auto refetching
+
+    ### Performance Improvements
+    - Improved revert handling performance
+    - Added caching for exchange rates and estimate calls
+    - Disabled auto refresh when no routes are available
+
+    ### Chores
+    - Refactored codebase to remove some annotations
+    - Updated core dependency to latest stable release
+
+</Update>
+
+<Update label="February 2025" description="">
+    
+    ### New Features
+    - Introduced exchange rates, gas and fees API endpoints
+    - Added support for transaction receipts
+    
+    ### Bug Fixes
+    - Improved fee split logic to handle rounding discrepancies
+    - Enhanced error messages and handling
+    - Retry logic for API failure scenarios
+    - Patched Exchange rates API when price value is not available
+
+    ### Performance Improvements
+    - 2 minute caching layer for exchange rates
+    - Better estimate and visual update handling
+
+    ### Removals
+    - Removed unused helper functions
+    - Cleaned out unused code for RPC fallback logic
+
+    ### Chores
+    - Configuration updates
+    - Updated third party dependencies to latest minor releases
+
+</Update>
