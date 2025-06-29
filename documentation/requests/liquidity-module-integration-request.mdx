@@ -1,0 +1,384 @@
+---
+title: "Liquidity Module Integration"
+sidebarTitle: "Liquidity Module Integration"
+description: "A comprehensive guide on how to get your liquidity source integrated with GlueX"
+---
+
+Welcome to our guide on requesting an integration of your liquidity source with GlueX.
+We're excited to explore potential partnerships and expand our liquidity offerings to provide the best execution for our users
+
+GlueX offers two primary paths for integrating liquidity modules, ensuring flexibility and maximizing coverage:
+
+- **Self Integration** for protocols that prefer a direct, permissionless approach
+- **Gluing Queue** for those who prefer community or GlueX team driven integration
+
+**What is a GlueX Liquidity Module?**
+
+A GlueX Liquidity module is a standardized Python based integration that allows GlueX to:
+
+- Retrieve liquidity from your protocol and expose it to DeFi dApps and execution optimizers
+- Embed your protocol into multi step transactions spanning chains and liquidity sources
+- Standardize interaction formats for efficient routing and settlement
+
+Each liquidity module follows a strict interface, ensuring GlueX can efficiently interact with all integrated protocols
+
+## Self Integration
+
+This path allows DeFi protocols to permissionlessly implement and submit their own liquidity modules in Python.
+By self integrating, your protocol will be natively accessible to GlueX connected chains, applications and solvers,
+enabling seamless execution abstraction without requiring custom infrastructure or manual onboarding from the GlueX team beyond the review process
+
+### How it Works
+
+The [GlueX Liquidity Module Self Integration Repository](https://github.com/gluexprotocol/liquidity-module-self-integration) provides the official framework for this process
+
+**Directory Descriptions**:
+
+- `modules/`: Contains individual liquidity module implementations for each protocol
+- `templates/`: Holds the base `LiquidityModule` class, which should not be modified
+- `tests/`: Contains test cases to validate the implementation of liquidity modules
+- `docs/`: Includes specifications, guidelines and PR submission templates
+- `README.md`: The main guide for self integration within the repository
+- `requirements.txt`: Lists dependencies required for running the module
+- `pytest.ini`: Configuration file for running test cases
+
+<Note>
+    Make sure to place your implementation inside the `modules/` directory following 
+    the naming convention: `<protocol_name>_liquidity_module.py`
+</Note>
+
+<Warning>
+  Before you start working on your liquidity module integration, please ensure
+  your liquidity module has not already been glued to GlueX
+</Warning>
+
+### Integrate Now
+
+To submit a Liquidity module via self integration follow the following steps:
+
+- **Fork the Repository**:
+  Click the "Fork" button at the top of the [GlueX Liquidity Module Self Integration Repository](https://github.com/gluexprotocol/liquidity-module-self-integration) to create your own copy
+- **Implement the Required Python Interfaces**
+  - Navigate to your forked repository's `modules/` directory
+  - Create a new file named `<protocol_name>_liquidity_module.py` (eg: `aave_liquidity_module.py`)
+  - Implement your protocol’s integration by inheriting from `LiquidityModule`
+  - Your implementation must implement all the required methods
+
+```python LiquidityModule.py expandable
+from templates.liquidity_module import LiquidityModule, Token
+from typing import Dict, Optional
+from decimal import Decimal
+
+class MyProtocolLiquidityModule(LiquidityModule):
+    def get_amount_out(
+        self,
+        pool_state: Dict,
+        input_token: Token,
+        input_amount: int,
+        output_token: Token,
+        output_amount: Optional[int] = None
+    ) -> int:
+        # Implement logic to calculate output amount
+        pass
+
+    def get_amount_in(
+        self,
+        pool_state: Dict,
+        input_token: Token,
+        input_amount: Optional[int] = None,
+        output_token: Token,
+        output_amount: int
+    ) -> int:
+        # Implement logic to calculate required input amount
+        pass
+
+    def get_apy(self, pool_state: Dict) -> Decimal:
+        # Implement APY calculation logic
+        pass
+
+    def get_tvl(self, pool_state: Dict, token: Optional[Token] = None) -> Decimal:
+        # Implement TVL calculation logic
+        pass
+```
+
+<Warning>
+  Do not delete or modify `templates/liquidity_module.py`. This file contains
+  the abstract base class that your implementation should inherit from
+</Warning>
+
+- **Test Your Integration**
+  Run the provided test suite (`tests/test_liquidity_module.py`) to ensure compatibility and correctness
+
+```bash
+pytest tests
+```
+
+- **Submit a Pull Request (PR)**
+  Once your module is complete and tested, submit a PR to the main branch following the required format
+  - Push your implementation to your forked repository
+  - Open a Pull Request (PR) from your fork to the main repository
+  - Follow the PR template in [`/docs/PR-template.md`](https://github.com/gluexprotocol/liquidity-module-self-integration/blob/main/docs/pr-template.md)
+  - Your PR must include:
+    - Protocol name and details
+    - Deployed chains
+    - Relevant smart contract addresses for indexing (eg, factories)
+    - Relevant pool states and pool state retrieval instructions
+    - A summary of your liquidity module implementation
+    - Test results and relevant logs
+    - Any special considerations for execution or integration
+
+<Info>
+  Right after the PR is submitted, a Gluer will assess your submission. If any
+  modifications are required, you will receive feedback for adjustments. If
+  approved, your protocol will be integrated into GlueX’s execution network
+</Info>
+
+### Checklist
+
+Before submitting, ensure you have completed the following:
+
+- [ ] Forked this repository
+- [ ] Implemented a new liquidity module in `modules/<protocol_name>_liquidity_module.py`
+- [ ] Passed all test cases (`pytest tests/`)
+- [ ] Provided clear documentation in this PR
+- [ ] Included test logs and results in this PR
+- [ ] Listed all dependencies and external data sources (if any)
+- [ ] Listed all chains in which your liquidity module is available
+- [ ] Listed all smart contracts that are relevant to index your liquidity pools (e.g. factories)
+
+### Example
+
+The following are some examples of existing integrations to guide your development:
+
+... replace with actual example links ...
+
+- [Uniswap V2](https://github.com/gluexprotocol/liquidity-module-self-integration)
+- [Aave V3](https://github.com/gluexprotocol/liquidity-module-self-integration)
+- [Balancer V3 Stable Pools](https://github.com/gluexprotocol/liquidity-module-self-integration)
+- [MM Fork Sample](https://github.com/gluexprotocol/liquidity-module-self-integration)
+
+## Gluing Queue
+
+For protocols that prefer not to undertake the self integration process, GlueX offers a community driven alternative.
+Your liquidity module can be picked up for integration by dedicated community developers or by the GlueX core team ("Gluers") through the Gluing Queue.
+This path utilizes the power of the community to prioritize and accelerate the integration of impactful liquidity source
+
+🔗 View the Live Queue: [https://gluex.xyz/gluing-queue](https://gluex.xyz/gluing-queue)
+
+**Prioritizing Integrations**
+
+The Gluing Queue is GlueX's transparent and dynamically ranked system for prioritizing liquidity module integrations for community Gluers.
+Its primary goal is to ensure that the most impactful and valuable liquidity sources are integrated into GlueX efficiently and effectively, benefiting the entire ecosystem
+
+**How is Priority Determined?**
+
+Each liquidity module's position in the Gluing Queue is determined by its **Gluing Score**, calculated using the following formula
+
+```math
+\text{Gluing Score} = (\text{7d Trade Volume}) * (\text{Nr of Chains Deployed}) * (\text{TVL})
+```
+
+- **7d Trade Volume** _(in millions of USD)_: The total trading volume of the protocol over the last 7 days (reflects active user engagement)
+- **Number of Chains Deployed**: The number of blockchain networks where the protocol is actively deployed and offering liquidity (indicates broad accessibility)
+- **TVL (Total Value Locked)** _(in millions of USD)_: The total value of assets locked within the protocol's contracts (signifies the depth and stability)
+
+If any required data (Trade Volume, Number of Chains or TVL) for a protocol is missing in its `gluing_queue.json` entry,
+that protocol is automatically placed at the very bottom of the queue, hindering its integration priority
+
+<Note>
+  Anyone in the community (including protocol teams and community members) can
+  challenge current rankings by submitting updated data, provided with
+  verifiable sources
+</Note>
+
+### How it Works
+
+This section details how protocol teams and community members can interact with the Gluing Queue, primarily through submitting Pull Requests to the GlueX self integration repository
+
+If you are a **protocol team representative or an engaged community member** eager to see a particular liquidity module integrated, you can directly influence its priority in the Gluing Queue by submitting a Pull Request (PR).
+You can submit a PR to:
+
+- **Add your protocol to the queue**: If your protocol is not yet listed, create a new entry for it
+- **Provide missing data**: If your protocol is in the queue but lacks crucial information (eg: trade volume, TVL or deployed chains), provide this data to improve its Gluing Score
+- **Request a re evaluation**: If you believe your protocol's current Gluing Score is outdated or inaccurate due to recent growth, you can request a re evaluation by updating its data
+- **Assign a bounty**: You can **incentivize Gluers to fast-track your protocol's integration by assigning a monetary bounty** (details in the "Bounty System" section below)
+
+<Warning>
+  Before you start working on your liquidity module integration, please ensure
+  your liquidity module has not already been glued to GlueX
+</Warning>
+
+### Integrate Now
+
+To submit (or update) a Liquidity module via the Gluing Queue follow the following steps:
+
+- **Fork the Repository**:
+  Click the "Fork" button at the top of the [Gluing Queue Repository](https://github.com/gluexprotocol/gluing-queue) to create your own copy
+- **Navigate to `docs/data/gluing_queue.json`**:
+  This JSON file contains the data for all protocols in the Gluing Queue
+- **Update your protocol's data or add a new entry**:
+
+  - If adding a new protocol, append a new JSON object conforming to the structure below
+  - If updating an existing protocol, locate its entry and modify the relevant fields
+
+<Note>
+  Ensure that `trade_volume_7d_million` and `tvl_million` are accurately
+  reported in millions of USD
+</Note>
+
+```json expandable
+{
+  "protocol": "Protocol Name",
+  "docs": "<module_docs_url_or_website>",
+  "chains": ["ethereum", "polygon", "base"],
+  "trade_volume_7d_million": 100.5, // example: $100.5 million
+  "tvl_million": 2000.75, // example: $2,000.75 million
+  "bounty_add_on": {
+    "amount": null, // set to actual amount if assigning a bounty
+    "token_address": null, // set to token address if assigning a bounty
+    "token_symbol": null, // set to token symbol if assigning a bounty
+    "network": null // set to network if assigning a bounty
+  },
+  "status": "not_glued", // initial status should be "not_glued"
+  "active_gluers": [],
+  "prs": []
+}
+```
+
+- **Submit a Pull Request (PR)**
+  - Push your changes to your forked repository
+  - Open a Pull Request (PR) from your fork to the `main` branch of the [Gluing Queue Repository](https://github.com/gluexprotocol/gluing-queue)
+  - Utilize the PR Submission Template to ensure all necessary information for the queue update is provided clearly
+  - Follow the PR template in [`PR-template.md`](https://github.com/gluexprotocol/gluing-queue/blob/main/PR-template.md)
+  - Your PR must include:
+    - Protocol name and details
+    - Deployed chains
+    - Trade Volume (7D) in million USD
+    - Total Value Locked (TVL) in million USD
+    - Is fork and detailed of protocol forked from
+
+<Info>
+  Right after the PR is submitted, a Gluer will review your submission. If any
+  modifications are required, you will receive feedback for adjustments. If
+  approved, your protocol's data in the `gluing_queue.json` will be updated,
+  potentially affecting its position in the live queue
+</Info>
+
+**Active Gluers**
+
+If you are an active gluer (a community contributor who is actively working on integrating liquidity modules), you will submit PRs to update a protocol's integration status within the `gluing_queue.json` file. This helps track progress and manage the bounty system
+
+You can submit a PR to:
+
+- Change the status of a protocol in the queue from `not_glued` to `being_glued` (indicating you've started work)
+- Change the status of a protocol in the queue from `being_glued` to `glue_pending` (indicating your PR for integration is ready for final review)
+- Add Pull Request (prs) details to a protocol's entry in the queue
+- Add yourself to the `active_gluers` list for a protocol you're working on
+
+<Accordion title="Understanding Integration Status">
+    
+    The status field in the queue represents a protocol's current integration stage:
+    
+    - `not_glued`: No Gluer has officially started working on this liquidity module integration yet
+
+    - `being_glued`: One or more Gluers are actively developing and working on the integration of this module
+
+    - `glue_pending`: A Pull Request for this liquidity module integration has been submitted, approved, and the module is ready to be onboarded into the GlueX execution layer
+
+    - `glued`: The liquidity module has been successfully integrated into the GlueX execution layer and is live
+
+</Accordion>
+
+### Bounty System
+
+The GlueX bounty system is designed to recognize and reward the invaluable contributions of "Gluers" who successfully integrate liquidity modules into GlueX.
+This system not only compensates for effort and technical skill but also incentivizes originality and strategic ecosystem value, with provisions for additional incentives directly from the protocols themselves
+
+**How the System Works**
+
+The total bounty achievable by a Gluer upon successful integration is computed as follows:
+
+```math
+\text{Total Protocol Gluing Bounty} = \text{Base Payout } × \text{ Complexity } × \text{ Uniqueness } + \text{Bounty Add-On}
+```
+
+**Base Payout**
+
+The base payout for gluing a protocol is determined according the the protocol's rank in the [Glueing Queue](https://gluex.xyz/gluing-queue).
+The current tier to payout system implemented for base payouts is as follows
+
+| Rank Range | Tier   | Base Payout |
+| ---------- | ------ | ----------- |
+| 1 – 10     | Tier 1 | $400        |
+| 11 – 30    | Tier 2 | $300        |
+| 31 – 60    | Tier 3 | $200        |
+| 61 – 90    | Tier 4 | $100        |
+| 91 - 100   | Tier 5 | $50         |
+| +100       | Tier 6 | $0          |
+
+<Note>
+  Base payouts are the primary driver of GlueX funded rewards. They may be
+  adjusted at the discretion of GlueX Protocol and must be announced to the
+  Gluer community in advance
+</Note>
+
+**Complexity Multiplier**
+
+The complexity multiplier reflects the estimated level of effort required to implement a liquidity module.
+It is based solely on the approximate number of functional lines of code (LoC) written by the Gluer.
+This provides an objective, scalable measure of technical complexity—regardless of the protocol type or use case.
+The more logic required to mirror the protocol's liquidity, the higher the reward.
+
+| Complexity Tier | Approx. Lines of Code | Multiplier |
+| --------------- | --------------------- | ---------- |
+| Tier 1          | ≤ 100                 | ×1.0       |
+| Tier 2          | 101 – 200             | ×1.1       |
+| Tier 3          | 201 – 300             | ×1.2       |
+| Tier 4          | 301 – 400             | ×1.3       |
+| Tier 5          | 401 – 500             | ×1.4       |
+| Tier 6          | 501 – 600             | ×1.5       |
+| Tier 7          | 601 – 700             | ×1.6       |
+| Tier 8          | 701 – 800             | ×1.7       |
+| Tier 9          | 801 – 900             | ×1.8       |
+| Tier 10         | 900 – 1000            | ×1.9       |
+| Tier X          | +1000                 | ×2.2       |
+
+<Note>
+  Reviewers should count only functional logic: comments, imports, and
+  boilerplate should be excluded. If an integration spans multiple files, total
+  LoC may be summed
+</Note>
+
+**Uniqueness Multiplier**
+
+The Uniqueness Factor is a multiplier applied to a bounty after a Gluer submits a liquidity module.
+It helps differentiate between:
+
+- Protocols that are original and technically novel
+- Protocols that are minor forks or clones of already glued architectures
+
+The idea is simple. The more original and technically distinct the protocol is, the more valuable the integration and the higher the bounty
+
+| Protocol Type       | Multiplier |
+| ------------------- | ---------- |
+| Fork / Direct Clone | ×0         |
+| Modified Fork       | ×0.5       |
+| Original Protocol   | ×1.0       |
+
+<Note>
+  Gluers are encouraged to provide documentation or context in the PR to help
+  reviewers assess originality. GlueX Labs may validate claims through internal
+  review or community feedback
+</Note>
+
+**Bounty Addons**
+
+The bounty addon is an optional reward assigned by the protocol itself (or its community) to accelerate its integration.
+This extra incentive is separate from GlueX's core bounty structure and can be denominated in any token.
+
+Protocols can assign a bounty addon by modifying their entry in the Glueing Queue json.
+Gluers are responsible for verifying the existence, terms and conditions of these external rewards with the protocol team
+
+### Acknowledgment
+
+Participation in the bounty program does not constitute employment or formal engagement, and GlueX reserves the right to approve, deny or adjust any reward based on the quality, accuracy or legitimacy of the contribution

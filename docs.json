@@ -54,6 +54,25 @@
               "documentation/about/why-build-with-gluex",
               "documentation/about/powered-by"
             ]
+          },
+          {
+            "group": "Requests",
+            "pages": [
+              "documentation/requests/token-list-or-asset-update-request",
+              "documentation/requests/liquidity-module-integration-request",
+              "documentation/requests/feature-request"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "documentation/references/contracts",
+              "documentation/references/modules",
+              "documentation/references/supported-networks",
+              "documentation/references/audit-and-security",
+              "documentation/references/faq",
+              "documentation/references/license-and-legal"
+            ]
           }
         ]
       },
@@ -158,7 +177,7 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Community",
+          "anchor": "Contact Us",
           "href": "https://bento.me/gluex-protocol",
           "icon": "users"
         },
