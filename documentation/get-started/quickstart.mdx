@@ -6,6 +6,8 @@ description: "Start building awesome DeFi application in under 10 minutes"
 
 import RouterRequest from "/snippets/code/router/request.mdx";
 import RouterResponse from "/snippets/code/router/response.mdx";
+import ExchangeRateRequest from "/snippets/code/exchange-rate/request.mdx";
+import ExchangeRateResponse from "/snippets/code/exchange-rate/response.mdx";
 
 Welcome to the GlueX Quickstart Guides! Whether you're a developer integrating GlueX into your platform or a partner looking to utilize our framework or embed our widget, these guides will help you get up and running quickly and efficiently
 
@@ -87,8 +89,140 @@ Simply construct your transaction object with those fields, sign it with your EO
 
 ## Exchange Rate
 
-## Yield
+The Exchange Rates API provides an easy to use, scalable solution for retrieving on-chain exchange rates between any two token pairs across multiple supported blockchains. Whether you’re building a DeFi app, wallet or trading platform, you can fetch realtime, accurate rates in a single batch call
 
-## Debt
+### Sample Request
+
+The first step in using the GlueX Exchange Rates API to fetch the price of a token pair. This can be achieved by sending a `POST` request to the root `/` endpoint. It is recommended to start with the below example request and apply more customization from (here)[/api-reference/exchange-rate-api/post-price]
+
+<Note>Each call can batch upto 25 pairs per request</Note>
+
+<ExchangeRateRequest />
+
+### Sample Request
+
+<ExchangeRateResponse />
+
+### How to Use
+
+- Parse the JSON: Iterate over the array to extract price for each token pair
+- Batching: Request up to 25 pairs at once to minimize round trips
+- No Auth Needed: Public access by default, supply an API key header for higher rate limits when available
+
+### Learn More
+
+<CardGroup cols={3}>
+  <Card title="API Reference" icon="code" href="">
+    Full specification and documentation for exchange rates API
+  </Card>
+  <Card title="Architecture" icon="play" href="">
+    Learn more about the how the exchange rates works
+  </Card>
+  <Card title="Tutorials" icon="book-open" href="">
+    Indepth integration guides and best practices
+  </Card>
+  <Card title="Parameter Reference" icon="setting" href="">
+    Full request and response field definitions
+  </Card>
+  <Card title="Examples" icon="terminal" href="">
+    Code snippets for common flows and use cases
+  </Card>
+</CardGroup>
+
+### Examples
+
+<AccordionGroup>
+  <Accordion title="">
+
+  </Accordion>
+
+  <Accordion title="">
+
+  </Accordion>
+
+  <Accordion title="">
+
+  </Accordion>
+
+  <Accordion title="">
+
+  </Accordion>
+  
+  <Accordion title="">
+    COMING SOON...
+  </Accordion>
+</AccordionGroup>
 
 ## Widget
+
+The GlueX Widget offers a plug and play UI for embedding full featured DeFi operations like routing, swap, bridge, stake, lend and more into your applicaation with minimal code and maximum customization
+
+### Installation
+
+Install the core packages (using your preferred package manager):
+
+<CodeGroup>
+
+```bash npm
+npm install wagmi @tanstack/react-query @gluex/widget @gluex/sdk
+```
+
+```bash yarn
+yarn add wagmi @tanstack/react-query @gluex/widget @gluex/sdk
+```
+
+```bash pnpm
+pnpm add wagmi @tanstack/react-query @gluex/widget @gluex/sdk
+```
+
+```bash bun
+bun add wagmi @tanstack/react-query @gluex/widget @gluex/sdk
+```
+
+</CodeGroup>
+
+### Sample Integration
+
+Embed the widget in your React (or compatible) app with just a few lines:
+
+```typescript
+import { GlueXWidget, WidgetConfiguration } from "@gluex/widget";
+
+const config: Partial<WidgetConfiguration> = {
+  apiKey: environment.GLUEX_API_KEY,
+  integrator: environment.INTEGRATOR_ID,
+};
+
+export const DeFiWidget = () => {
+  return <GlueXWidget config={config} />;
+};
+```
+
+### Learn More
+
+<CardGroup cols={3}>
+  <Card
+    title="Configuration"
+    icon="setting"
+    href=""
+  >
+    Full list of `<GlueXWidget />` properties and default values
+  </Card>
+
+  <Card title="Theming Guide" icon="palette" href="">
+    Deep dive into theme, style, shape, typography and color overrides
+  </Card>
+  
+  <Card title="Event System" icon="zap" href="">
+    How to hook into widget events for analytics and UX
+  </Card>
+  
+  <Card title="Advanced Examples" icon="terminal" href="">
+    Prebuilt layouts and custom component overrides
+  </Card>
+  
+  <Card title="Widget Studio" icon="play" href="https://studio.gluex.xyz/playground">
+    Visual tool for generating theme and config JSON
+  </Card>
+</CardGroup>
+

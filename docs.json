@@ -10,7 +10,8 @@
   "api": {
     "openapi": [
       "https://raw.githubusercontent.com/gluexprotocol/gluex-openapis/main/router-api/openapi.json",
-      "https://raw.githubusercontent.com/gluexprotocol/gluex-openapis/main/exchange-rates-api/openapi.json"
+      "https://raw.githubusercontent.com/gluexprotocol/gluex-openapis/main/exchange-rates-api/openapi.json",
+      "https://raw.githubusercontent.com/gluexprotocol/gluex-openapis/refs/heads/main/yield-router-api/openapi.json"
     ]
   },
   "contextual": {
@@ -64,6 +65,7 @@
             "pages": [
               "documentation/requests/token-list-or-asset-update-request",
               "documentation/requests/liquidity-module-integration-request",
+              "documentation/requests/chain-integration-request",
               "documentation/requests/feature-request"
             ]
           },
@@ -84,41 +86,49 @@
         "tab": "Build with GlueX",
         "groups": [
           {
+            "group": "Integrating GlueX",
+            "pages": [
+              "build-with-gluex/overview"
+            ]
+          },
+          {
             "group": "Router",
             "pages": [
-              "products/router/overview"
+              "build-with-gluex/router/overview"
             ]
           },
           {
             "group": "Exchange Rate",
             "pages": [
-              "products/exchange-rate/overview"
+              "build-with-gluex/exchange-rate/overview"
             ]
           },
           {
             "group": "Yield",
             "pages": [
-              "products/yield/overview"
+              "build-with-gluex/yield/overview"
             ]
           },
           {
             "group": "Widget",
             "pages": [
-              "products/widget/overview",
-              "products/widget/features",
-              "products/widget/installation",
-              "products/widget/configuration",
-              "products/widget/customizations",
-              "products/widget/events",
-              "products/widget/wallets",
-              "products/widget/i18n"
+              "build-with-gluex/widget/overview",
+              "build-with-gluex/widget/features",
+              "build-with-gluex/widget/installation",
+              "build-with-gluex/widget/configuration",
+              "build-with-gluex/widget/customizations",
+              "build-with-gluex/widget/events",
+              "build-with-gluex/widget/wallets",
+              "build-with-gluex/widget/i18n"
             ]
           }
         ]
       },
       {
         "tab": "Architecture",
-        "groups": []
+        "pages": [
+          "architecture/overview"
+        ]
       },
       {
         "tab": "API Reference",
@@ -145,6 +155,15 @@
             "pages": [
               "api-reference/exchange-rate-api/get-chains",
               "api-reference/exchange-rate-api/post-price"
+            ]
+          },
+          {
+            "group": "Yield API",
+            "pages": [
+              "api-reference/yield-api/get-protocols",
+              "api-reference/yield-api/post-historical-apy",
+              "api-reference/yield-api/post-diluted-apy",
+              "api-reference/yield-api/post-tvl"
             ]
           }
         ]

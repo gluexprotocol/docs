@@ -1,0 +1,56 @@
+<CodeGroup>
+
+```bash bash
+curl 'https://exchange-rates.gluex.xyz/' \
+  -H 'content-type: application/json' \
+  --data-raw '[{
+    "domestic_blockchain": "ethereum",
+    "domestic_token": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "foreign_blockchain": "ethereum",
+    "foreign_token": "0xdac17f958d2ee523a2206206994597c13d831ec7"
+  }]'
+```
+
+```javascript javascript
+const axios = require("axios");
+
+const response = await axios.post(
+  "https://exchange-rates.gluex.xyz/",
+  [
+    {
+      domestic_blockchain: "ethereum",
+      domestic_token: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      foreign_blockchain: "ethereum",
+      foreign_token: "0xdac17f958d2ee523a2206206994597c13d831ec7",
+    },
+  ],
+  {
+    headers: {
+      "content-type": "application/json",
+    },
+  }
+);
+
+console.log(response.data);
+```
+
+```python python
+import requests
+
+headers = {
+  'content-type': 'application/json'
+}
+
+data = [{
+  "domestic_blockchain": "ethereum",
+  "domestic_token": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+  "foreign_blockchain": "ethereum",
+  "foreign_token": "0xdac17f958d2ee523a2206206994597c13d831ec7"
+}]
+
+response = requests.post('https://exchange-rates.gluex.xyz/', headers=headers, json=data)
+
+print(response.json())
+```
+
+</CodeGroup>
