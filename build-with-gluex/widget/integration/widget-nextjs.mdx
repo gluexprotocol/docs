@@ -1,0 +1,121 @@
+---
+title: "Integrate GlueX widget with Next.js"
+sidebarTitle: "Widget <> NextJS"
+description: "Learn how to integrate GlueX widget into your Next.js application enabling users to perform swaps, bridge assets, lend, stake, zap and swidge directly within your Next.js application"
+---
+
+GlueX Widget is fully compatible with Nextjs applications and requires minimal configuration for smooth integration.
+
+Due to the nature of server side rendering (SSR) in Next and how different wallet libraries manage their connections to wallet extensions,
+the widget needs to be specifically rendered on the client side. To achieve this, make use of the 'use client' directive, which ensures that the
+widget component is only rendered in the client side environment
+
+If you’re using Next with the App Router, the following example shows how to add the widget to a page:
+
+### App Router
+
+With the App Router, Next.js primarily renders components on the server. To ensure the GlueX widget is rendered exclusively on the client, you'll use the `"use client"` directive and a `ClientSideRender` component
+
+First, create a `Widget.tsx` file (or a similar descriptive name) within your components directory. This component will encapsulate the GlueX widget and ensure it renders only on the client side
+
+<CodeGroup>
+
+```tsx Widget.tsx
+"use client";
+
+import React from "react";
+import { type WidgetConfigPartialProps } from "@gluex/widget";
+import { GlueXWidget, WidgetSkeleton } from "@gluex/widget";
+
+export const Widget = () => {
+  const config: WidgetConfigPartialProps["config"] = React.useMemo(() => {
+    return {
+      integrator: "",
+      apiKey: "",
+
+      // ... rest of the widget configuration
+      // Example:
+      // appearance: 'dark',
+      // theme: {
+      //   container: {
+      //     boxShadow: '0px 8px 32px rgba(0, 0, 0, 0.08)',
+      //     borderRadius: '16px',
+      //   },
+      // },
+    };
+  }, []);
+
+  return (
+    <ClientSideRender fallback={<WidgetSkeleton config={config} />}>
+      <GlueXWidget config={config} />
+    </ClientSideRender>
+  );
+};
+```
+
+```tsx ClientSideRender.tsx
+"use client";
+
+import React from "react";
+
+export const ClientSideRender: React.FC<ClientSideRenderProps> = ({
+  children,
+  fallback = null,
+}) => {
+  const [hydrated, setHydrated] = React.useState(false);
+
+  React.useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  return hydrated ? <>{children}</> : <>{fallback}</>;
+};
+```
+
+</CodeGroup>
+
+### Pages Router
+
+If you are using the traditional Pages Router, you need to use the dynamic import feature with `ssr: false` to import the widget dynamically
+
+<CodeGroup>
+
+```tsx Widget.tsx
+import dynamic from "next/dynamic";
+
+const GlueXWidget = dynamic(
+  () => import("@gluex/widget").then((mod) => mod.GlueXWidget),
+  {
+    loading: () => <div>Loading...</div>,
+    ssr: false,
+  }
+);
+
+export const Widget = () => {
+  const config: WidgetConfigPartialProps["config"] = React.useMemo(() => {
+    return {
+      integrator: "",
+      apiKey: "",
+
+      // ... rest of the widget configuration
+      // Example:
+      // appearance: 'dark',
+      // theme: {
+      //   container: {
+      //     boxShadow: '0px 8px 32px rgba(0, 0, 0, 0.08)',
+      //     borderRadius: '16px',
+      //   },
+      // },
+    };
+  }, []);
+
+  return <GlueXWidget config={config} />;
+};
+```
+
+</CodeGroup>
+
+<Note>
+  Check out [GlueX's Widget Studio](https://studio.gluex.xyz/playground) to
+  customize and integrate the widget
+</Note>

@@ -115,6 +115,16 @@
               "build-with-gluex/widget/overview",
               "build-with-gluex/widget/features",
               "build-with-gluex/widget/installation",
+              {
+                "group": "Integration Now",
+                "pages": [
+                  "build-with-gluex/widget/integration/widget-nextjs",
+                  "build-with-gluex/widget/integration/widget-react",
+                  "build-with-gluex/widget/integration/widget-vite",
+                  "build-with-gluex/widget/integration/widget-gatsby",
+                  "build-with-gluex/widget/integration/widget-rainbowkit"
+                ]
+              },
               "build-with-gluex/widget/configuration",
               "build-with-gluex/widget/customizations",
               "build-with-gluex/widget/events",
