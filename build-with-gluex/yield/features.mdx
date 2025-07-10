@@ -1,0 +1,64 @@
+---
+title: "Features"
+description: "Comprehensive capabilities of the GlueX Yield Router API for dilution-aware DeFi yield optimization"
+---
+
+### Dilution-Aware APY Calculations
+
+- **Historic APY**: Traditional backward-looking metric showing current liquidity provider earnings based on past fee generation and interest accrual. Useful for understanding baseline pool performance .
+
+- **Diluted APY**: Forward-looking metric that calculates realistic yield after accounting for new capital dilution effects. Essential for large allocators and accurate yield projections, providing honest expectations rather than misleading historical snapshots.
+
+- **Rewards APY**: Protocol incentive calculations that capture additional yield from governance tokens, liquidity mining programs, and ecosystem rewards. Separate from base lending/trading fees to provide clear yield component breakdown.
+
+- **APY Slippage Quantification**: Measures the difference between Historic and Diluted APY, providing explicit visibility into yield reduction from capital deployment. Critical for risk assessment and allocation strategy optimization.
+
+### Advanced Pool Analytics
+
+- **Dual Lookup Architecture**: Query pools using either pool contract addresses or LP token addresses through optimized GSI indexes. Provides flexibility for different integration patterns and data source preferences without requiring protocol-specific knowledge.
+
+- **Real-Time TVL Calculations**: Dynamic Total Value Locked computation that reflects current market conditions and recent deposit/withdrawal activity. Essential for accurate dilution calculations and pool health assessment.
+
+- **Cross-Protocol Abstraction**: Unified interface across diverse DeFi protocols including lending platforms, DEXs, yield farms, and liquid staking derivatives. Abstracts complex protocol mechanics into standardized yield calculations.
+
+- **Token Validation System**: Comprehensive input token validation ensuring provided addresses match pool underlying assets. Prevents invalid calculations and provides clear error messaging for debugging integration issues.
+
+### Multi-Chain Infrastructure
+
+- **17+ Blockchain Networks**: Native support across Ethereum, Base, Arbitrum, Polygon, Avalanche, BNB Smart Chain, Optimism, Gnosis, Mantle, Linea, Scroll, Taiko, Blast, Sonic, Berachain, Unichain, and HyperEVM with consistent API interfaces.
+
+- **Chain-Specific Optimizations**: Tailored RPC handling, block time considerations, and gas optimization strategies for each network.
+
+### High-Performance Infrastructure
+
+- **Multi-Layer Caching**: TTL-based caching for pool data and APY calculations with configurable expiration times. Reduces response latency while maintaining data accuracy for dynamic DeFi markets.
+
+- **Async Processing**: Concurrent execution of blockchain calls, database queries, and calculations across multiple chains. Parallel processing minimizes response times for complex multi-pool operations.
+
+- **Intelligent State Aggregation**: Batched blockchain calls through multicall contracts to minimize RPC overhead. Supports standard calls, concentrated liquidity analysis, and reference price aggregation for efficient data retrieval.
+
+- **Real-Time Monitoring**: Comprehensive metrics tracking including request volumes, cache efficiency, error rates, and system performance. Automated health checks ensure consistent service availability.
+
+- **Error Management**: Structured error responses with detailed context and request tracing. Facilitates rapid debugging and provides clear feedback for integration issues.
+
+### Developer-Centric Design
+
+- **RESTful API Architecture**: Clean, predictable endpoints following REST principles with consistent request/response patterns. Standardized HTTP status codes and comprehensive error messaging for reliable integration.
+
+- **Extensive Input Validation**: Multi-layer validation including Ethereum address formatting, chain support verification, token address validation, and parameter range checking. Provides clear feedback for invalid inputs with specific error guidance.
+
+- **Structured Error Responses**: Consistent error format with success flags, descriptive messages, error type classification, operation step identification, and unique request IDs for debugging and support.
+
+- **Multiple Programming Language Support**: Native examples and patterns for Python, JavaScript, and cURL with async/await patterns, error handling, and best practices for each language ecosystem.
+
+- **Flexible Pool Resolution**: Support for both pool address and LP token address queries with automatic protocol detection and token relationship validation. Enables integration regardless of available data sources.
+
+### Advanced Protocol Support
+
+- **Protocol-Agnostic Framework**: Unified interface supporting lending protocols, automated market makers, yield farms, liquid staking, and synthetic assets. Abstracts protocol complexity while preserving calculation accuracy.
+
+- **Dynamic Module Loading**: Runtime protocol module initialization based on pool requirements. Supports adding new protocols without service restarts or configuration changes.
+
+- **State Management Sophistication**: Complex state dependency resolution with primary and dependent state calls. Handles protocol-specific requirements like oracle updates, fee calculations, and reward distributions.
+
+- **Computation Cost Optimization**: Intelligent cost factor management and gas estimation for transaction-heavy protocols. Optimizes calculation accuracy while managing computational overhead.
