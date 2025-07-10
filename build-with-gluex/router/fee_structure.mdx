@@ -1,0 +1,62 @@
+---
+title: "Fee Structure"
+description: "The Router API is designed with transparency and fairness in mind. It imposes **no routing fees** and distributes any **positive slippage** to the user, partner and gluex. Additionally, it supports partner incentives through a well-defined partner fee model and surplus-sharing mechanism."
+---
+
+## Zero Routing Fees
+
+GlueX does not charge any routing fees for swaps executed via the router. Unlike many other DeFi routers, there are no hidden markups or backend commissions embedded in the trade execution.
+
+#### Highlights:
+- **0% routing fees**
+- **No hidden costs or surcharges**
+- **User-first pricing execution**
+
+
+## Partner Fee Model
+
+GlueX enables integrators or partners to monetize their integration through a configurable fee mechanism. This is done via two fields in the request:
+
+#### Configuration:
+```json
+"partnerFee": 30,
+"partnerAddress": "0xPartnerWallet"
+```
+
+- `partnerFee`: Fee in basis points (bps) applied to the output amount
+- `partnerAddress`: EOA address to receive the collected fee
+
+These fees are automatically accounted for in the returned output amount and transferred accordingly.
+
+
+## Positive Slippage Rewards
+
+If a swap is executed at a more favorable rate than initially quoted (i.e., the user receives more output tokens than expected), GlueX ensures that the entire difference is distributed to the user, partner and gluex.
+
+This enhances transparency and builds trust with integrators and users alike.
+
+
+## Surplus Sharing
+
+**Surplus** refers to the additional value captured when GlueX outperforms other routers or expected trade benchmarks. Surplus arises from:
+- Better routing decisions
+- Gas optimizations
+- Internal execution advantages
+
+When surplus is detected, it can be shared between the:
+- **User** (receives maximum benefit)
+- **Partner** (incentivized through integration)
+- **GlueX** (for protocol development)
+
+#### Activation:
+```json
+"activateSurplusFee": true
+"partnerAddress": "0xPartnerWallet"
+```
+
+This enables surplus fee contracts which allocate shared value per the agreed distribution model. 
+
+---
+
+For assistance with fee integrations or partnership opportunities, contact the GlueX team via the [official Telegram channel](https://t.me/+_VmO_gIrNjxiZWE0).
+

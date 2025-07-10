@@ -94,7 +94,13 @@
           {
             "group": "Router",
             "pages": [
-              "build-with-gluex/router/overview"
+              "build-with-gluex/router/overview",
+              "build-with-gluex/router/api_endpoints",
+              "build-with-gluex/router/request_response_format",
+              "build-with-gluex/router/advanced_features",
+              "build-with-gluex/router/fee_structure",
+              "build-with-gluex/router/api_tiers_limits",
+              "build-with-gluex/router/getting_started"
             ]
           },
           {

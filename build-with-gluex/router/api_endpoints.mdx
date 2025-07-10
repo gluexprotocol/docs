@@ -1,0 +1,86 @@
+---
+title: "API Endpoints"
+description: "This section outlines the primary endpoints provided by the Router API. These endpoints are used to fetch pricing estimates and generate transaction calldata for on-chain execution."
+---
+
+> **Note:**
+> It is highly recommended to call the `price` endpoint before invoking the `quote` endpoint. This pattern is especially critical when building dApps. The `price` endpoint can be polled periodically (e.g., every few seconds) to provide users with real-time pricing information. Once the user approves the router contract and confirms the intention to swap, the `quote` endpoint should be called to retrieve the final calldata for on-chain execution.
+>
+> This architecture reduces unnecessary load on the quote infrastructure and ensures accurate, timely user interactions. Furthermore, GlueX plans to introduce market maker integrations on the `quote` endpoint, which will enhance price discovery and further optimize rate limits for this endpoint.
+
+## POST /v1/price
+
+Returns a **price estimate** for a token swap. This endpoint is intended for off-chain estimation and does not include calldata or simulation metadata.
+
+### Description
+- Provides estimated input/output amounts
+- Supports partial fill logic
+
+### Example Request
+```http
+POST /v1/price
+x-api-key: your-api-key
+Content-Type: application/json
+```
+
+#### Request Body (Example)
+```json
+{
+  "chainID": "ethereum",
+  "inputToken": "0x...",
+  "outputToken": "0x...",
+  "inputAmount": "100000000",
+  "userAddress": "0x...",
+  "outputReceiver": "0x...",
+  "uniquePID": "partner-xyz"
+}
+```
+
+### Response Fields
+- `inputAmount`, `outputAmount`
+- `effectiveInputAmount`, `effectiveOutputAmount`
+- `minOutputAmount`, `liquidityModules`
+
+---
+
+## POST /v1/quote
+
+Returns a **price quote** along with **transaction calldata** for executing the trade on-chain.
+
+### Description
+- Includes all `price` endpoint fields
+- Adds transaction-specific fields such as `calldata` and `revert`
+- Simulation is enabled by default (`computeEstimate: true`)
+
+### Example Request
+```http
+POST /v1/quote
+x-api-key: your-api-key
+Content-Type: application/json
+```
+
+#### Request Body (Example)
+```json
+{
+  "chainID": "ethereum",
+  "inputToken": "0x...",
+  "outputToken": "0x...",
+  "inputAmount": "100000000",
+  "userAddress": "0x...",
+  "outputReceiver": "0x...",
+  "uniquePID": "partner-xyz",
+  "computeEstimate": true
+}
+```
+
+### Additional Response Fields for `quote`
+- `calldata`: ABI-encoded transaction data
+- `revert`: Boolean indicating if the trade would revert
+- `computationUnits`: Estimated gas
+- `lowBalance`: Indicates insufficient balance
+- `blockNumber`: Block number for simulation context
+- `simulation`: Raw trace/debug metadata
+
+---
+
+These endpoints form the foundation of GlueX Router’s programmable interface, providing flexible and secure trade execution capabilities across supported [blockchains](https://router.gluex.xyz/liquidity).

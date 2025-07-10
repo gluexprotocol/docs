@@ -1,0 +1,110 @@
+---
+title: "Advanced Features"
+description: "The Router API includes advanced features that optimize trade execution and protect users from market volatility and slippage. This section provides detailed documentation on these mechanisms."
+---
+
+## Surge Protection
+
+**Surge Protection** is a built-in pre-trade safety mechanism designed to prevent significant value loss due to shallow liquidity, high volatility, or abrupt market movements.
+
+#### How It Works
+Before executing a swap, the router simulates a hypothetical reverse trade (i.e., selling the output token back to the input token) in the same block and without market interference. If the user would recover less than 90% of their original input amount, the trade is considered high-risk and is blocked.
+
+#### Evaluation Criteria
+- Liquidity depth
+- Price impact
+- Volatility within the block
+
+#### Threshold
+- If the estimated reverse loss exceeds **10%**, the trade is halted.
+
+#### User Benefits
+- Prevents sudden losses due to front-running or low-liquidity pools
+- Avoids acting as exit liquidity in volatile scenarios
+- Enhances trust and user safety
+
+#### Configuration
+- Disabled by default
+- Can be enabled explicitly by setting:
+
+```json
+"surgeProtection": true
+```
+
+
+## Partial Fill Order
+
+In cases of low liquidity or unfavorable market conditions, full swaps may result in significant slippage. **Partial Fill Orders** mitigate this by dynamically determining the optimal input amount for execution.
+
+#### How It Works
+If the full input amount would cause excessive slippage, the router calculates the largest tradable portion that still meets efficient pricing. The result includes both:
+- Suggested input amount
+- Expected output amount
+
+#### Example
+Attempting to swap 1,000 USDC in a low-liquidity market may only allow 730 USDC to be executed efficiently. The router will recommend this optimized trade size and return the expected output.
+
+#### Configuration
+- Disabled by default
+- Enable it by setting:
+
+```json
+"isPartialFill": true
+```
+
+#### Benefits
+- Reduces exposure to slippage
+- Adapts to real-time market conditions
+- Maximizes trade efficiency without user intervention
+
+
+## Buy Order
+
+**Buy Orders** allow users to specify the desired amount of output tokens they want to receive, instead of the amount of input tokens they are willing to sell (Sell Order).
+
+#### How It Works
+When an order is of type `BUY`, the router calculates the required input amount to fulfill the specified output. This contrasts with `SELL`, where the input is predefined and output is computed.
+
+#### Configuration
+To initiate a Buy Order, include the following in your request:
+```json
+"orderType": "BUY",
+"outputAmount": "desired-output-value"
+```
+
+If `orderType` is not specified, it defaults to `SELL`, and `inputAmount` becomes mandatory.
+
+#### Comparison Table
+| `orderType` | Required Field   | Description                                 |
+|-------------|------------------|---------------------------------------------|
+| `BUY`       | `outputAmount`   | Amount of output token to receive           |
+| `SELL`      | `inputAmount`    | Amount of input token to swap               |
+
+
+## Liquidity Module Filtering
+
+**modulesFilter** is an advanced configuration option that allows developers to specify which [liquidity sources (modules)](https://router.gluex.xyz/liquidity) should be used during routing.
+
+#### Use Case
+This feature is particularly useful for projects that wish to:
+- Restrict routing to certain protocols (e.g., Uniswap, Balancer)
+- Avoid using specific liquidity pools or protocols
+- Comply with integration policies or regulatory constraints
+
+#### Configuration
+To filter liquidity modules, include an array of supported module identifiers:
+
+```json
+"modulesFilter": ["module_1", "module_2"]
+```
+
+Only the listed modules will be considered during route construction.
+
+#### Benefits
+- Provides greater control over routing behavior
+- Allows integration with whitelisted or approved liquidity sources
+- Supports custom trade strategies based on institutional or technical preferences
+
+---
+
+These features contribute to a safer, more adaptive, and efficient swapping experience for both developers and end-users utilizing the GlueX Router API.

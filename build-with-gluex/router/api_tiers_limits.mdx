@@ -1,0 +1,22 @@
+---
+title: "Rate Limits and Access Tiers"
+description: "GlueX provides tiered API access levels to accommodate different integration needs, ranging from prototyping and testing to high-frequency production deployments."
+---
+
+## Access Tiers
+
+Each tier offers a specific request rate, burst capacity, and level of support.
+
+| Tier       | RPS                       | Burst          | Intended Use Case                                        |
+|------------|---------------------------|----------------|-----------------------------------------------------------|
+| Basic      | 3                         | 3              | Ideal for development, testing, and small-scale dApps     |
+| Growth     | 10                        | 30             | Suitable for mid-sized production dApps and services      |
+| Premium    | 20                        | 50             | Supports large-scale production and real-time operations  |
+| Enterprise | Custom                    | Custom         | Tailored for exchanges, aggregators, or institutional use |
+
+
+## How to Upgrade Your Tier
+
+Partners may request an upgrade by contacting the [GlueX team](https://t.me/+_VmO_gIrNjxiZWE0). Higher tiers come with service-level agreements (SLAs), priority support, and custom integration guidance.
+
+> **Note:** To ensure platform stability, GlueX enforces stricter rate limits on high-computation endpoints like `/v1/quote`. The `/v1/price` endpoint is designed to be used frequently for polling and should be the primary endpoint used in the frontend of dApps.
