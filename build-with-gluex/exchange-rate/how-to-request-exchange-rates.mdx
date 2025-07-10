@@ -1,0 +1,90 @@
+---
+title: "How to Request Exchange Rates"
+description: "Step-by-step guide to fetch exchange rates for token pairs using the GlueX Exchange Rates API."
+---
+
+## Overview
+
+This tutorial walks you through fetching on-chain exchange rates for any token pairs using the GlueX Exchange Rates API.
+
+## Step 1: Prepare Your Request
+
+The API expects a POST request with a JSON body specifying the token pairs and blockchains.
+
+```json
+[
+  {
+    "domestic_token": "tokenA-address",
+    "foreign_token": null,
+    "domestic_blockchain": "blockchain_id_1",
+    "foreign_blockchain": "blockchain_id_1"
+  },
+  {
+    "domestic_token": "tokenB-address",
+    "foreign_token": "tokenC-address",
+    "domestic_blockchain": "blockchain_id_2",
+    "foreign_blockchain": "blockchain_id_2"
+  }
+]
+```
+
+## Step 2: Make the Request
+
+### Using curl
+
+```bash
+curl -X POST "https://exchange-rates.gluex.xyz" \
+  -H "Content-Type: application/json" \
+  -d '[{"domestic_token": "tokenA-address", "foreign_token": null, "domestic_blockchain": "blockchain_id_1", "foreign_blockchain": "blockchain_id_1"}, {"domestic_token": "tokenB-address", "foreign_token": "tokenC-address", "domestic_blockchain": "blockchain_id_2", "foreign_blockchain": "blockchain_id_2"}]'
+```
+
+### Using Python
+
+```python
+import requests
+import json
+
+url = "https://exchange-rates.gluex.xyz"
+data = [
+    {
+        "domestic_token": "tokenA-address",
+        "foreign_token": None,
+        "domestic_blockchain": "blockchain_id_1",
+        "foreign_blockchain": "blockchain_id_1",
+    },
+    {
+        "domestic_token": "tokenB-address",
+        "foreign_token": "tokenC-address",
+        "domestic_blockchain": "blockchain_id_2",
+        "foreign_blockchain": "blockchain_id_2",
+    }
+]
+headers = {"Content-Type": "application/json"}
+response = requests.post(url, headers=headers, data=json.dumps(data))
+print(response.json())
+```
+
+## Step 3: Handle the Response
+
+The response will contain a list of exchange rates for the requested token pairs.
+
+```json
+[
+  {
+    "domestic_token": "tokenA-address",
+    "price": 0.00010741495276069063,
+    "foreign_token": "blockchain_id_1_native-currency-address",
+    "domestic_blockchain": "blockchain_id_1",
+    "foreign_blockchain": "blockchain_id_1"
+  },
+  {
+    "domestic_token": "tokenB-address",
+    "price": 1.0013751780636744e-12,
+    "foreign_token": "tokenC-address",
+    "domestic_blockchain": "blockchain_id_2",
+    "foreign_blockchain": "blockchain_id_2"
+  }
+]
+```
+
+You're ready to integrate real-time exchange rates into your app!

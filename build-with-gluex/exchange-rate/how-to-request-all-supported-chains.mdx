@@ -1,0 +1,41 @@
+---
+title: "How to Request All Supported Chains"
+description: "Learn how to fetch a list of all blockchains supported by the GlueX Exchange Rates API."
+---
+
+## Overview
+
+This tutorial shows you how to get a list of all supported blockchains using the GlueX Exchange Rates API.
+
+## Step 1: Make the Request
+
+### Using curl
+
+```bash
+curl -X GET "https://exchange-rates.gluex.xyz/chains"
+```
+
+### Using Python
+
+```python
+import requests
+url = "https://exchange-rates.gluex.xyz/chains"
+response = requests.get(url)
+print(response.json())
+```
+
+## Step 2: Handle the Response
+
+The response will look like this:
+
+```json
+{
+  "chains": [
+    { "id": 1, "name": "Ethereum", "blockchain_id": "ethereum" },
+    { "id": 56, "name": "Binance Smart Chain", "blockchain_id": "bnb" },
+    { "id": 137, "name": "Polygon", "blockchain_id": "polygon" }
+  ]
+}
+```
+
+You can now display or use the supported chains in your application.
