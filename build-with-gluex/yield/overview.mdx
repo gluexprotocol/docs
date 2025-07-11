@@ -1,4 +1,76 @@
 ---
 title: "Overview"
-description: "Lorem ipsum"
+description: "GlueX Yield Router API - Dilution-aware framework for DeFi yield optimization across 17+ blockchain networks"
 ---
+
+# GlueX Yield Router API
+
+A yield router is a specialized API service that analyzes and calculates Annual Percentage Yield (APY) across different DeFi protocols and liquidity pools. The GlueX Yield Router API provides developers with accurate, dilution-aware yield calculations that account for the real impact of capital deployment on returns.
+
+## Supported Networks
+
+The API operates across 17 blockchain networks:
+
+- ethereum
+- base  
+- arbitrum
+- polygon
+- avalanche
+- bnb
+- optimism
+- gnosis
+- mantle
+- linea
+- scroll
+- taiko
+- blast
+- sonic
+- berachain
+- unichain
+- hyperevm
+
+## API Endpoints
+
+The service provides four core endpoints for yield analysis:
+
+- **`/historical-apy`** - Calculate historical APY based on past performance
+- **`/diluted-apy`** - Calculate APY accounting for new capital impact
+- **`/rewards-apy`** - Calculate APY from protocol incentives and rewards
+- **`/tvl`** - Get Total Value Locked for specific pools
+
+## The Challenge with Traditional APY
+
+Most DeFi platforms display Historic APY - a metric showing what current liquidity providers earn based on past performance. This approach has significant limitations:
+
+- **Backward-looking**: Reflects past earnings, not future potential
+- **Static assumptions**: Assumes fee generation remains constant regardless of pool size changes
+- **Dilution blindness**: Ignores how new capital affects existing returns
+- **Misleading for large deposits**: Particularly problematic when deposit size is significant relative to pool size
+
+Historic APY answers "What are current participants earning?" rather than "What will I earn if I deposit funds?"
+
+## Diluted APY Solution
+
+The API introduces Diluted APY - a forward-looking metric that calculates realistic yield projections after accounting for capital dilution.
+
+**Historic APY Formula:**
+Historic APY = (Daily Fees × 365) / Current TVL
+
+**Diluted APY Formula:**
+Diluted APY = (Daily Fees × 365) / (Current TVL + New Liquidity)
+
+This approach provides realistic projections that account for how new capital shares existing fee pools, considers the specific amount being deposited, and quantifies "APY slippage" from dilution effects.
+
+## Getting Started
+
+The API is designed for developers who need accurate yield calculations in their applications. Whether building portfolio management tools, yield aggregators, or institutional dashboards, the service provides the foundation for informed DeFi yield decisions.
+
+Begin with the installation guide to set up your environment and start making API calls within minutes.
+
+
+## Next Steps
+
+- **[Explore Features](/build-with-gluex/yield/features)**: Dive deep into the comprehensive capabilities and technical features of the Yield Router API
+- **[All About Diluted APY](/tutorials/yield/all-about-diluted-apy)**: Understand the mathematics and practical applications of diluted APY calculations
+
+The GlueX Yield Router API represents the next evolution in DeFi yield optimization—moving beyond misleading metrics to provide actionable, dilution-aware intelligence for sophisticated capital allocation strategies.

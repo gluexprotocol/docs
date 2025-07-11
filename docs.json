@@ -112,7 +112,8 @@
           {
             "group": "Yield",
             "pages": [
-              "build-with-gluex/yield/overview"
+              "build-with-gluex/yield/overview",
+              "build-with-gluex/yield/features"
             ]
           },
           {
@@ -203,6 +204,12 @@
             "group": "DeFi Tutorials",
             "pages": [
               "tutorials/defi/deposit-to-a-lending-vault"
+            ]
+          },
+          {
+            "group": "Yield Tutorials",
+            "pages": [
+              "tutorials/yield/all-about-diluted-apy"
             ]
           }
         ]

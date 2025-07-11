@@ -1,0 +1,143 @@
+---
+title: "All about Diluted APY"
+description: "Understanding dilution-aware yield calculations and their critical importance for accurate DeFi returns"
+---
+
+# Understanding Diluted APY
+
+Diluted APY is a forward-looking metric that calculates realistic yield projections by accounting for how new capital affects existing returns in DeFi pools. Unlike traditional Historic APY, it provides honest expectations of what you will actually earn after depositing funds.
+
+## The Fundamental Problem
+
+Traditional DeFi platforms display Historic APY - showing what existing liquidity providers currently earn. This creates misleading expectations because it assumes your new capital won't affect the pool's dynamics. In reality, when you deposit funds, you're sharing the same fee pool with more participants, diluting everyone's returns.
+
+**Historic APY Formula:**
+Historic APY = (Daily Fees × 365) / Current TVL
+
+This answers: "What are existing participants earning today?"
+
+**Diluted APY Formula:**
+Diluted APY = (Daily Fees × 365) / (Current TVL + Your Deposit)
+
+This answers: "What will I actually earn after depositing my funds?"
+
+## Real-World Example: Large Pool Scenario
+
+### Current Pool State
+- **Current TVL**: $50,000,000
+- **Daily Fees Generated**: $8,219
+- **Historic APY**: 6.0%
+
+### Your Deposit: $5,000,000
+
+**What Traditional Platforms Show:**
+- Historic APY: 6.0%
+
+**What You Actually Get with Diluted APY:**
+- New TVL after your deposit: $55,000,000
+- Same daily fees: $8,219
+- Diluted APY: 5.45%
+
+### The Math Breakdown
+Historic APY Calculation:
+$8,219 × 365 ÷ $50,000,000 = 6.0%
+Diluted APY Calculation:
+$8,219 × 365 ÷ $55,000,000 = 5.45%
+APY Slippage:
+6.0% - 5.45% = 0.55%
+
+Your deposit represents 10% of the pool size, resulting in a 0.55% reduction from the advertised rate.
+
+## Extreme Example: Small Pool Impact
+
+### Small Pool State
+- **Current TVL**: $2,000,000
+- **Daily Fees**: $767
+- **Historic APY**: 14.0%
+
+### Your Large Deposit: $8,000,000
+
+**Traditional Platform Display:**
+- Historic APY: 14.0%
+
+**Diluted APY Reality:**
+- New TVL: $10,000,000
+- Same daily fees: $767
+- Diluted APY: 2.8%
+
+### The Impact
+APY Slippage: 14.0% - 2.8% = 11.2%
+
+Your deposit is 4x the original pool size, dramatically reducing the effective yield from 14.0% to 2.8%.
+
+## Why This Matters
+
+### Pool Size Relationship
+The impact of dilution depends heavily on your deposit size relative to the existing pool:
+
+- **Large deposit + Small pool**: Significant dilution effect
+- **Large deposit + Large pool**: Moderate dilution effect  
+- **Small deposit + Any pool**: Minimal dilution effect
+
+
+## Technical Implementation
+
+The GlueX Yield Router calculates diluted APY through:
+
+### Data Collection
+1. **Current Pool Metrics**: TVL, daily fee generation, protocol parameters
+2. **Pool Validation**: Ensure pool exists and is active
+3. **Token Verification**: Confirm input token matches pool assets
+
+### Calculation Process
+1. **Base Analysis**: Extract current daily fee generation rate
+2. **Dilution Modeling**: Add your proposed deposit to total pool value
+3. **Rate Calculation**: Apply same fees to new total pool size
+4. **Result Generation**: Present diluted APY with comparison context
+
+### Advanced Pool Types
+
+**Concentrated Liquidity Pools**
+For pools with concentrated liquidity positions:
+- Fee distribution across active price ranges
+- Position overlap effects on individual returns
+- Tick-level analysis for precise calculations
+
+## When Diluted APY Matters Most
+
+### High-Impact Scenarios
+- **Large deposits**: More than 5% of current pool TVL
+- **Small pools**: Total value locked under $10 million
+- **Concentrated positions**: Narrow liquidity ranges in AMMs
+
+### Medium-Impact Scenarios
+- **Moderate deposits**: 1-5% of existing pool TVL
+- **Mid-size pools**: $10-100 million total value locked
+
+### Low-Impact Scenarios
+- **Small deposits**: Less than 1% of pool TVL
+- **Large pools**: Over $100 million total value locked
+- **Highly distributed pools**: Many small participants
+
+## Calculation Accuracy
+
+### Validation
+- Cross-reference with historical pool performance
+- Monitor actual results against projections
+- Adjust expectations for volatile market conditions
+
+## Integration Benefits
+
+- **Honest Yield Expectations**: Provide realistic APY projections that account for capital dilution effects, ensuring accurate return forecasts rather than misleading historical snapshots.
+
+- **Informed Decision Making**: Enable better capital allocation decisions through transparent calculations that reveal true yield implications before deployment.
+
+- **Cross-Pool Comparisons**: Facilitate accurate opportunity assessment across different protocols and chains with standardized dilution-aware metrics.
+
+- **Large Capital Optimization**: Support institutional-grade deployments with precise projections for substantial capital amounts, including risk assessment and treasury management capabilities.
+
+- **Sophisticated Allocation Strategies**: Enable advanced algorithms and portfolio optimization through comprehensive yield analysis across multiple DeFi protocols and networks.
+
+- **Performance Monitoring**: Track actual results against realistic benchmarks rather than inflated historical metrics, improving long-term strategy refinement.
+
+Diluted APY transforms yield analysis from misleading historical snapshots into realistic forward-looking projections, enabling better decision-making in DeFi capital allocation.RetryV
