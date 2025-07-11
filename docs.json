@@ -72,7 +72,13 @@
           {
             "group": "Reference",
             "pages": [
-              "documentation/references/contracts",
+              {
+                "group": "Contracts",
+                "pages": [
+                  "documentation/references/router-v1",
+                  "documentation/references/router-v1.1"
+                ]
+              },
               "documentation/references/modules",
               "documentation/references/supported-networks",
               "documentation/references/audit-and-security",
@@ -95,12 +101,11 @@
             "group": "Router",
             "pages": [
               "build-with-gluex/router/overview",
-              "build-with-gluex/router/api_endpoints",
-              "build-with-gluex/router/request_response_format",
-              "build-with-gluex/router/advanced_features",
-              "build-with-gluex/router/fee_structure",
-              "build-with-gluex/router/api_tiers_limits",
-              "build-with-gluex/router/getting_started"
+              "build-with-gluex/router/api-endpoints",
+              "build-with-gluex/router/request-response-format",
+              "build-with-gluex/router/advanced-features",
+              "build-with-gluex/router/fee-structure",
+              "build-with-gluex/router/api-tiers-limits"
             ]
           },
           {
@@ -189,6 +194,10 @@
         "tab": "Guides",
         "groups": [
           {
+            "group": "Router API",
+            "pages": ["guides/router/getting-started"]
+          },
+          {
             "group": "Exchange Rate",
             "pages": [
               "guides/exchange-rate/how-to-request-exchange-rates",
@@ -203,7 +212,8 @@
           {
             "group": "DeFi Tutorials",
             "pages": [
-              "tutorials/defi/deposit-to-a-lending-vault"
+              "tutorials/defi/deposit-to-a-lending-vault",
+              "tutorials/defi/swap-native-tokens"
             ]
           },
           {
