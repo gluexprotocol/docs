@@ -3,3 +3,138 @@ title: "Integrate GlueX widget with Rainbowkit"
 sidebarTitle: "Widget <> Rainbowkit"
 description: "Learn how to integrate GlueX widget into your Rainbowkit application enabling users to perform swaps, bridge assets, lend, stake, zap and swidge directly within your Rainbowkit application"
 ---
+
+GlueX Widget is fully compatible with Rainbowkit applications and requires minimal configuration for smooth integration. This guide demonstrates how to integrate the widget specifically with Rainbowkit + Next.js.
+
+Due to the nature of server side rendering (SSR) in Next and how different wallet libraries manage their connections to wallet extensions,
+the widget needs to be specifically rendered on the client side. To achieve this, make use of the 'use client' directive, which ensures that the
+widget component is only rendered in the client side environment.
+
+### App Router
+
+With the App Router, Next.js primarily renders components on the server. To ensure the GlueX widget is rendered exclusively on the client, you'll use the `"use client"` directive and a `ClientSideRender` component
+
+<CodeGroup>
+
+```tsx Widget.tsx
+"use client";
+
+import React from "react";
+import { type WidgetConfigPartialProps } from "@gluex/widget";
+import { GlueXWidget, WidgetSkeleton } from "@gluex/widget";
+
+export const Widget = () => {
+  const config: WidgetConfigPartialProps["config"] = React.useMemo(() => {
+    return {
+      integrator: "",
+      apiKey: "",
+
+      // ... rest of the widget configuration
+      // Example:
+      // appearance: 'dark',
+      // theme: {
+      //   container: {
+      //     boxShadow: '0px 8px 32px rgba(0, 0, 0, 0.08)',
+      //     borderRadius: '16px',
+      //   },
+      // },
+    };
+  }, []);
+
+  return (
+    <ClientSideRender fallback={<WidgetSkeleton config={config} />}>
+      <GlueXWidget config={config} />
+    </ClientSideRender>
+  );
+};
+```
+
+```tsx ClientSideRender.tsx
+"use client";
+
+import React from "react";
+
+export const ClientSideRender: React.FC<ClientSideRenderProps> = ({
+  children,
+  fallback = null,
+}) => {
+  const [hydrated, setHydrated] = React.useState(false);
+
+  React.useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  return hydrated ? <>{children}</> : <>{fallback}</>;
+};
+```
+
+</CodeGroup>
+
+### Pages Router
+
+If you are using the traditional Pages Router, you need to use the dynamic import feature with `ssr: false` to import the widget dynamically
+
+<CodeGroup>
+
+```tsx Widget.tsx
+import dynamic from "next/dynamic";
+
+const GlueXWidget = dynamic(
+  () => import("@gluex/widget").then((mod) => mod.GlueXWidget),
+  {
+    loading: () => <div>Loading...</div>,
+    ssr: false,
+  }
+);
+
+export const Widget = () => {
+  const config: WidgetConfigPartialProps["config"] = React.useMemo(() => {
+    return {
+      integrator: "",
+      apiKey: "",
+
+      // ... rest of the widget configuration
+      // Example:
+      // appearance: 'dark',
+      // theme: {
+      //   container: {
+      //     boxShadow: '0px 8px 32px rgba(0, 0, 0, 0.08)',
+      //     borderRadius: '16px',
+      //   },
+      // },
+    };
+  }, []);
+
+  return <GlueXWidget config={config} />;
+};
+```
+
+</CodeGroup>
+
+### Usage in Your App
+
+You can now import and use the widget component in your Rainbowkit application
+
+```tsx app/page.tsx
+"use client";
+
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import type { NextPage } from 'next';
+import { Widget } from './Widget';
+
+const Home: NextPage = () => {
+  return (
+    <div>
+      <ConnectButton />
+      <Widget />
+    </div>
+  );
+};
+
+export default Home;
+```
+
+<Note>
+  Check out [GlueX's Widget Studio](https://studio.gluex.xyz/playground) to
+  customize and integrate the widget
+</Note>
