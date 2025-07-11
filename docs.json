@@ -133,6 +133,7 @@
                   "build-with-gluex/widget/integration/widget-nextjs",
                   "build-with-gluex/widget/integration/widget-react",
                   "build-with-gluex/widget/integration/widget-vite",
+                  "build-with-gluex/widget/integration/widget-vue",
                   "build-with-gluex/widget/integration/widget-gatsby",
                   "build-with-gluex/widget/integration/widget-rainbowkit"
                 ]
