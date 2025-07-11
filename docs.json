@@ -185,6 +185,18 @@
         ]
       },
       {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Exchange Rate",
+            "pages": [
+              "guides/exchange-rate/how-to-request-exchange-rates",
+              "guides/exchange-rate/how-to-request-all-supported-chains"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Tutorials",
         "groups": [
           {
