@@ -1,0 +1,74 @@
+---
+title: "Request and Response Format"
+description: "This document outlines the structure of requests and responses for the Router API. It covers both common fields applicable across endpoints and endpoint-specific fields."
+---
+
+## Request Parameters
+
+The following parameters may be included in the request payload for `/v1/price` and `/v1/quote` endpoints.
+
+| Name                 | Type            | Required     | Description                                                  |
+|----------------------|------------------|---------------|--------------------------------------------------------------|
+| `chainID`            | string           | Conditional   | Human-readable name of the target chain (e.g., `ethereum`)   |
+| `networkID`          | string/integer   | Conditional   | Numerical chain ID (e.g., `1` for Ethereum)                  |
+| `inputToken`         | string           | ✅             | ERC-20 token address to be sold                              |
+| `outputToken`        | string           | ✅             | ERC-20 token address to be bought                            |
+| `inputAmount`        | string/integer   | Conditional   | Amount of input token (used for SELL orders)                |
+| `outputAmount`       | string/integer   | Conditional   | Desired amount of output token (used for BUY orders)        |
+| `orderType`          | string           | Conditional   | Type of order: `BUY` or `SELL`                               |
+| `userAddress`        | string           | ✅             | Initiator's wallet address                                   |
+| `outputReceiver`     | string           | ✅             | Address to receive the output token                          |
+| `uniquePID`          | string           | ✅             | Partner ID for analytics and attribution                     |
+| `computeEstimate`    | boolean          | Optional      | Enable simulation (default: true for `/v1/quote`)           |
+| `computeStable`      | boolean          | Optional      | Include USD value metadata in response                       |
+| `surgeProtection`    | boolean          | Optional      | Enable or disable Surge Protection (default: false)          |
+| `isPartialFill`      | boolean          | Optional      | Allow partial fill swaps (default: false)                   |
+| `isPermit2`          | boolean          | Optional      | Use Permit2 for allowance approvals                          |
+| `slippage`           | string/integer   | Optional      | Maximum slippage allowed (in basis points)                  |
+| `partnerFee`         | string/integer   | Optional      | Fee in bps applied to output                                 |
+| `partnerAddress`     | string           | Conditional   | EOA to receive partner fee and surplus                      |
+| `modulesFilter`      | array            | Optional      | Restrict routing to specified liquidity modules              |
+| `activateSurplusFee` | boolean          | Optional      | Enable surplus sharing contract                             |
+
+
+## Common Response Fields
+
+The following fields are returned in both `/v1/price` and `/v1/quote` responses.
+
+| Field                   | Type     | Description                                         |
+|-------------------------|----------|-----------------------------------------------------|
+| `inputToken`            | string   | ERC-20 address of input token                       |
+| `outputToken`           | string   | ERC-20 address of output token                      |
+| `feeToken`              | string   | Token used to pay any applicable fees               |
+| `inputSender`           | string   | Address initiating the trade                        |
+| `outputReceiver`        | string   | Address receiving the output                        |
+| `inputAmount`           | string   | Original input amount                               |
+| `outputAmount`          | string   | Expected output amount                              |
+| `partnerFee`            | string   | Amount of fee allocated to partner                  |
+| `routingFee`            | string   | GlueX's routing fee (typically zero)                |
+| `effectiveInputAmount`  | string   | Actual used input in the swap (for partial fills)   |
+| `effectiveOutputAmount` | string   | Actual received output after fees and routing       |
+| `minOutputAmount`       | string   | Slippage-protected minimum output                   |
+| `liquidityModules`      | array    | Liquidity sources/modules used                      |
+| `isNativeTokenInput`    | boolean  | Indicates if native token (e.g., ETH) was used      |
+| `value`                 | string   | Value (in wei) sent with transaction (if applicable)|
+
+
+## Endpoint-Specific Response Fields
+
+### `/v1/price` Only
+
+| Field        | Type     | Description                                       |
+|--------------|----------|---------------------------------------------------|
+| `surgeValue` | integer  | Projected reverse loss estimate in percentage     |
+
+### `/v1/quote` Only
+
+| Field              | Type     | Description                                      |
+|--------------------|----------|--------------------------------------------------|
+| `calldata`         | string   | ABI-encoded transaction data                     |
+| `revert`           | boolean  | Indicates if trade would revert on-chain         |
+| `computationUnits` | integer  | Estimated gas cost                               |
+| `lowBalance`       | boolean  | True if user balance is insufficient             |
+| `blockNumber`      | integer  | Block number used during simulation              |
+| `simulation`       | object   | Detailed trace/debug object for advanced usage   |
