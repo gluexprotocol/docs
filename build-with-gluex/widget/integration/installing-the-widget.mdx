@@ -1,0 +1,65 @@
+---
+title: "Installing the GlueX widget"
+sidebarTitle: "General Installation"
+description: "Learn how to seamlessly integrate the GlueX Widget into your web application to enable powerful DeFi functionalities for your users"
+---
+
+The GlueX Widget provides a ready-to-use, customizable UI component that simplifies the integration of advanced DeFi operations (like token swaps, bridge, lend, stake, zap and swidge) directly into your application. This guide walks you through the general installation process, covering prerequisites and package installation
+
+## Prerequisites
+
+Before you begin installing the GlueX widget, please ensure you have the following in place:
+
+- **Integrator ID and API key**: You must have registered for and obtained your unique Integrator ID and API Key from the **[GlueX Developer Portal](https://portal.gluex.xyz)**. These credentials are essential for authenticating your API requests and for tracking your usage and any partner specific configurations (like fees)
+- **Node.js and package manager**: Ensure you have a recent version of Node.js installed on your system, along with its package manager (npm/yarn/pnpm/bun)
+
+## Installation
+
+### Install the package
+
+The GlueX widget is distributed as an npm package. It relies on `wagmi` and `@tanstack/react-query` as peer dependencies for managing blockchain interactions and data fetching, respectively.
+
+Use your preferred package manager to install the widget, SDK and their essential peer dependencies:
+
+<CodeGroup>
+
+```bash npm
+npm install wagmi @tanstack/react-query @gluex/widget @gluex/sdk
+```
+
+```bash yarn
+yarn add wagmi @tanstack/react-query @gluex/widget @gluex/sdk
+```
+
+```bash pnpm
+pnpm add wagmi @tanstack/react-query @gluex/widget @gluex/sdk
+```
+
+```bash bun
+bun add wagmi @tanstack/react-query @gluex/widget @gluex/sdk
+```
+
+</CodeGroup>
+
+### Update dependencies (if necessary)
+
+The widget utilizes `wagmi` and `@tanstack/react-query`. If your project already includes these packages, it is crucial to ensure they are updated to versions compatible with the GlueX widget to avoid conflicts or unexpected behavior
+
+> For comprehensive guidance on upgrading `wagmi` to its latest compatible version, please refer to the official [wagmi migration guide](https://wagmi.sh/react/migration-guide)
+
+## Next Steps
+
+Once the necessary packages are installed, the next crucial step is to integrate the GlueX Widget into your specific application framework. We provide dedicated guides to streamline this process for popular development environments:
+
+- [React Integration Guide](/build-with-gluex/widget/integration/integrate-widget-with-react)
+- [NextJS Integration Guide](/build-with-gluex/widget/integration/integrate-widget-with-nextjs)
+- [Vite Integration Guide](/build-with-gluex/widget/integration/integrate-widget-with-vite)
+- [Gatsby Integration Guide](/build-with-gluex/widget/integration/integrate-widget-with-gatsby)
+- [Rainbowkit Integration Guide](/build-with-gluex/widget/integration/integrate-widget-with-rainbowkit)
+- Vue Integration Guide (coming soon)
+
+Choose the guide that best matches your project's technical stack to proceed with the integration
+
+## Support
+
+If you have any questions, require assistance during installation or need further guidance on integrating, please join our our [official Telegram channel](https://t.me/+_VmO_gIrNjxiZWE0)

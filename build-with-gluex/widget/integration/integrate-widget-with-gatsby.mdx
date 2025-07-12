@@ -1,0 +1,74 @@
+---
+title: "Integrate GlueX widget with Gatsby"
+sidebarTitle: "Gatsby Installation"
+description: "Learn how to integrate the widget into your Gatsby application enabling users to perform swaps, bridge assets, lend, stake, zap and swidge directly within the application"
+---
+
+import ConfigurationAndCustomization from "/snippets/content/widget/configuration-and-customization.mdx";
+
+GlueX Widget is fully compatible with Gatsby applications and requires minimal configuration for smooth integration, offering a powerful, ready to use UI component for seamless DeFi interactions
+
+<Info>
+  For a complete working example, check out our full [Gatsby example
+  repository](https://github.com/gluexprotocol/gluex-examples/widget/gatsby-integration)
+</Info>
+
+### Prerequisites
+
+Before proceeding with gatsby specific integration, ensure you have completed the general installation steps outlined in the [General Installation](/build-with-gluex/widget/integration/installing-the-widget)
+
+### Integration
+
+Create a `Widget.tsx` file in your components directory to encapsulate the GlueX widget
+
+<CodeGroup>
+
+```tsx Widget.tsx
+import React from "react";
+
+import { GlueXWidget, type WidgetConfigPartialProps } from "@gluex/widget";
+
+export const Widget = () => {
+  const config: WidgetConfigPartialProps["config"] = React.useMemo(() => {
+    return {
+      integrator: "",
+      apiKey: "",
+
+      // ... rest of the widget configuration
+      // Example:
+      // appearance: 'dark',
+      // theme: {
+      //   container: {
+      //     boxShadow: '0px 8px 32px rgba(0, 0, 0, 0.08)',
+      //     borderRadius: '16px',
+      //   },
+      // },
+    };
+  }, []);
+
+  return <GlueXWidget config={config} />;
+};
+```
+
+</CodeGroup>
+
+**Usage in your App**
+
+You can now import and use the widget component anywhere in your Gatsby application
+
+```tsx pages/index.tsx
+import { Widget } from "../components/Widget";
+
+function HomePage() {
+  return (
+    <div>
+      <h1>My DeFi Application</h1>
+      <Widget />
+    </div>
+  );
+}
+
+export default HomePage;
+```
+
+<ConfigurationAndCustomization />

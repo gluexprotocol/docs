@@ -136,13 +136,16 @@
               "build-with-gluex/widget/features",
               "build-with-gluex/widget/installation",
               {
-                "group": "Integration Now",
+                "group": "Integrate Now",
                 "pages": [
-                  "build-with-gluex/widget/integration/widget-nextjs",
-                  "build-with-gluex/widget/integration/widget-react",
-                  "build-with-gluex/widget/integration/widget-vite",
-                  "build-with-gluex/widget/integration/widget-gatsby",
-                  "build-with-gluex/widget/integration/widget-rainbowkit"
+                  "build-with-gluex/widget/integration/installing-the-widget",
+                  "build-with-gluex/widget/integration/integrate-widget-with-nextjs",
+                  "build-with-gluex/widget/integration/integrate-widget-with-react",
+                  "build-with-gluex/widget/integration/integrate-widget-with-vite",
+                  "build-with-gluex/widget/integration/integrate-widget-with-gatsby",
+                  "build-with-gluex/widget/integration/integrate-widget-with-vue",
+                  "build-with-gluex/widget/integration/integrate-widget-with-rainbowkit",
+                  "build-with-gluex/widget/integration/integrate-the-widget-as-iframe"
                 ]
               },
               "build-with-gluex/widget/configuration",
