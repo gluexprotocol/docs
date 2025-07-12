@@ -11,6 +11,8 @@ import ExchangeRateResponse from "/snippets/code/exchange-rate/response.mdx";
 
 Welcome to the GlueX Quickstart Guides! Whether you're a developer integrating GlueX into your platform or a partner looking to utilize our framework or embed our widget, these guides will help you get up and running quickly and efficiently
 
+GlueX provides a comprehensive suite of tools to simplify complex DeFi interactions:
+
 - **Router**: Bridge, swap, lend, stake and compose multistep flows in one call
 - **Exchange Rates**: Fetch real time pricing across chains
 - **Yield**: Discover and optimize yield values
@@ -22,6 +24,10 @@ Welcome to the GlueX Quickstart Guides! Whether you're a developer integrating G
 ## Router
 
 The Route API is a powerful and flexible automated pathfinding engine designed for developers to implement efficient onchain interaction logic and calculate optimal path between any two DeFi positions. Whether you’re swapping tokens, entering positions, adding liquidity or moving assets, the API provides everything needed for handling the complex routing logic automatically
+
+### Getting Your First Router Quote
+
+The first step in using the GlueX Router API is to generate a quote for a desired DeFi operation. This can be achieved by sending a POST request to the `/v1/quote` endpoint. It's recommended to start with the below example request and then explore more customization options in the [Router API Reference](/api-reference/router-api/post-quote)
 
 ### Sample Request
 
@@ -225,4 +231,3 @@ export const DeFiWidget = () => {
     Visual tool for generating theme and config JSON
   </Card>
 </CardGroup>
-

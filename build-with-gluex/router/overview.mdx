@@ -1,39 +1,57 @@
 ---
 title: "Overview"
-description: "The **Router API** is a versatile, high-performance tool designed to enable efficient and secure on-chain interactions across multiple blockchain networks. It provides developers with a robust solution to seamlessly integrate decentralized finance (DeFi) operations, including token swaps, lending, staking, yield farming, and more, into their decentralized applications (dApps)."
+description: ""
 ---
 
-## API Base URL
+The **Router API** is a versatile, high performance tool designed to enable efficient and secure onchain interactions across multiple blockchain networks. It provides developers with a robust solution to seamlessly integrate decentralized finance (DeFi) operations, including token swaps, lending, staking, yield farming and more, into the applications
+
+## Base URL
 
 All API endpoint requests are made relative to the following base URL:
 
 ```http
-https://router.gluex.xyz/
+https://router.gluex.xyz
 ```
 
+<Note>
+  Always ensure you are using the correct version (`/v1`) in your API calls for
+  the latest features and stability
+</Note>
 
 ## Key Features
 
-The GlueX Router API offers several advanced features designed to improve transaction efficiency, reduce risk, and provide transparency to end-users and integrators:
+The GlueX Router API offers several advanced features designed to improve transaction efficiency, reduce risk and provide transparency to end users and integrators:
 
-- **Multi-Chain Support**: Seamlessly operates across multiple supported blockchain networks.
-- **Comprehensive DeFi Protocol Integration**: Fully supports decentralized exchanges (DEXs), lending platforms, yield farming protocols, staking mechanisms, and more.
-- **Optimized Transaction Execution**: Configurations minimize transaction reversions and protect against Maximal Extractable Value (MEV).
-- **Rapid Response Times**: Average request round-trip time of the quote is approximately 500 milliseconds.
-- **Positive Slippage Rewards**: Any positive slippage is distributed among users, integrators and us.
-- **Dynamic, Transparent Fees**: We charge absolutely zero routing fees, ensuring complete transparency with no hidden costs or charges
+- **Multi Chain Support**: Seamlessly orchestrate complex DeFi operations across all [supported blockchain networks](/documentation/references/supported-networks) intelligently identifing optimal paths
+- **Comprehensive DeFi Protocol Integration**: Access unparalleled liquidity and functionality through deep integrations with a vast array of DeFi protocols ensuring maximum liquidity and opportunity, including:
+  - Decentralized Exchanges (eg: )
+  - Lending Platforms (eg: Aave, Compound)
+  - Yield Farming Protocols & Vaults (eg: )
+  - Staking (eg: )
+  - Bridging (eg: )
+- **Optimized Transaction Execution**: Our advanced routing engine meticulously crafts transaction paths to minimize costly reversions and actively protect against Maximal Extractable Value (MEV) attacks like front running and sandwich attacks ensuring users get the best possible execution
+- **Rapid Response Times**: Experience blazing fast performance with an average request round trip time of the quote is approximately 500 milliseconds, enabling highly responsive applications
+- **Positive Slippage Rewards**: Any positive slippage (ie, receiving more output than initially quoted) is intelligently and transparently distributed among the end users, integrating partner and us!
+- **Dynamic, Zero Routing Fees**: GlueX charges absolutely zero direct routing fees to the end user. Our revenue model is based on a small, transparent share of the positive slippage when it occurs, ensuring there are no hidden costs or charges. This aligns our incentives with providing the most optimal routes
 
-
-<CardGroup cols={1}>
-  <Card title="Try Out Now" icon="play" href="/api-reference/router-api/post-price">
-    Test the Router API instantly on your browser.
+<CardGroup cols={2}>
+  <Card
+    title="Try Out Now"
+    icon="play"
+    href="/api-reference/router-api/post-price"
+  >
+    Experience DeFi at it's finest. Test the Router API instantly directly in
+    your browser
+  </Card>
+  <Card title="Explore Guides" icon="rocket" href="/guides">
+    Dive into step by step guides and best practices for integrating the Router
+    API
   </Card>
 </CardGroup>
 
-
 ## Additional Documentation
 
-Refer to the following dedicated documents for detailed information on:
+To help you get the most out of the GlueX Router API, refer to the following dedicated sections for detailed information and advanced guidance:
 
 - [How to use API endpoints?](api-endpoints)
 - [What are the **Request and Response Formats**?](request-response-format)

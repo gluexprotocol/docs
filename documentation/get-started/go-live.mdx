@@ -3,3 +3,73 @@ icon: "computer-classic"
 title: "Go Live Checklist"
 description: ""
 ---
+
+# Preparing for Production
+
+Congratulations on building your DeFi application with GlueX!
+
+Before you launch your integration to a live audience, it's essential to follow a robust go live process. This checklist will guide you through the critical steps to ensure your application is secure, performant and ready for real world usage
+
+### Review Integrator Settings
+
+Before going live, verify all your GlueX account settings are configured for a production environment. This involves more than just a quick glance
+
+- **Access the Dashboard**: Log in to the [GlueX developer portal](http://portal.gluex.xyz/)
+- **Key Management**: Generate new and dedicated API keys for your production environment distinct from your development/testing keys and should be treated as highly sensitive
+- **Whitelist Domains**: Ensure your production server's domain or IP addresses are whitelisted for the API key (defaults to all domains)
+- **Billing and Payment**: Ensure your payment information is up to date and your chosen plan aligns with your expected production usage to prevent service interruptions
+
+### Secure the Keys
+
+Protecting your production API keys is paramount to your application's security
+
+- **Environment Variables**: Never hardcode API keys directly into your codebase. Use environment variables (eg: `GLUEX_API_KEY`) that are loaded securely at runtime
+- **Secret Management**: For enhanced security, consider using dedicated secret management services to store and retrieve your production keys
+- **Restrict Access**: Implement strict access controls, ensuring only authorized personnel and your production servers/services can access these keys
+- **Test Authentication**: After swapping to live keys, perform a basic API call to confirm successful authentication
+
+### Implement Information Capture
+
+Comprehensive logging and monitoring are crucial for diagnosing issues, tracking performance, and understanding user behavior in a live environment
+
+- **Detailed Logging**: Implement thorough logging for all requests and responses within your application (include request parameters, full response data, timestamps and any error messages for better debugging)
+- **Error Reporting**: Configure an error tracking system to automatically capture and alert you to any unhandled exceptions
+
+### Finalise the Plan
+
+Choosing the correct GlueX plan ensures you have the necessary capacity and features for your live application
+
+- **Estimate Usage**: Based on your testing and projected user base, accurately estimate your anticipated API call volume, transaction volume and feature requirements
+- **Review Pricing Tiers**: Familiarize yourself with GlueX's current pricing plans and their associated benefits (rate limits, dedicated support, advanced features)
+- **Select Appropriate Plan**: Choose the plan that best matches your estimated usage and business needs
+
+### Understand Rate Limits
+
+To maintain service stability, GlueX implements API rate limits. Understanding and planning for these is vital for uninterrupted operation.
+
+- **Review Limit Documentation**: Check the API documentation for the specific rate limits associated with your chosen production plan
+- **Implement Retry Logic**: Integrate retry mechanisms with exponential backoff to gracefully handles `429 Too Many Requests` errors by retrying calls after increasing intervals
+- **Monitor Usage**: Utilize the portal to track your current API usage against your rate limits
+
+### Rigorous Testing
+
+The final and most critical step is to perform comprehensive testing in an environment that mirrors your production setup as closely as possible
+
+- **Staging Environment**: Deploy your application to a staging environment that uses your API keys and infrastructure, but is isolated from real users
+- **End to End Testing**: Conduct thorough end to end tests covering all critical user flows:
+
+  - Happy Paths: Ensure all core functionalities (swaps, bridging, lending, etc) work as expected
+  - Edge Cases: Test with minimum, maximum values, unsupported tokens, low liquidity scenarios and various network conditions
+  - Error Handling: Verify that your application gracefully handles API errors, network issues and transaction failures
+
+- **Load and Stress Testing**: Simulate peak user traffic to ensure your application and its integration can handle the expected load without performance degradation or errors
+- **Monitor Testing**: Verify that your logging, monitoring, and alerting systems are functioning correctly during these tests
+- **Rollback Plan**: Have a clear rollback strategy in place in case any unforeseen issues arise during or after launch
+
+### Drop Us a Line!
+
+We're here to support your success. Let us know when you're going live and how we can help!
+
+- **Reachout**: Reach out to our partnership team or your dedicated account manager to inform us of your upcoming launch. This allows us to provide better support and potentially monitor your integration more closely during critical periods
+
+- **Share Your Success**: We love to see what our partners build! Share your live application with us, and we might feature it on our channels

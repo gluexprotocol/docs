@@ -1,0 +1,38 @@
+---
+title: "Partial Fill Order"
+sidebarTitle: "Partial Fill Order"
+description: ""
+---
+
+In scenarios characterized by low liquidity, fragmented markets or extremely unfavorable market conditions, attempting to execute a full swap with a large `inputAmount` can result in significant and often unacceptable slippage. The **Partial Fill Orders** feature addresses this by dynamically determining and executing only the optimal portion of a trade
+
+### How It Works
+
+Instead of forcing a full trade that might yield a poor outcome (or cause excessive slippage), the Router intelligently calculates the largest tradable portion that still meets efficient pricing
+
+- **Optimal portion calculation**: If the full inputAmount (for a `SELL` order) would cause the trade to exceed an acceptable slippage tolerance or result in an unprofitably high price impact, the router calculates the largest possible portion of the trade that can still be executed efficiently
+- The API response will then provide:
+  - **Suggested input amount**: the optimized, smaller amount of `inputToken` that can be efficiently traded
+  - **Expected output amount**: the amount of `outputToken` achievable with the suggested input
+
+### Example
+
+Imagine a user attempts to swap 1,000 USDC for a less liquid token. In a market with shallow or low liquidity for that specific pair, executing the full 1,000 USDC might cause 5% slippage, resulting in a poor exchange rate. With `isPartialFill: true`, the router might determine that only 730 USDC can be traded efficiently (eg: with 0.5% slippage). In this case, the quote response would suggest using 730 USDC as the `effectiveInputAmount` and provide the corresponding `effectiveOutputAmount`, allowing the user to execute the most efficient part of their desired trade
+
+### Configuration
+
+Partial Fill Orders are **disabled by default** to give integrators full control. You can enable it explicitly in your `/v1/price` or `/v1/quote` API request by setting the `isPartialFill` parameter to `true`:
+
+```json
+{
+  // ... other parameters
+  "isPartialFill": true
+}
+```
+
+### Benefits
+
+- **Reduces exposure to slippage**: Minimizes potential losses by avoiding transactions that would incur high slippage for the full amount
+- **Adapts to realtime market conditions**: Automatically adjusts trade size based on current liquidity and volatility, providing a more robust trading experience
+- **Maximizes trade efficiency without user intervention**: Ensures that trades are executed at the best possible price points available, even in challenging market environments, often without direct user intervention beyond the initial configuration
+- **Improved user experience**: Prevents failed transactions or surprisingly poor execution for users who might not be aware of underlying liquidity issue

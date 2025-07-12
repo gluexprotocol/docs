@@ -1,0 +1,52 @@
+---
+title: "Surge Protection"
+sidebarTitle: "Surge Protection"
+description: ""
+---
+
+**Surge Protection** is a built in pre trade safety mechanism designed to safeguard users from significant value loss during periods of shallow liquidity, extreme market volatility or abrupt price movements
+
+### How It Works
+
+Before executing a swap, the Router performs a rapid, hypothetical **reverse trade simulation**. This simulation instantaneously attempts to "sell back" the expected output token for the original input token, all within the context of the same block and without external market interference
+
+- **Simulation logic:** The router uses the current onchain state to estimate how much of the original `inputToken` a user would recover if they immediately tried to reverse the trade
+- **Threshold trigger:** If this estimated recovery amount falls below a predefined threshold (currently **90%** of the original `inputAmount`), the trade is deemed high risk and is automatically blocked by the router. This prevents the transaction from being broadcast onchain, saving the user from a potentially significant loss
+
+### Evaluation Criteria
+
+The Surge Protection mechanism evaluates a combination of factors to determine if a trade poses an unacceptable risk:
+
+- **Liquidity depth:** Assesses the available liquidity on the chosen routing path. Extremely shallow liquidity can make trades highly susceptible to price swings
+- **Price impact:** Analyzes the estimated price impact of the proposed trade on the affected liquidity pools
+- **Volatility within the block:** Detects sudden and significant price changes occurring within the current blockchain block, often indicative of front-running attempts or market manipulation
+
+### Default Threshold
+
+If the estimated reverse loss exceeds **10%** (meaning the recovered amount would be less than 90% of the original input), the trade is halted, and the API returns a `revert: true` flag and the specific error causing the Surge Protection activation
+
+### User Benefits
+
+Implementing Surge Protection directly translates to a safer and more trustworthy experience for the end users:
+
+- **Prevents sudden losses:** Acts as a shield against common DeFi pitfalls like front running (where malicious bots execute trades before and after a user's transaction to profit from price changes) or being the "exit liquidity" in illiquid pools
+- **Avoids adverse market conditions:** Protects users from executing trades when liquidity is insufficient or prices are highly volatile, which could lead to substantial value erosion
+- **Enhances trust and safety:** By proactively preventing potentially bad trades, Surge Protection significantly enhances user confidence in your application and on us!
+
+### Configuration
+
+Surge Protection is **disabled by default** to give integrators full control. You can enable it explicitly in your `/v1/quote` API request by setting the `surgeProtection` parameter to `true`:
+
+```json
+{
+  // ... other parameters
+  "surgeProtection": true
+}
+```
+
+<Note>
+  When enabled, any trade exceeding the 10% reverse loss threshold will cause
+  the `/v1/quote` endpoint to return `revert: true` and will not provide
+  executable calldata. Your application should gracefully handle this condition
+  and inform the user
+</Note>

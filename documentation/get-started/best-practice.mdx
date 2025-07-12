@@ -3,3 +3,192 @@ icon: "circle-check"
 title: "Best Practices"
 description: ""
 ---
+
+To maximize the performance, security and reliability of your application when integrating with GlueX, we recommend adhering to the following best practices
+
+## Key Management and Security
+
+Secure handling of your API keys is paramount to protect your application and users
+
+<AccordionGroup>
+  <Accordion title="Never Hardcode API Keys">
+    Store your API keys in environment variables or a secure secret management
+    service (eg: AWS Secrets Manager, Google Cloud Secret Manager, HashiCorp
+    Vault, Kubernetes Secrets). Avoid committing them directly into your source
+    code, especially in public repositories
+  </Accordion>
+  <Accordion title="Use Dedicated Keys">
+    Always use separate API keys for development, staging and production
+    environments. This limits the blast radius in case a key is compromised
+  </Accordion>
+  <Accordion title="Restrict Access (Principle of Least Privilege)">
+    Grant access to API keys only to the necessary applications and personnel.
+    Utilize the IP whitelisting or domain whitelisting feature for your API keys
+    to restrict where your keys can be used
+  </Accordion>
+  <Accordion title="Rotate Keys Periodically">
+    Implement a routine for periodically rotating your API keys to minimize the
+    risk associated with long lived credentials
+  </Accordion>
+  <Accordion title="Monitor API Key Usage">
+    Keep an eye on your API key usage statistics in the GlueX portal to detect
+    any unusual activity or surges
+  </Accordion>
+</AccordionGroup>
+
+### Error Handling and Resiliency
+
+Building a resilient application means anticipating and gracefully handling potential failures
+
+<AccordionGroup>
+  <Accordion title="Error Handling">
+    Always check the response for errors from the API calls. Do not assume
+    success. Log error codes and messages for debugging
+  </Accordion>
+  <Accordion title="Retry Logic with Exponential Backoff">
+    For transient network issues or rate limit (`429 Too Many Requests`) errors,
+    implement retry logic. Use an exponential backoff strategy (eg: wait 1s,
+    then 2s, then 4s, etc, with a maximum number of retries) to avoid
+    overwhelming the API and allow it to recover
+  </Accordion>
+  <Accordion title="Handle Insufficient Tokens/Approvals">
+    For transaction-related APIs (like Router), ensure your application checks
+    for sufficient user token balances and necessary ERC20 token approvals
+    *before* attempting a transaction. Provide clear feedback to the user if
+    these prerequisites are not met
+  </Accordion>
+  <Accordion title="User Friendly Error Messages">
+    Translate technical API error messages into clear, actionable and user
+    friendly messages for your end users
+  </Accordion>
+  <Accordion title="Fallback Mechanisms">
+    Consider implementing fallback mechanisms for critical operations if the API
+    is temporarily unavailable or returns an unexpected error
+  </Accordion>
+</AccordionGroup>
+
+### Performance and Efficiency
+
+Optimize your integration for speed and resource utilization
+
+<AccordionGroup>
+  <Accordion title="Batch Requests">
+    For APIs that support it (eg: Exchange Rates API allows up to 25 pairs per
+    call), batch multiple requests into a single API call to reduce network
+    overhead and improve efficiency
+  </Accordion>
+  <Accordion title="Cache Data Strategically">
+    Cache static or infrequently changing data (eg: supported chains, token
+    lists) on your application's side to reduce redundant API calls. Implement
+    appropriate cache invalidation strategies
+  </Accordion>
+  <Accordion title="Optimize API Calls">
+    Only request the data you need. If an API allows for partial responses or
+    specific field selection, use it to minimize data transfer size
+  </Accordion>
+  <Accordion title="Preflight Checks for Transactions">
+    Before prompting a user to sign a transaction, use the price's simulation
+    capabilities to estimate gas, check for potential errors (eg: slippage,
+    insufficient liquidity), and provide an accurate preview to the user
+  </Accordion>
+</AccordionGroup>
+
+### User Experience and Transparency
+
+A good user experience builds trust and encourages adoption
+
+<AccordionGroup>
+  <Accordion title="Provide Clear Transaction Details">
+    For any operation involving onchain transactions, clearly display all
+    relevant details to the user before they confirm: input/output tokens,
+    amounts, estimated gas fees, estimated slippage and the destination
+    chain/address
+  </Accordion>
+  <Accordion title="Realtime Feedback">
+    Offer realtime feedback on transaction status (pending, confirmed, failed)
+    and update UI elements accordingly
+  </Accordion>
+  <Accordion title="Gas Fee Transparency">
+    Always inform users about estimated gas fees upfront. Allow users to
+    potentially adjust gas settings if your application supports it
+  </Accordion>
+  <Accordion title="Slippage Control">
+    If using swap or routing features, provide users with the option to set
+    their preferred slippage tolerance, and clearly warn them if the estimated
+    slippage is high
+  </Accordion>
+  <Accordion title="Explain Complexities">
+    For multi-step operations or novel DeFi interactions (eg: vault entries,
+    staking), provide clear explanations or tooltips to help users understand
+    what's happening
+  </Accordion>
+</AccordionGroup>
+
+### Security
+
+Beyond API key security, ensure your overall application adheres to security best practices
+
+<AccordionGroup>
+  <Accordion title="Input Validation">
+    Always validate and sanitize all user inputs before sending them to GlueX
+    APIs. This helps prevent injection attacks and unexpected behavior
+  </Accordion>
+  <Accordion title="Protect Private Keys">
+    If your application handles private keys (eg: backend signing), ensure they
+    are stored and used in a highly secure, isolated environment (eg: Hardware
+    Security Module (HSM), secure enclaves)
+  </Accordion>
+  <Accordion title="Regular Security Audits">
+    Conduct regular security audits and penetration testing of your application,
+    especially before major releases or after significant architectural changes
+  </Accordion>
+  <Accordion title="Stay Updated">
+    Keep your GlueX SDKs, libraries and dependencies up to date to benefit from
+    the latest features, performance improvements and security patches
+  </Accordion>
+  <Accordion title="Compliance">
+    Understand and adhere to any relevant regulatory compliance requirements
+    (eg: KYC/AML for specific use cases) that might apply to your application's
+    operations
+  </Accordion>
+</AccordionGroup>
+
+### Monitoring and Logging
+
+Robust monitoring and logging are your eyes and ears in production
+
+<AccordionGroup>
+  <Accordion title="Logging">
+    Log all the requests and responses, including timings, status codes and
+    relevant request/response bodies. This is invaluable for debugging and post
+    mortem analysis
+  </Accordion>
+  <Accordion title="Structured Logging">
+    Use structured logging (eg: JSON logs) for easier parsing and analysis by
+    automated tools
+  </Accordion>
+  <Accordion title="Alerting">
+    Set up alerts for critical metrics: * High error rates (eg: 5xx responses,
+    transaction failures) * API rate limit nearly exhausted * Unexpected latency
+    spikes * Discrepancies in data (eg: prices, balances)
+  </Accordion>
+</AccordionGroup>
+
+### Deployment
+
+Streamline your development process for efficiency and reliability
+
+<AccordionGroup>
+  <Accordion title="Automated Testing">
+    Implement unit, integration and end to end tests for your integration to
+    catch regressions early and ensure correct functionality
+  </Accordion>
+  <Accordion title="CI/CD Pipelines">
+    Utilize Continuous Integration/Continuous Deployment pipelines to automate
+    testing, building and deployment, ensuring consistent and reliable releases
+  </Accordion>
+  <Accordion title="Staging Environment">
+    Maintain a dedicated staging environment that mirrors your production setup
+    for final testing before deployment to live users
+  </Accordion>
+</AccordionGroup>

@@ -1,17 +1,21 @@
 ---
 title: "Router v1"
-description: "The GluexRouter smart contract provides versatile functionality for routing tokens, collecting fees and executing onchain interactions through a structured interface. This contract is designed for high security and usability, ensuring strict adherence to routing and slippage rules."
+description: ""
 ---
+
+The `GluexRouter` smart contract (version 1) facilitates secure and efficient execution of complex DeFi operations. It provides versatile functionality for routing tokens, collecting protocol fees and executing diverse onchain interactions via a structured interface. The contract prioritizes high security and usability, ensuring strict adherence to predefined routing and slippage rules
 
 ### Deployment
 
-The GluexRouter contract is deployed at the following address on [chains](https://router.gluex.xyz/liquidity) we support: `0x6Ec7612828B776cC746fe0Ee5381CC93878844f7`
+The `GluexRouter-v1` contract is deployed at the following address on the [supported chains](/documentation/references/supported-networks) by GlueX:
+
+**Contract Address**: `0x6Ec7612828B776cC746fe0Ee5381CC93878844f7`
 
 ### Functions
 
 #### Swap
 
-Executes a token routing operation using a specified executor and interaction data
+Executes a token routing operation using a specified `IExecutor` contract and predefined interaction data. This function is the primary entry point for orchestrating multi-step DeFi flows
 
 **Function Signature**
 
@@ -47,7 +51,7 @@ function swap(
 
 #### Routed
 
-Emitted when a routing operation is completed
+Emitted upon the successful completion of a token routing operation
 
 **Event Signature**
 

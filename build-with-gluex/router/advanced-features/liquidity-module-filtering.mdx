@@ -1,0 +1,49 @@
+---
+title: "Liquidity Module Filtering"
+sidebarTitle: "Liquidity Module Filtering"
+description: ""
+---
+
+The **modulesFilter** is an advanced configuration option that allows developers to precisely control which underlying DEX protocols, lending platforms or other liquidity sources (referred to as [modules](/documentation/references/modules)) should considered when constructing a routing path
+
+### How It Works
+
+By including an array of specific module identifiers in your request, you instruct the routing engine to limit the search space and consider liquidity from these whitelisted sources. Any liquidity available from modules not present in your `modulesFilter` array will be ignored during route construction
+
+<Note>
+  Each integrated protocol or liquidity source within GlueX has a unique
+  identifier (eg: "uniswap_v3", "aave_v3", "curve_stable_plain", etc). You can
+  find a comprehensive list of supported modules and their identifiers on the
+  [liquidity modules](/documentation/references/modules) page or
+  [here](https://router.gluex.xyz/liquidity)
+</Note>
+
+### Configuration
+
+To filter liquidity modules, include an array of desired module identifiers in your `/v1/price` or `/v1/quote` request payload
+
+```json
+{
+  // ... other parameters
+  "modulesFilter": ["module_1", "module_2"]
+}
+```
+
+In this example, the router would only consider paths involving `module_1` and `module_2` liquidity, even if other more optimal routes existed on different protocols
+
+### Use Case
+
+This feature is particularly valuable for projects that require fine grained control over their DeFi integrations:
+
+- **Protocol restriction**: Directly restrict routing to only a predefined set of preferred protocols (eg: for compliance reasons, specific security postures or brand alignment)
+- **Avoiding specific sources**
+- **Avoid using specific liquidity pools or protocols**
+- **Compliance and Regulatory constraints**: Meet internal or external compliance policies that mandate interactions only with approved liquidity sources
+- **Custom strategies**: Implement advanced strategies where specific liquidity pools are favored or avoided based on institutional preferences or unique market analyses
+
+### Benefits
+
+- **Provides greater control**: Offers unparalleled control over the routing behavior, allowing you to tailor the integration precisely to your application's needs
+- **Supports whitelisted integrations**: Facilitates integration with whitelisted or pre approved liquidity sources, which is critical for institutional or regulated environments
+- **Enables custom strategies**: Unlocks the ability to implement unique trade strategies that might prioritize certain protocols over others, even if they aren't always the absolute cheapest
+- **Enhanced auditability**: By narrowing down the potential sources, it can simplify the auditing process of your application's DeFi interactions

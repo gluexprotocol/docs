@@ -1,29 +1,34 @@
 ---
 title: "API Endpoints"
-description: "This section outlines the primary endpoints provided by the Router API. These endpoints are used to fetch pricing estimates and generate transaction calldata for on-chain execution."
+description: "This section outlines the primary endpoints (fetch pricing estimates and generate transaction calldata) provided by the Router API"
 ---
 
+The GlueX Router API provides a powerful and flexible interface for interacting with decentralized finance protocols. This section outlines the core endpoints you'll use to fetch real time pricing estimates and generate the necessary transaction calldata for seamless onchain execution
+
 > **Note:**
-> It is highly recommended to call the `price` endpoint before invoking the `quote` endpoint. This pattern is especially critical when building dApps. The `price` endpoint can be polled periodically (e.g., every few seconds) to provide users with real-time pricing information. Once the user approves the router contract and confirms the intention to swap, the `quote` endpoint should be called to retrieve the final calldata for on-chain execution.
+> It is highly recommended to call the `price` endpoint before invoking the `quote` endpoint. This pattern is especially critical when building applications. The `price` endpoint can be polled periodically (eg: every few seconds) to provide users with realtime pricing information. Once the user approves the router contract and confirms the intention to swap, the `quote` endpoint should be called to retrieve the final calldata for onchain execution
 >
-> This architecture reduces unnecessary load on the quote infrastructure and ensures accurate, timely user interactions. Furthermore, GlueX plans to introduce market maker integrations on the `quote` endpoint, which will enhance price discovery and further optimize rate limits for this endpoint.
+> This architecture reduces unnecessary load on the quote infrastructure and ensures accurate, timely user interactions. Furthermore, GlueX plans to introduce market maker integrations on the `quote` endpoint, which will enhance price discovery and further optimize rate limits for this endpoint
 
-## POST /v1/price
+## POST `/v1/price`
 
-Returns a **price estimate** for a token swap. This endpoint is intended for off-chain estimation and does not include calldata or simulation metadata.
+Returns a **price estimate** for a token swap. This endpoint is intended for off chain estimation and does not include calldata or simulation metadata
 
-### Description
+**Description**
+
 - Provides estimated input/output amounts
 - Supports partial fill logic
 
-### Example Request
+**Example Request**
+
 ```http
 POST /v1/price
 x-api-key: your-api-key
 Content-Type: application/json
 ```
 
-#### Request Body (Example)
+**Request Body (Example)**
+
 ```json
 {
   "chainID": "ethereum",
@@ -36,30 +41,33 @@ Content-Type: application/json
 }
 ```
 
-### Response Fields
-- `inputAmount`, `outputAmount`
-- `effectiveInputAmount`, `effectiveOutputAmount`
-- `minOutputAmount`, `liquidityModules`
+<Note>
+  For detailed information on the **request and response formats**, refer the
+  section [here](/build-with-gluex/router/request-response-format)
+</Note>
 
 ---
 
 ## POST /v1/quote
 
-Returns a **price quote** along with **transaction calldata** for executing the trade on-chain.
+Returns a **price quote** along with **transaction calldata** for executing the trade onchain
 
-### Description
+**Description**
+
 - Includes all `price` endpoint fields
 - Adds transaction-specific fields such as `calldata` and `revert`
 - Simulation is enabled by default (`computeEstimate: true`)
 
-### Example Request
+**Example Request**
+
 ```http
 POST /v1/quote
 x-api-key: your-api-key
 Content-Type: application/json
 ```
 
-#### Request Body (Example)
+**Request Body (Example)**
+
 ```json
 {
   "chainID": "ethereum",
@@ -73,14 +81,20 @@ Content-Type: application/json
 }
 ```
 
-### Additional Response Fields for `quote`
-- `calldata`: ABI-encoded transaction data
+**Additional Response Fields for `quote`**
+
+- `calldata`: ABI encoded transaction data
 - `revert`: Boolean indicating if the trade would revert
 - `computationUnits`: Estimated gas
 - `lowBalance`: Indicates insufficient balance
 - `blockNumber`: Block number for simulation context
 - `simulation`: Raw trace/debug metadata
 
+<Note>
+  For detailed information on the **request and response formats**, refer the
+  section [here](/build-with-gluex/router/request-response-format)
+</Note>
+
 ---
 
-These endpoints form the foundation of GlueX Router’s programmable interface, providing flexible and secure trade execution capabilities across supported [blockchains](https://router.gluex.xyz/liquidity).
+These endpoints form the foundation of GlueX Router’s programmable interface, providing flexible and secure trade execution capabilities across supported [networks](/documentation/references/supported-networks)

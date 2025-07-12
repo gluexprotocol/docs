@@ -1,56 +1,64 @@
 ---
 title: "Router v1.1"
-description: "The GluexRouter smart contract provides efficient and optimized functionality for routing tokens, collecting fees and executing onchain interactions through a structured interface."
+description: ""
 ---
 
-## Deployment
+The `GluexRouter` smart contract (version 1.1) represents an optimized iteration of our routing infrastructure. It provides enhanced functionality for highly efficient token routing, dynamic fee collection and the precise execution of onchain interactions through a refined, structured interface. This version introduces advanced mechanisms for surplus and slippage sharing
 
-The `GluexRouter` contract is deployed at the following address:
+### Deployment
+
+The `GluexRouter-v1.1` contract is deployed at the following address:
 
 **Contract Address**: `0xaF6Dd700b655D100e56201b92B29BD7A9E406CEB`
 
-### Availability on Chains
+### Functions
 
-Check the chains where GlueX Router is currently available [here](https://router.gluex.xyz/liquidity). This provides up-to-date information about the supported chains.
+#### Swap
 
-## Functions
+Executes a token routing operation through an external `IExecutor` contract using a predefined set of interactions
 
-### `swap`
+**Function Signature**
 
-Executes a token routing operation through an external `IExecutor` contract using a predefined set of interactions.
+```solidity
+function swap(
+    IExecutor executor,
+    RouteDescription calldata desc,
+    Interaction[] calldata interactions
+) external payable returns (uint256 finalOutputAmount);
+```
 
-#### Parameters
+**Parameters**
 
-- `executor` (`IExecutor`): The executor contract responsible for processing interactions.
-- `desc` (`RouteDescription calldata`): A structured object containing input/output token information, fees, limits, and recipient addresses.
-- `interactions` (`Interaction[] calldata`): An array of interaction steps to be executed by the executor.
+- `executor` (`IExecutor`): The executor contract responsible for processing interactions
+- `desc` (`RouteDescription calldata`): A structured object containing input/output token information, fees, limits and recipient addresses
+- `interactions` (`Interaction[] calldata`): An array of interaction steps to be executed by the executor
 
-#### Returns
+**Returns**
 
-- `finalOutputAmount` (`uint256`): The final amount of output token received by the `outputReceiver` after fees and surplus/slippage sharing.
+- `finalOutputAmount` (`uint256`): The final amount of output token received by the `outputReceiver` after fees and surplus/slippage sharing
 
+**Reverts**
 
-### Reverts
+- `InvalidNativeTokenInputAmount`: If the ETH value sent does not match the expected input amount
+- `RoutingFeeTooHigh`: If `desc.routingFee` exceeds the maximum allowed fee (`_MAX_FEE`)
+- `RoutingFeeTooLow`: If `desc.routingFee` is below the minimum required fee (`_MIN_FEE`)
+- `PartnerSurplusShareTooHigh`: If `desc.partnerSurplusShare` exceeds `_MAX_PARTNER_SURPLUS_SHARE_LIMIT`
+- `ProtocolSurplusShareTooLow`: If `desc.protocolSurplusShare` is below `_MIN_PROTOCOL_SURPLUS_SHARE_LIMIT`
+- `PartnerSlippageShareTooHigh`: If `desc.partnerSlippageShare` exceeds `_MAX_PARTNER_SLIPPAGE_SHARE_LIMIT`
+- `ProtocolSlippageShareTooLow`: If `desc.protocolSlippageShare` is below `_MIN_PROTOCOL_SLIPPAGE_SHARE_LIMIT`
+- `ZeroAddress`: If any required address (eg: `inputReceiver`, `outputReceiver`) is a zero address
+- `InvalidSlippage`: If `desc.minOutputAmount` is zero
+- `SlippageLimitTooLarge`: If `desc.minOutputAmount` exceeds `desc.outputAmount`
+- `InsufficientBalance`: If the router does not hold sufficient balance for the intended transfer
+- `NativeTransferFailed`: If the native token transfer fails
 
-- `InvalidNativeTokenInputAmount`: If the ETH value sent does not match the expected input amount.
-- `RoutingFeeTooHigh`: If `desc.routingFee` exceeds the maximum allowed fee (`_MAX_FEE`).
-- `RoutingFeeTooLow`: If `desc.routingFee` is below the minimum required fee (`_MIN_FEE`).
-- `PartnerSurplusShareTooHigh`: If `desc.partnerSurplusShare` exceeds `_MAX_PARTNER_SURPLUS_SHARE_LIMIT`.
-- `ProtocolSurplusShareTooLow`: If `desc.protocolSurplusShare` is below `_MIN_PROTOCOL_SURPLUS_SHARE_LIMIT`.
-- `PartnerSlippageShareTooHigh`: If `desc.partnerSlippageShare` exceeds `_MAX_PARTNER_SLIPPAGE_SHARE_LIMIT`.
-- `ProtocolSlippageShareTooLow`: If `desc.protocolSlippageShare` is below `_MIN_PROTOCOL_SLIPPAGE_SHARE_LIMIT`.
-- `ZeroAddress`: If any required address (e.g. `inputReceiver`, `outputReceiver`) is a zero address.
-- `InvalidSlippage`: If `desc.minOutputAmount` is zero.
-- `SlippageLimitTooLarge`: If `desc.minOutputAmount` exceeds `desc.outputAmount`.
-- `InsufficientBalance`: If the router does not hold sufficient balance for the intended transfer.
-- `NativeTransferFailed`: If the native token transfer fails.
+### Events
 
+#### Routed
 
-## Event: `Routed`
+Emitted upon successful completion of a routing operation
 
-Emitted upon successful completion of a routing operation.
-
-### Event Signature
+**Event Signature**
 
 ```solidity
 event Routed(
@@ -68,16 +76,16 @@ event Routed(
 );
 ```
 
-#### Parameters
+**Parameters**
 
-- `uniquePID` (bytes): The unique identifier for the partner.
-- `userAddress` (address): The address of the user who initiated the route.
-- `outputReceiver` (address): The address of the receiver of the output token.
-- `inputToken` (IERC20): The ERC20 token used as input.
-- `inputAmount` (uint256): The amount of input token used for routing.
-- `outputToken` (IERC20): The ERC20 token received as output.
-- `finalOutputAmount` (uint256): The actual output amount received after routing.
-- `partnerFee` (uint256): The fee charged for the partner.
-- `routingFee` (uint256): The fee charged for the routing operation.
-- `partnerShare` (uint256): The share of surplus/slippage allocated to the partner.
-- `protocolShare` (uint256): The share of surplus/slippage allocated to the protocol.
+- `uniquePID` (bytes): The unique identifier for the partner
+- `userAddress` (address): The address of the user who initiated the route
+- `outputReceiver` (address): The address of the receiver of the output token
+- `inputToken` (IERC20): The ERC20 token used as input
+- `inputAmount` (uint256): The amount of input token used for routing
+- `outputToken` (IERC20): The ERC20 token received as output
+- `finalOutputAmount` (uint256): The actual output amount received after routing
+- `partnerFee` (uint256): The fee charged for the partner
+- `routingFee` (uint256): The fee charged for the routing operation
+- `partnerShare` (uint256): The share of surplus/slippage allocated to the partner
+- `protocolShare` (uint256): The share of surplus/slippage allocated to the protocol

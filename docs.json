@@ -75,8 +75,8 @@
               {
                 "group": "Contracts",
                 "pages": [
-                  "documentation/references/router-v1",
-                  "documentation/references/router-v1.1"
+                  "documentation/references/router-v1.1",
+                  "documentation/references/router-v1"
                 ]
               },
               "documentation/references/modules",
@@ -103,7 +103,15 @@
               "build-with-gluex/router/overview",
               "build-with-gluex/router/api-endpoints",
               "build-with-gluex/router/request-response-format",
-              "build-with-gluex/router/advanced-features",
+              {
+                "group": "Advanced Features",
+                "pages": [
+                  "build-with-gluex/router/advanced-features/surge-protection",
+                  "build-with-gluex/router/advanced-features/partial-fill-order",
+                  "build-with-gluex/router/advanced-features/buy-order",
+                  "build-with-gluex/router/advanced-features/liquidity-module-filtering"
+                ]
+              },
               "build-with-gluex/router/fee-structure",
               "build-with-gluex/router/api-tiers-limits"
             ]
@@ -195,7 +203,9 @@
         "groups": [
           {
             "group": "Router API",
-            "pages": ["guides/router/getting-started"]
+            "pages": [
+              "guides/router/getting-started"
+            ]
           },
           {
             "group": "Exchange Rate",

@@ -1,0 +1,45 @@
+---
+title: "Buy Order"
+sidebarTitle: "Buy Order"
+description: ""
+---
+
+While traditional swaps (often referred to as `SELL` orders) involve specifying the `inputAmount` and receiving a calculated `outputAmount`, the **Buy Order** functionality allows users to define their desired `outputAmount` of tokens, with the router calculating the required `inputAmount` to achieve that target. This provides greater flexibility for users focused on acquiring a specific amount of an asset
+
+### How It Works
+
+When orderType is set to `BUY`, the GlueX Router fundamentally reverses its calculation logic:
+
+- **Input calculation**: Instead of starting with a fixed input, the router determines the minimum `inputAmount` (and thus `inputToken`) necessary to acquire the `outputAmount` specified by the user, taking into account current market rates, fees and slippage
+- **Market buy optimization**: The routing engine optimizes the path to achieve the target outputAmount using the most cost effective `inputAmount` possible
+
+This contrasts directly with the default `SELL` order behavior, where `inputAmount` is predefined, and the `outputAmount` is the calculated variable
+
+### Configuration
+
+To initiate a Buy Order, you must include the `orderType` and `outputAmount` parameters in your `/v1/price` or `/v1/quote` request payload:
+
+```json
+{
+  // ... other parameters
+  "orderType": "BUY",
+  "outputAmount": "<desired_output_value>"
+}
+```
+
+| `orderType` | Required Field | Description                       |
+| ----------- | -------------- | --------------------------------- |
+| `BUY`       | `outputAmount` | Amount of output token to receive |
+| `SELL`      | `inputAmount`  | Amount of input token to swap     |
+
+<Note>
+  If `orderType` is **not specified**, it defaults to `SELL`. In this case,
+  `inputAmount` parameter becomes mandatory and `outputAmount` will be computed
+  by the API
+</Note>
+
+### Benefits
+
+- **Flexibility**: Caters directly to users who know exactly how much of a target token they wish to acquire
+- **Simplified user flow**: For specific use cases (eg: buying a fixed amount of governance tokens), this simplifies the user experience by reducing mental calculation
+- **Optimized input calculation**: The router automatically finds the most efficient way to achieve the desired `outputAmount`
