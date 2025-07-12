@@ -1,144 +1,455 @@
 ---
 title: "Frequently Asked Questions"
-description: "Find answers to common questions"
+description: "Find answers to common questions about GlueX APIs, integration, security and more"
 ---
 
 ## General
 
 <AccordionGroup>
-    <Accordion title="What is GlueX">
-    </Accordion>
-
-    <Accordion title="Why should I use GlueX">
-    </Accordion>
-
-    <Accordion title=""></Accordion>
-    <Accordion title=""></Accordion>
-    <Accordion title=""></Accordion>
-    <Accordion title=""></Accordion>
-    <Accordion title=""></Accordion>
-    <Accordion title=""></Accordion>
-    <Accordion title=""></Accordion>
-
+  <Accordion title="What is GlueX?">
+    GlueX is an abstraction framework that provides developers and partners with
+    secure access to an API suite that uniformly represents blockchains,
+    intents, intent originators and liquidity providers. It enables the
+    deployment of high performance, universal smart order routing algorithms and
+    facilitates interaction with decentralized finance, allowing execution of
+    complex transactions across multiple EVM networks
+  </Accordion>
+  <Accordion title="Why should I use GlueX?">
+    GlueX simplifies DeFi integration, offers optimal transaction execution
+    through intelligent routing, supports a broad range of EVM chains and
+    enables complex DeFi operations like swaps, bridges, lending, staking and
+    zaps with a one click experience (in a single atomic transaction). It also
+    provides economic benefits like zero routing fees and potential positive
+    slippage rewards
+  </Accordion>
+  <Accordion title="What makes GlueX unique compared to other aggregators?">
+    GlueX differentiates itself through its intelligent multi chain routing for
+    optimal execution, comprehensive support for various DeFi operations
+    (including unique "swidge" functionality), MEV resistance to protect against
+    sandwich attacks and a developer friendly API with beneficial fee models
+  </Accordion>
+  <Accordion title="Who is GlueX designed for?">
+    GlueX is ideal for application (dapp) developers, crypto wallets
+    aggregators, institutional clients and companies looking to seamlessly
+    integrate advanced DeFi functionalities into their applications with minimal
+    complexity
+  </Accordion>
+  <Accordion title="Does GlueX charge routing fees?">
+    No, GlueX operates with zero routing fees for integrators. Our intelligent
+    routing is designed to find the most cost-effective paths for transactions.
+    You can learn more about fees [here](/build-with-gluex/router/fee-structure)
+  </Accordion>
+  <Accordion title="How can I stay updated on GlueX news and developments?">
+    You can stay updated by following our official announcements, joining our
+    community channels (Telegram and Discord), and regularly checking our
+    [documentation](https://docs.gluex.xyz/) and
+    [blog](https://mirror.xyz/gluex.eth) for updates
+  </Accordion>
 </AccordionGroup>
 
 ## Core
 
 <AccordionGroup>
-    <Accordion title="Is my transaction safe">
-    </Accordion>
-
-    <Accordion title="Which chains does GlueX support"></Accordion>
-
-    <Accordion title="What types of transactions can I execute through GlueX"></Accordion>
-
-    <Accordion title="How does GlueX compare to other DEX aggregators"></Accordion>
-
-    <Accordion title=""></Accordion>
-
-    <Accordion title=""></Accordion>
-
-    <Accordion title=""></Accordion>
-    <Accordion title=""></Accordion>
-    <Accordion title=""></Accordion>
-    <Accordion title=""></Accordion>
-
+  <Accordion title="Is my transaction safe using GlueX?">
+    Yes, your transactions are secure with GlueX. Our routing smart contracts
+    and API infrastructure are built with advanced security features to
+    safeguard against common DeFi risks such as front running and sandwich
+    attacks. Additionally, we implement extra protections like [Surge
+    Protection](/build-with-gluex/router/advanced-features/surge-protection) to
+    ensure reliable and safe onchain interactions for all users
+  </Accordion>
+  <Accordion title="Which chains does GlueX support?">
+    GlueX supports a broad and growing range of EVM compatible chains. While the
+    exact list is constantly updated, this typically includes major networks
+    like Ethereum Mainnet, Polygon, Binance Smart Chain, Arbitrum, Optimism,
+    Avalanche and many others. Refer to our [supported
+    networks](/documentation/references/supported-networks) for the most current
+    list of supported chains
+  </Accordion>
+  <Accordion title="What types of transactions can I execute through GlueX?">
+    Through GlueX, you can execute a comprehensive range of DeFi transactions
+    including: token swaps (DEX aggregation), cross chain asset bridging,
+    lending, staking, yield farming, zaps(multi-step DeFi actions into one
+    transaction) and our unique 'swidge' operations (swap + bridge)
+  </Accordion>
+  <Accordion title="How does GlueX compare to other DEX aggregators?">
+    GlueX stands out by offering not just DEX aggregation but a holistic DeFi
+    API suite covering bridging, lending, staking and complex operations like
+    'swidge' across multiple chains. Our intelligent routing optimizes for the
+    best price, slippage and gas fees, providing a more comprehensive solution
+    than many single focus aggregators
+  </Accordion>
+  <Accordion title="How does GlueX ensure the best prices for swaps?">
+    GlueX uses advanced smart order routing algorithms that aggregate liquidity
+    from numerous DEXs and AMMs across all supported EVM chains. It dynamically
+    analyzes real time market data to find the most efficient and cost effective
+    paths for your token swaps, minimizing slippage and maximizing output
+  </Accordion>
+  <Accordion title="Are there any limits on transaction amounts?">
+    Transaction limits can vary depending on the liquidity available for
+    specific token pairs and chains, as well as any network specific
+    constraints. While GlueX aims to facilitate transactions of all sizes, very
+    large transactions might be split across multiple liquidity sources for
+    optimal execution
+  </Accordion>
+  <Accordion title="Does GlueX integrate with all major DeFi protocols?">
+    GlueX continuously expands its integration with a wide array of major DeFi
+    protocols for liquidity, lending, staking and more. Our goal is to provide
+    comprehensive access to the DeFi ecosystem. For a list of specific
+    integrated protocols, please check the [liquidity
+    modules](/documentation/references/liquidity-modules) section
+  </Accordion>
+  <Accordion title="What is MEV resistance in GlueX transactions?">
+    MEV (Maximal Extractable Value) resistance in GlueX refers to features
+    designed to protect your transactions from malicious MEV attacks like front
+    running and sandwich attacks, where bots attempt to profit from your trades.
+    Our routing mechanisms aim to minimize these risks to ensure fair execution
+  </Accordion>
+  <Accordion title="Can I use GlueX for institutional DeFi access?">
+    Yes, GlueX APIs are built with robustness and scalability that make them
+    suitable for institutional clients seeking secure, efficient and
+    programmatic access to DeFi markets and operations. We can provide tailored
+    solutions and support for higher volume usage
+  </Accordion>
+  <Accordion title="How does GlueX handle gas fees?">
+    GlueX optimizes for gas efficiency by finding the most gas efficient routes
+    and packaging complex transactions into minimal onchain calls. While users
+    still pay network gas fees, GlueX aims to reduce the overall cost by
+    optimizing the transaction structure
+  </Accordion>
 </AccordionGroup>
 
 ## Integration and API
 
 <AccordionGroup>
-  <Accordion title="How do I authenticate requests">
+  <Accordion title="How do I authenticate requests to the GlueX API?">
+    Some GlueX API endpoints require an API key for access, while others may
+    allow public usage or offer elevated rate limits with a key. API keys are
+    typically passed in the request header as `x-api-key`. For details on
+    authentication requirements and usage, see our [API
+    Reference](/api-reference/about/overview)
   </Accordion>
-
-  <Accordion title="What’s the difference between `/price` and `/quote`">
+  <Accordion title="What’s the difference between '/price' and '/quote'">
+    The `/price` endpoint typically provides a snapshot of the current market
+    price for a given token pair, often without considering the impact of a
+    specific trade size or routing. The `/quote` endpoint, on the other hand,
+    provides a concrete proposal for a specific transaction (eg: for a certain
+    amount of tokens), including the calculated output amount, estimated gas
+    fees, and potential slippage by performing an actual route calculation
   </Accordion>
-  
-  <Accordion title="What is surge protection">
+  <Accordion title="What is surge protection?">
+    **Surge Protection** is a built in pre trade safety mechanism designed to
+    safeguard users from significant value loss during periods of shallow
+    liquidity, extreme market volatility or abrupt price movements
   </Accordion>
-  
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  
+  <Accordion title="How do I get an Integrator ID and API Key?">
+    You can obtain your unique Integrator ID and API Key by registering on the
+    [GlueX Developer Portal](http://portal.gluex.xyz). These credentials are
+    required to authenticate your API requests and unlock access to GlueX
+    services
+  </Accordion>
+  <Accordion title="Can I integrate GlueX into any frontend framework?">
+    Yes, GlueX provides flexible integration options. While we offer dedicated
+    [widget](/build-with-gluex/yield/overview) and ui components for popular
+    frameworks, and you can also integrate the widget as an iframe into
+    virtually any web application, regardless of the underlying frontend
+    framework
+  </Accordion>
+  <Accordion title="Is there a sandbox or test environment available for development?">
+    GlueX currently operates exclusively on mainnet and does not provide a
+    testnet environment. For development and integration testing, we recommend
+    using small value transactions on supported L2s. Stay tuned for updates, as
+    testnet support may be added in the future
+  </Accordion>
+  <Accordion title="How can I handle API errors in my application?">
+    GlueX API responses include standard HTTP status codes and detailed error
+    messages in the response body. Your application should implement robust
+    error handling logic to parse these responses, notify users and manage
+    retries or alternative flows as necessary. Refer to our [API
+    Reference](/api-reference/about/overview) for a list of common error codes
+    and their meanings
+  </Accordion>
+  <Accordion title="What are common troubleshooting steps for API integration?">
+    Common troubleshooting steps include verifying your keys, checking network
+    connectivity, ensuring correct endpoints, validating request body
+    parameters, inspecting response error messages and reviewing our
+    documentation for the specific endpoint you are using. You can find a
+    comprehensive list of common issues and troubleshooting steps
+    [here](/troubleshooting/general/initial-steps)
+  </Accordion>
 </AccordionGroup>
 
 ## Developer and Support
 
 <AccordionGroup>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
+  <Accordion title="Where can I find the API documentation?">
+    The comprehensive API documentation is available on our website under the
+    [API Reference](/api-reference/about/overview) section. It includes detailed
+    information on endpoints, request/response schemas, authentication and
+    examples
+  </Accordion>
+  <Accordion title="How do I report a bug or issue?">
+    You can report bugs or issues by opening a discussion or creating an issue
+    in our official github repository. Alternatively, you can reach out to our
+    support team via our dedicated support channels
+  </Accordion>
+  <Accordion title="What kind of developer support does GlueX offer?">
+    GlueX offers developer support through documentation, quickstart guides,
+    community channels (Telegram) and direct technical support for partners and
+    enterprise clients
+  </Accordion>
+  <Accordion title="Can I contribute to GlueX's open source projects?">
+    GlueX has some open source components, and details on how to contribute will
+    be available in the respective github repositories. We welcome community
+    contributions that help improve our platform
+  </Accordion>
+  <Accordion title="How can I request a new feature or chain integration?">
+    To request a new feature or chain integration, submit a proposal or
+    discussion via our official repository, community channels or contact our
+    partnership team directly. For guidance on submitting feature requests, see
+    our [feature request guide](/documentation/requests/feature-request)
+  </Accordion>
+  <Accordion title="Do you offer technical workshops or tutorials?">
+    GlueX offers technical workshops, twitter spaces and more in depth tutorials
+    periodically. Please check our blog or announcement channels for information
+    on upcoming events
+  </Accordion>
+  <Accordion title="What is the typical response time for support inquiries?">
+    Response times for support inquiries vary based on the channel and the
+    nature of the query. Critical issues typically receive faster responses. For
+    general inquiries, community channels can often provide quick answers from
+    peers or active team members
+  </Accordion>
+  <Accordion title="How often are the API versions updated?">
+    GlueX aims to continuously improve its APIs and may release updates
+    periodically. We follow semantic versioning and any breaking changes are
+    communicated well in advance, along with migration guides
+  </Accordion>
 </AccordionGroup>
 
 ## Pricing and Plans
 
 <AccordionGroup>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
+  <Accordion title="What is the pricing model for GlueX API usage?">
+    GlueX API operates on a transparent pricing model. While there are zero
+    routing fees for transactions, specific plans might involve usage based
+    fees, tier based access or custom agreements for high volume partners. For
+    detailed pricing, please refer to our dedicated [pricing page](#) or contact
+    our partnership team
+  </Accordion>
+  <Accordion title="Are there different tiers or plans available for API access?">
+    Yes, we offer different tiers or plans tailored to various needs, from free
+    developer access to enterprise grade solutions for high volume usage. Each
+    tier might come with different rate limits, features and support levels
+  </Accordion>
+  <Accordion title="Do you offer a free tier for testing and development?">
+    Yes, GlueX provides a free tier to allow developers and small application to
+    test and build their integrations without incurring costs. This typically
+    comes with certain [rate limits and
+    features](/build-with-gluex/router/api-tiers-limits)
+  </Accordion>
+  <Accordion title="How are fees calculated for transactions?">
+    While GlueX itself charges zero routing fees, transactions on the blockchain
+    incur network (gas) fees. Our API optimizes for these gas fees. Any
+    integrator specific fees or revenue sharing models (eg: from positive
+    slippage, surplus) are detailed in the partner agreement
+  </Accordion>
+  <Accordion title="What are the costs associated with using the GlueX widget?">
+    The GlueX widget typically uses the same underlying API as direct API
+    integrations, and its usage costs are generally covered by your API plan.
+    There are no separate "widget fees" or hidden charges
+  </Accordion>
+  <Accordion title="Can I get a custom pricing plan for my business?">
+    Yes, for high volume usage, specialized features or unique business models,
+    GlueX offers custom pricing plans. Please contact our partnership team to
+    discuss your specific requirements
+  </Accordion>
+  <Accordion title="How do I monitor my API usage and associated costs?">
+    We offer a [developer portal](https://portal.gluex.xyz) where you can
+    monitor your API usage, view analytics and track any associated costs. This
+    dashboard gives you insights into your consumption patterns
+  </Accordion>
+  <Accordion title="What happens if I exceed my API rate limits?">
+    If you exceed your API rate limits, your requests may be temporarily
+    throttled or rejected with a `429 Too Many Requests` HTTP status code. You
+    might need to upgrade your plan or implement rate limiting strategies on
+    your end
+  </Accordion>
+  <Accordion title="Are there any hidden fees?">
+    GlueX is committed to transparent pricing. All fees, whether for API usage
+    or network transactions, are clearly communicated. We aim for no hidden
+    costs, but always recommend reviewing your specific plan details
+  </Accordion>
+  <Accordion title="Does the pricing include access to all GlueX APIs?">
+    TBD
+  </Accordion>
 </AccordionGroup>
 
 ## Security and Audits
 
 <AccordionGroup>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
+  <Accordion title="Has GlueX undergone security audits?">
+    Yes, security is paramount for GlueX. Our smart contracts and core
+    infrastructure undergo regular security audits by reputable third party
+    security firms. Audit reports are published
+    [here](/documentation/references/audit-and-security) for transparency
+  </Accordion>
+  <Accordion title="How does GlueX protect user funds?">
+    GlueX operates as a non custodial service for most operations, meaning user
+    funds remain in their own wallets and are never held by GlueX. Transactions
+    are executed directly from the user's wallet via smart contracts, minimizing
+    counterparty risk
+  </Accordion>
+  <Accordion title="What measures does GlueX take to prevent exploits?">
+    GlueX employs a multi faceted approach to security, including rigorous smart
+    contract auditing, continuous monitoring, bug bounty programs, adherence to
+    best practices in secure coding and intelligent transaction routing to avoid
+    vulnerable liquidity sources
+  </Accordion>
+  <Accordion title="Are GlueX's smart contracts open source?">
+    Yes, GlueX's smart contracts are open source and publicly verifiable on
+    blockchain explorers. This transparency allows the community and security
+    researchers to inspect the code
+  </Accordion>
+  <Accordion title="What is the role of smart contract audits?">
+    Smart contract audits are independent reviews conducted by security experts
+    to identify and mitigate potential vulnerabilities, bugs and security risks
+    in the smart contracts that power GlueX's operations, ensuring their
+    integrity and safety
+  </Accordion>
+  <Accordion title="Is my API Key secure?">
+    Your API Key is a sensitive credential. It should be kept confidential and
+    never hardcoded into clien -side code. We recommend using environment
+    variables or a secure backend proxy to manage your API Key, and applying
+    domain restrictions where possible
+  </Accordion>
+  <Accordion title="Does GlueX store any personal user data?">
+    GlueX adheres to strict privacy policies. As a non custodial service, we
+    primarily process onchain transaction data and do not store personal user
+    data beyond what is necessary for service provision
+  </Accordion>
+  <Accordion title="How does GlueX protect against front running and sandwich attacks?">
+    GlueX's Router API employs MEV resistant strategies and smart order routing
+    that are designed to minimize the risk of front running and sandwich attacks
+    by optimizing transaction paths and potentially utilizing transaction relays
+    where available
+  </Accordion>
+  <Accordion title="What is the typical update frequency for security patches?">
+    Security patches are deployed as needed, with critical vulnerabilities
+    addressed immediately. Regular maintenance updates also include security
+    enhancements. Details on specific updates are communicated through official
+    channels
+  </Accordion>
 </AccordionGroup>
 
 ## Performance and Reliability
 
 <AccordionGroup>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
+  <Accordion title="What is GlueX's API uptime guarantee?">
+    GlueX is committed to high availability. While specific uptime guarantees
+    (SLA) may depend on your service plan, we strive for industry leading
+    uptime, leveraging robust infrastructure and redundant systems to ensure
+    continuous API access
+  </Accordion>
+  <Accordion title="How fast are GlueX API responses?">
+    GlueX APIs are optimized for low latency. Response times can vary based on
+    network congestion, the complexity of the query (eg: `quote` vs `price`),
+    and your geographical location, but we aim for near real time responses
+  </Accordion>
+  <Accordion title="How does GlueX ensure data accuracy for exchange rates and liquidity?">
+    Our Exchange Rate API and Router API use real time data feeds aggregated
+    from numerous onchain and offchain sources, combined with sophisticated
+    algorithms to ensure high accuracy and up to date information on prices and
+    liquidity
+  </Accordion>
+  <Accordion title="What is the API's capacity for requests per second (RPS)?">
+    API capacity and rate limits depend on your specific service plan. Higher
+    tiers typically offer increased requests per second (RPS) to support larger
+    scale applications. Details are available [here](#) or via direct inquiry
+  </Accordion>
+  <Accordion title="How does GlueX handle blockchain network congestion?">
+    GlueX's intelligent routing algorithms account for network congestion when
+    calculating optimal paths. While high congestion can affect transaction
+    confirmation times, we aim to provide the best possible execution under
+    prevailing network conditions
+  </Accordion>
+  <Accordion title="Is there a status page for GlueX services?">TBD</Accordion>
+  <Accordion title="How quickly are new chains and protocols integrated?">
+    GlueX is committed to rapidly integrating new EVM compatible chains and
+    prominent DeFi protocols on demand. Integration timelines depend on the
+    complexity of the network/protocol, but we strive to expand our coverage
+    continuously
+  </Accordion>
 </AccordionGroup>
 
 ## Compliance and Legal
 
 <AccordionGroup>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
+  <Accordion title="Is GlueX compliant with relevant financial regulations?">
+    GlueX operates in the decentralized finance space. We prioritize compliance
+    with applicable laws and regulations in the jurisdictions we operate. As the
+    regulatory landscape for DeFi evolves, we continuously adapt our practices
+  </Accordion>
+  <Accordion title="Does GlueX perform KYC/AML checks?">
+    As a non custodial API provider, GlueX typically does not perform direct KYC
+    (Know Your Customer) or AML (Anti Money Laundering) checks on end users. Our
+    partners are responsible for their own compliance obligations based on their
+    service offerings
+  </Accordion>
+  <Accordion title="What are the Terms of Service for using GlueX APIs?">
+    The full Terms of Service for using GlueX APIs and services are available
+    [here](https://www.gluex.xyz/legal/terms-of-service). It is important to
+    review these terms to understand your rights and obligations as an
+    integrator
+  </Accordion>
+  <Accordion title="Does GlueX comply with data privacy regulations (eg: GDPR, CCPA)?">
+    GlueX adheres to relevant data privacy regulations like GDPR and CCPA where
+    applicable. As a non custodial service, we minimize the collection of
+    personal identifiable information. Our [Privacy Policy
+    provides](https://www.gluex.xyz/legal/privacy-policy) full details
+  </Accordion>
+  <Accordion title="Does GlueX require any specific licenses for integrators?">
+    TBD
+  </Accordion>
+  <Accordion title="How does GlueX handle intellectual property rights for integrators?">
+    Our Terms of Service outline the intellectual property rights related to the
+    APIs, SDKs and documentation, as well as how integrators can use our brand
+    assets
+  </Accordion>
 </AccordionGroup>
 
 ## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
-  <Accordion title=""></Accordion>
+  <Accordion title="What are common troubleshooting steps for API integration?">
+    Common troubleshooting steps include verifying your keys, checking network
+    connectivity, ensuring correct endpoints, validating request body
+    parameters, inspecting response error messages and reviewing our
+    documentation for the specific endpoint you are using. You can find a
+    comprehensive list of common issues and troubleshooting steps
+    [here](/troubleshooting/general/initial-steps)
+  </Accordion>
+  <Accordion title="Where can I find detailed error codes and messages?">
+    Detailed error codes, their meanings and potential solutions are documented
+    in the respective sections of our [API
+    Reference](/api-reference/about/overview). This is your primary resource for
+    understanding specific API error responses
+  </Accordion>
+  <Accordion title="I'm getting a 429 Too Many Requests error. How can I resolve this?">
+    This error means you've exceeded your plan's API rate limits. You can
+    resolve it by implementing rate limiting, spacing out your requests, or
+    upgrading your API plan to a higher tier with increased rate limits
+  </Accordion>
+  <Accordion title="My API key seems invalid. What should I do?">
+    First, ensure you're using the correct API key from your GlueX developer
+    portal. If the issue persists, regenerate your API key in the portal and if
+    still unsuccessful, contact our support team
+  </Accordion>
 </AccordionGroup>
 
 ---
 
-**Still have questions?** <br/>
-Feel free to reach out on Telegram or open a discussion in our GitHub repo - our team and community are here to help!
+**Still have questions?**
+
+Feel free to reach out on [Telegram](https://t.me/+6NrwSlEPAsA3MzE0) or open a discussion in our [Github](https://github.com/gluexprotocol) repo - our
+team and community are here to help!

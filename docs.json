@@ -79,7 +79,7 @@
                   "documentation/references/router-v1"
                 ]
               },
-              "documentation/references/modules",
+              "documentation/references/liquidity-modules",
               "documentation/references/supported-networks",
               "documentation/references/audit-and-security",
               "documentation/references/faq",
@@ -169,10 +169,7 @@
           {
             "group": "API Documentation",
             "pages": [
-              "api-reference/about/overview",
-              "api-reference/about/authentication",
-              "api-reference/about/rate-limit",
-              "api-reference/about/error-codes"
+              "api-reference/about/overview"
             ]
           },
           {
