@@ -13,6 +13,15 @@ GlueX Widget is fully compatible with Vite applications and requires minimal con
   repository](https://github.com/gluexprotocol/gluex-examples/widget/vite-integration)
 </Info>
 
+<Accordion title="Why client side rendering?">
+  Wallet connection libraries (like wagmi, which the widget uses) interact
+  directly with browser APIs and wallet extensions. These functionalities are
+  only available in a client side (browser) environment. Attempting to render
+  them on the server during the build or request time would result in errors. By
+  explicitly marking components for client side rendering, we ensure
+  compatibility and a smooth user experience
+</Accordion>
+
 ### Prerequisites
 
 Before proceeding with React specific integration, ensure you have completed the general installation steps outlined in the [General Installation](/build-with-gluex/widget/integration/installing-the-widget)
@@ -25,7 +34,8 @@ Create a `Widget.tsx` file in your components directory to encapsulate the GlueX
 
 ```tsx Widget.tsx
 import React from "react";
-import { GlueXWidget, type WidgetConfigPartialProps } from "@gluex/widget";
+import { type WidgetConfigPartialProps } from "@gluex/widget";
+import { GlueXWidget, WidgetSkeleton } from "@gluex/widget";
 
 export const Widget = () => {
   const config: WidgetConfigPartialProps["config"] = React.useMemo(() => {
@@ -45,7 +55,35 @@ export const Widget = () => {
     };
   }, []);
 
-  return <GlueXWidget config={config} />;
+  return (
+    <ClientSideRender fallback={<WidgetSkeleton config={config} />}>
+      <GlueXWidget config={config} />
+    </ClientSideRender>
+  );
+};
+```
+
+```tsx ClientSideRender.tsx
+"use client";
+
+import React from "react";
+
+interface ClientSideRenderProps {
+  children: React.ReactNode;
+  fallback?: React.ReactNode;
+}
+
+export const ClientSideRender: React.FC<ClientSideRenderProps> = ({
+  children,
+  fallback = null,
+}) => {
+  const [hydrated, setHydrated] = React.useState(false);
+
+  React.useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  return hydrated ? <>{children}</> : <>{fallback}</>;
 };
 ```
 
