@@ -156,6 +156,7 @@
               "build-with-gluex/widget/customizations",
               "build-with-gluex/widget/events",
               "build-with-gluex/widget/wallet-management",
+              "build-with-gluex/widget/prebuilt-theme-store",
               "build-with-gluex/widget/i18n"
             ]
           }
