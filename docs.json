@@ -53,12 +53,16 @@
                 ]
               },
               "documentation/about/why-build-with-gluex",
-              "documentation/about/powered-by"
+              "documentation/about/what-can-I-build-on-gluex",
+              "documentation/about/powered-by",
+              "documentation/about/partnership-opportunities"
             ]
           },
           {
-            "group": "Integrating GlueX",
-            "pages": []
+            "group": "Using GlueX",
+            "pages": [
+              "documentation/integrating-gluex/getting-an-api-key"
+            ]
           },
           {
             "group": "Requests",
