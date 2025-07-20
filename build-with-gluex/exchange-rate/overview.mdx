@@ -1,33 +1,39 @@
 ---
 title: "Overview"
-description: "GlueX Exchange Rates API - Real-time, on-chain exchange rates across multiple blockchains."
+description: "GlueX Exchange Rates API - Real time, onchain exchange rates across multiple blockchains"
 ---
 
-<img
-  className="hidden dark:block"
-  src="/images/products/exchange-rate/exchange-rate.png"
-  alt="GlueX Exchange Rates API"
-  style={{ maxWidth: "220px", height: "auto" }}
-/>
+The GlueX Exchange Rates API provides developers with a robust, scalable, and real time solution to fetch onchain exchange rates for any token pair across multiple supported blockchains. Perfect for integrating live pricing data into DeFi applications, crypto wallets, trading platforms and analytical dashboards
 
-The GlueX Exchange Rates API provides developers with a robust, scalable, and real-time solution to fetch on-chain exchange rates for any token pair across multiple supported blockchains. Perfect for DeFi apps, wallets, and trading platforms.
+## Base URL
 
-### Key Features
+All API endpoint requests are made relative to the following base URL:
 
-- **Real-Time Rates**: Get accurate, up-to-date rates directly from the blockchain.
-- **Multichain Support**: Query rates across Ethereum, BNB Chain, Polygon, and more.
-- **Batch Requests**: Retrieve up to 25 token pairs in a single request.
-- **No Auth Required**: Public endpoints for instant access, with optional API keys for higher rate limits.
-- **Fast & Reliable**: Average request round trip of 500ms.
-- **Specialized Support**: Handles unique tokens and edge cases.
+```http
+http://exchange-rates.gluex.xyz
+```
 
-<CardGroup cols={1}>
+## Key Features
+
+- **Realtime & Accurate Rates**: Realtime data feeds to obtain highly accurate, up to the second exchange rates directly from decentralized liquidity sources, ensuring your application always has the most current information
+- **Multichain Support**: Access extensive rate data across a growing ecosystem of EVM compatible blockchains, including major networks like Ethereum, BNB Chain, Polygon, Arbitrum, Optimism, and many others, all through a single, unified API
+- **Batch Requests**: Optimize your data fetching and minimize network overhead by retrieving exchange rates for up to 25 distinct token pairs in a single, efficient API call
+- **Instant Access**: Start building immediately with public, unauthenticated endpoints for quick testing and low volume usage. For higher throughput, dedicated rate limits and enhanced reliability, easily provision and use an API key
+- **Fast & Reliable**: Experience exceptional responsiveness with an average request round trip of under 500ms, ensuring your application remains highly responsive and delivers immediate data to users
+- **Specialized Support**: Designed to intelligently handle a wide array of token types, including rebase tokens, yield bearing assets, LP tokens and other complex edge cases, providing reliable rates for even the most nuanced DeFi assets
+
+<CardGroup cols={2}>
   <Card
     title="Try Out Now"
     icon="play"
     href="/api-reference/exchange-rate-api/post-price"
   >
-    Test the API instantly in your browser.
+    Experience DeFi at it's finest. Test the Exchange Rate API instantly
+    directly in your browser
+  </Card>
+  <Card title="Explore Guides" icon="rocket" href="/guides">
+    Dive into step by step guides and best practices for integrating the
+    Exchange Rate API
   </Card>
 </CardGroup>
 

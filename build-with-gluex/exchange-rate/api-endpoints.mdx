@@ -1,0 +1,71 @@
+---
+title: "API Endpoints"
+description: "This section outlines the primary endpoints provided by the GlueX Exchange Rates API for fetching real-time on-chain token prices and metadata across multiple blockchains."
+---
+
+The GlueX Exchange Rates API offers a streamlined interface to access accurate, rea -time market data directly from decentralized sources. This section details the core endpoints you'll utilize to query token prices, retrieve lists of supported blockchains and fetch comprehensive token metadata
+
+> The `POST /` endpoint is your primary tool for fetching **real time exchange rates** for specific token pairs, supporting batch requests for efficiency
+
+## POST `/`
+
+Returns real time **exchange rates** for one or more token pairs across specified blockchains. This is the primary endpoint for fetching price data
+
+**Description**
+
+- Provides the current exchange rate (`price`) for requested token pairs
+- Supports batch requests, allowing you to query up to 25 pairs in a single API call for optimized performance
+- Requires `domestic_blockchain`, `domestic_token`, `foreign_blockchain` and `foreign_token` for each pair
+
+**Example Request**
+
+```http
+POST /
+x-api-key: your-optional-api-key
+Content-Type: application/json
+```
+
+**Request Body (Example)**
+
+```json
+[
+  {
+    "domestic_blockchain": "ethereum",
+    "domestic_token": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "foreign_blockchain": "ethereum",
+    "foreign_token": "0xdac17f958d2ee523a2206206994597c13d831ec7"
+  },
+  {
+    "domestic_blockchain": "polygon",
+    "domestic_token": "0x2791bca1f2de4661ed88a30c99a7a9229f6476ed",
+    "foreign_blockchain": "polygon",
+    "foreign_token": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619"
+  }
+]
+```
+
+**Response**
+
+```json
+[
+  {
+    "domestic_blockchain": "ethereum",
+    "domestic_token": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "foreign_blockchain": "ethereum",
+    "foreign_token": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+    "price": 0.99987654
+  },
+  {
+    "domestic_blockchain": "polygon",
+    "domestic_token": "0x2791bca1f2de4661ed88a30c99a7a9229f6476ed",
+    "foreign_blockchain": "polygon",
+    "foreign_token": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+    "price": 0.00032109
+  }
+]
+```
+
+**Error Responses**
+
+- 400 Bad Request: Invalid request payload (eg: missing required fields, malformed JSON)
+- 500 Server Error: An unexpected error occurred on the server

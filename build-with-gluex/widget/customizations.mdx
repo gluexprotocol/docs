@@ -10,15 +10,43 @@ The GlueX Widget offers comprehensive customization options to match the applica
   customize and integrate the widget
 </Note>
 
+```typescript
+interface WidgetThemeConfiguration = {
+  // customize individual components
+  components: WidgetCustomComponents;
+
+  // sets the appearance - ("light" | "dark" | "auto")
+  appearance: Appearance;
+  // tweak the theme objects such as palette, shape, typography, components, container, colors, fonts and border-radius
+  theme: WidgetTheme;
+
+  // disables parts of the widget
+  disabled: DisabledUIType[];
+  // hides parts of the widget
+  hidden: HiddenUIType[];
+  // makes parts of the widget as required
+  required: RequiredUIType[];
+}
+```
+
 ## UI Customization
 
 ### Appearance
 
-Controls the widget's overall color scheme, so it can adapt to your app's light or dark mode—or follow the user's system preference automatically. Use this to ensure visual consistency and reduce "mode flicker" when users switch themes.
+Controls the widget's overall color scheme, so it can adapt to your app's light or dark mode or follow the user's system preference automatically. Use this to ensure visual consistency and reduce "mode flicker" when users switch themes.
 
-| Property     | Type                              | Default  | Allowed Values          | Notes                                   |
-| ------------ | --------------------------------- | -------- | ----------------------- | --------------------------------------- |
-| `appearance` | `"light"` \| `"dark"` \| `"auto"` | `"auto"` | `light`, `dark`, `auto` | `auto` will match the user's OS setting |
+<video
+  autoPlay
+  muted
+  loop
+  playsInline
+  className="w-full aspect-video rounded-xl"
+  src="/images/products/widget/video/appearance.webm"
+></video>
+
+| Property     | Default  | Allowed Values          | Notes                                   |
+| ------------ | -------- | ----------------------- | --------------------------------------- |
+| `appearance` | `"auto"` | `light`, `dark`, `auto` | `auto` will match the user's OS setting |
 
 ```ts
 const config = {
@@ -30,7 +58,9 @@ const config = {
 
 Fine tune which parts of the interface your users see or interact with. Disable input fields to guide user flows, hide non essential widgets for a cleaner look or mark critical fields as required to ensure data collection
 
-#### disabled
+#### Disabled
+
+Grey out and prevent interaction with specific UI elements
 
 | Property | Type     | Default | Notes                                        |
 | -------- | -------- | ------- | -------------------------------------------- |
@@ -42,7 +72,9 @@ const config = {
 };
 ```
 
-#### hidden
+#### Hidden
+
+Completely remove elements from the UI
 
 | Property | Type     | Default | Notes                                           |
 | -------- | -------- | ------- | ----------------------------------------------- |
@@ -54,7 +86,9 @@ const config = {
 };
 ```
 
-#### required
+#### Required
+
+Ensure users fill out crucial fields before proceeding
 
 | Property | Type     | Default | Notes                                    |
 | -------- | -------- | ------- | ---------------------------------------- |
@@ -66,28 +100,20 @@ const config = {
 };
 ```
 
-### Display Variants
-
-Choose how the widget is presented on your page - a compact overlay for minimal footprint or a sliding drawer for a richer, side panel experience
-
-| Property   | Type                  | Default   | Allowed Values |
-| ---------- | --------------------- | --------- | -------------- |
-| variant    | "compact" \| "drawer" | "compact" | -              |
-| subvariant | "router"              | —         | -              |
-
-```ts
-const config = {
-  variant: "drawer",
-  subvariant: "router",
-  appearance: "light",
-};
-```
-
 ## Theme Customizations
 
 ### Layout
 
 Override the outer container's dimensions and spacing to fit any layout fixed width/sidebar, full-page modal or embedded card. Control styling factors like height, max-height, padding, box shadow and more for a perfect visual fit
+
+<video
+  autoPlay
+  muted
+  loop
+  playsInline
+  className="w-full aspect-video rounded-xl"
+  src="/images/products/widget/video/layout.webm"
+></video>
 
 | Property        | Type   | Default | Notes                          |
 | --------------- | ------ | ------- | ------------------------------ |
@@ -111,6 +137,15 @@ const config = {
 
 Adjust corner radii globally across cards, buttons and panels either a single radius for everything or separate values for primary (cards) and secondary (buttons) elements
 
+<video
+  autoPlay
+  muted
+  loop
+  playsInline
+  className="w-full aspect-video rounded-xl"
+  src="/images/products/widget/video/shape.webm"
+></video>
+
 | Property                          | Type   | Default | Notes                      |
 | --------------------------------- | ------ | ------- | -------------------------- |
 | theme.shape.borderRadius          | number | —       | Base radius in pixels      |
@@ -130,6 +165,15 @@ const config = {
 ### Typography and Fonts
 
 Define the widget's typographic scale font family, base font size and weight variants for regular, medium and bold text. Use your brand's font stack for full design cohesion
+
+<video
+  autoPlay
+  muted
+  loop
+  playsInline
+  className="w-full aspect-video rounded-xl"
+  src="/images/products/widget/video/typography.webm"
+></video>
 
 | Property                           | Type   | Default | Notes                           |
 | ---------------------------------- | ------ | ------- | ------------------------------- |
@@ -155,7 +199,16 @@ const config = {
 
 ### Color System
 
-Define full light and dark palettes - primary, secondary, background, text and semantic colors (success, error, warning, info) giving you end-to-end theming control with one config object
+Define full light and dark palettes - primary, secondary, background, text and semantic colors (success, error, warning, info) giving you end to end theming control with one config object
+
+<video
+  autoPlay
+  muted
+  loop
+  playsInline
+  className="w-full aspect-video rounded-xl"
+  src="/images/products/widget/video/colors.webm"
+></video>
 
 ```ts
 const config = {
@@ -250,7 +303,13 @@ export const Widget = () => {
 
 </Accordion>
 
-#### Amount Selection
+<Warning>
+  Ensure your custom component implements all required handler functions and
+  events. Missing handlers may cause unexpected behavior or break widget
+  functionality
+</Warning>
+
+### Amount Selection
 
 ```tsx
 import { type PercentageAmountSelectorProps } from "@gluex/widget";
@@ -270,7 +329,7 @@ export const CustomPercentageAmountSelector = ({
 };
 ```
 
-#### Token Amount Display
+### Token Amount Display
 
 ```tsx
 import { type TokenAmountPriceProps } from "@gluex/widget";
@@ -285,7 +344,7 @@ export const CustomTokenAmountPrice = ({
 };
 ```
 
-#### Transaction Details
+### Transaction Details
 
 ```tsx
 import { type TransactionDetailsProps } from "@gluex/widget";
@@ -300,7 +359,7 @@ export const CustomTransactionDetails = ({
 };
 ```
 
-#### Completed Transaction
+### Completed Transaction
 
 ```tsx
 import { type CompletedTransactionDetailsProps } from "@gluex/widget";

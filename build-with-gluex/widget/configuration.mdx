@@ -3,12 +3,978 @@ title: "Configuring the Widget"
 description: ""
 ---
 
-The GlueX Widget supports a range of configuration options, allowing you to:
+The widget supports a range of configuration options, allowing you to:
 
-- Preselect default source and destination chains
-- Allow or deny specific chains or tokens
-- Choose default tokens for to send and receive
+- Preselect default chain
+- Preselect the source and destination token
+- Preselect the appearance
+- Prefill the amount of the source token
+- Prefill the amount of the destination token
+- Prefill the slippage configuration
+- Allow or deny surplus feature
+- Allow or deny specific liquidity sources
+- Allow or deny specific chains
+- Allow or deny specific tokens
 - Specify the receiving address
+- Specify the type of order - `BUY` or `SELL`
+- Specify the partner fee
 
-These options enable precise control over the widget's behavior and improve the user experience by adjusting it to specific needs and preferences
+These extensive configuration options collectively enable precise control over the widget's behavior and improve the user experience by adjusting it to specific needs and preferences, creating a highly optimized, branded and intuitive experience. This flexibility makes the widget a powerful and adaptable component that can seamlessly integrate into any decentralized application architecture while maintaining consistency with your brand and user experience requirements.
 
+## SDK configuration
+
+The GlueX widget is built on top of our robust SDK, utilizing its core functionality to provide seamless integration and optimal performance. The `sdk` option allows you to configure various aspects of the underlying SDK directly within the widget configuration, ensuring that all SDK-level settings align with your application requirements.
+
+```typescript
+const config = {
+  sdk: {
+    // .. sdk configuration
+  },
+};
+```
+
+The SDK configuration interface provides comprehensive control over core functionality:
+
+```typescript
+interface SDKConfig {
+  userId: string; // the user ID of the user attached with each request for tracking
+  referrer: string; // the referrer address of the user
+
+  rpcUrls: RPCUrls;
+  chains: Chain[];
+  debug: boolean;
+
+  fees: {
+    partner?: number;
+    payoutAddress?: string;
+    surplusFee?: boolean;
+  };
+}
+```
+
+### User
+
+The `userId` field allows you to attach a unique user identifier to each request, enabling comprehensive tracking and analytics capabilities. This identifier helps you monitor user behavior, analyze transaction patterns, and provide personalized experiences. The user ID should be a consistent, unique string that identifies individual users across sessions
+
+```typescript
+const config = {
+  sdk: {
+    userId: "user-12345",
+  },
+};
+```
+
+**Best Practices**
+
+-
+
+* Use consistent identifiers that persist across user sessions
+* Ensure user IDs are unique and don't contain sensitive information
+* Consider using UUIDs or hashed values for enhanced privacy
+* Implement proper user consent mechanisms for tracking where required by regulations
+
+### Referrer
+
+The referrer field specifies the referrer address of the user for tracking and attribution purposes. This is particularly important for affiliate programs, partner integrations and revenue sharing models. The referrer address should be a valid address
+
+```typescript
+const config = {
+  sdk: {
+    referrer: "0x12345...678",
+  },
+};
+```
+
+<Info>
+  Referral fee system is coming soon with advanced attribution and reward
+  mechanisms
+</Info>
+
+**Referrer Implementation Guidelines:**
+
+- Ensure the referrer address is properly formatted and validated
+- Use consistent referrer addresses for accurate attribution tracking
+- Consider implementing dynamic referrer assignment based on user acquisition channels
+- Document referrer relationships for transparent revenue sharing
+
+### RPC endpoints
+
+Configure custom RPC endpoints for different blockchain networks to ensure reliable connectivity, optimal performance and reduced dependency on public infrastructure. Custom RPC configurations help maintain consistent service quality and avoid rate limiting issues that commonly affect public endpoints
+
+```typescript
+type RPCUrls = Partial<Record<Chain["identifier"], string[]>>;
+
+const config = {
+  sdk: {
+    rpcUrls: {
+      ethereum: ["https://mainnet.infura.io/v3/<YOUR-PROJECT-ID>"],
+      polygon: ["https://polygon-mainnet.infura.io/v3/<YOUR-PROJECT-ID>"],
+    },
+  },
+};
+```
+
+<Note>
+  For production deployments, always use your own authenticated RPC provider
+  (such as Alchemy, Infura, QuickNode, or Ankr). If custom RPC endpoints are not
+  specified, the widget defaults to public RPC endpoints, which may experience
+  rate limiting and cause issues like incorrect balance displays, failed
+  transactions, or degraded performance during high traffic periods
+</Note>
+
+**Best Practices**
+
+\*\*
+
+- **Redundancy**: Configure multiple RPC endpoints per chain for failover protection
+- **Monitoring**: Implement RPC endpoint health monitoring and automatic failover
+- **Authentication**: Use authenticated endpoints with proper API key management
+- **Geographic Distribution**: Consider RPC provider locations relative to your user base for optimal latency
+
+### Explorer URLs
+
+.. TBD ..
+
+### Partner Fees
+
+The partner fee system enables revenue generation through transaction based commissions. The `fees.partner` parameter allows you to configure partner fees for each transaction processed through the widget. The `partner` field expects a value in basis points (bps), where 100 bps equals 1% of the transaction volume. The maximum allowed fee is 10% (1000 bps) to ensure reasonable cost structures for end users
+
+```typescript
+const config = {
+  sdk: {
+    fees: {
+      partner: 100, // 1% partner fee
+      payoutAddress: "0xabc...xyz", // Address to receive accumulated fees
+    },
+  },
+};
+```
+
+<Note>
+  To ensure partner fees are correctly collected and distributed, you must
+  specify the `payoutAddress` in your configuration. This address will receive
+  the accumulated fees for each transaction. Alternatively, you can configure
+  this address via the [developer portal](https://portal.gluex.xyz) for
+  centralized management across multiple integrations
+</Note>
+
+**Partner Fee Implementation Details:**
+
+- **Fee Calculation**: Fees are calculated as a percentage of the total transaction volume
+- **Fee Collection**: Fees are automatically deducted during the swap process and distributed to the specified payout address within each transaction
+- **Transparency**: Clearly communicate fee structures to end users for transparency and trust
+
+## Form Values
+
+The widget provides comprehensive and flexible options for preconfiguring default values and dynamically updating parameters for chains, tokens, amounts, and addresses. This functionality makes it easy to set up and maintain desired swap parameters, creating seamless user experiences that can adapt to changing requirements and user preferences
+
+### Configuration
+
+The most straightforward approach is to preconfigure values directly in the widget configuration object during initialization. This method ensures consistent default values across all widget instances and provides a stable foundation for your application's swap functionality
+
+```typescript
+const config = {
+  // Network configuration
+  // set source chain
+  fromChain: 1,
+  // set destination chain
+  toChain: 1,
+
+  // Token configuration
+  // set source token
+  fromToken: "0xabc...xyz",
+  // set source token
+  toToken: "0x123...890",
+
+  // Amount configuration
+  // set source token amount
+  fromAmount: 1000000,
+
+  // Destination configuration
+  // set the destination wallet address
+  toAddress: {
+    name: "My Vault",
+    address: "0x123...678",
+  },
+};
+```
+
+<Note>
+  The widget currently supports only swap operations. Therefore, you should
+  specify either fromChain or toChain, or set both to the same value
+</Note>
+
+**Configuration Value Types and Validation:**
+
+- **Chain IDs**: Use standard chain identifiers (1 for Ethereum, 137 for Polygon, etc.)
+- **Token Addresses**: Must be valid ERC20 contract addresses with proper checksum formatting
+- **Amounts**: Specify in token's native decimal format (eg: for USDC with 6 decimals, 1000000 = 1 USDC)
+- **Addresses**: All addresses must be valid Ethereum format with proper checksum encoding
+
+#### Configuration Updates
+
+The widget supports dynamic configuration updates after initialization, enabling real-time form value changes based on user interactions, market conditions or application state changes. This functionality is particularly valuable for applications using state management libraries like Redux, Zustand or React Context, allowing seamless integration with existing application architectures
+
+**FormUpdateKey Mechanism**
+
+The `formUpdateKey` is a critical component of the state management update system that triggers form re-rendering when configuration changes occur:
+
+```typescript
+interface WidgetConfiguration {
+  // ... other configuration options
+
+  /**
+   * Key that triggers form updates when changed
+   * Should be updated whenever you want to apply config changes to the form
+   * Can be any string value - commonly used patterns:
+   * - Timestamp: Date.now().toString()
+   * - UUID: crypto.randomUUID()
+   * - Incremental counter: (counter++).toString()
+   * - Hash of changed values: hashFunction(changedConfig)
+   */
+  formUpdateKey?: string;
+}
+```
+
+**Implementation Patterns:**
+
+<AccordionGroup>
+<Accordion title="Redux Toolkit">
+
+```typescript
+import { useSelector, useDispatch } from "react-redux";
+import { updateSwapConfig, incrementUpdateKey } from "./swapSlice";
+
+const WidgetWithRedux = () => {
+  const dispatch = useDispatch();
+  const { config, updateKey } = useSelector((state) => state.swap);
+
+  const handleUpdateFromChain = (chainId: number) => {
+    // Update only the specific values you want to change
+    dispatch(
+      updateSwapConfig({
+        fromChain: chainId,
+        // Optionally clear related values when chain changes
+        fromToken: undefined,
+        fromAmount: undefined,
+      })
+    );
+    dispatch(incrementUpdateKey()); // Trigger widget update
+  };
+
+  const handleUpdateTokenPair = (fromToken: string, toToken: string) => {
+    dispatch(
+      updateSwapConfig({
+        fromToken,
+        toToken,
+        // Clear amounts when tokens change to prevent confusion
+        fromAmount: undefined,
+      })
+    );
+    dispatch(incrementUpdateKey());
+  };
+
+  const handlePresetTrade = (preset: "eth-to-usdc" | "usdc-to-dai") => {
+    const presets = {
+      "eth-to-usdc": {
+        fromChain: 1,
+        toChain: 1,
+        fromToken: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", // WETH
+        toToken: "0xA0b86a33E6441C8FFa4c02bae5a0Dd0D8e87fb8e", // USDC
+        fromAmount: 1,
+      },
+      "usdc-to-dai": {
+        fromChain: 1,
+        toChain: 1,
+        fromToken: "0xA0b86a33E6441C8FFa4c02bae5a0Dd0D8e87fb8e", // USDC
+        toToken: "0x6B175474E89094C44Da98b954EedeAC495271d0F", // DAI
+        fromAmount: 1000,
+      },
+    };
+
+    dispatch(updateSwapConfig(presets[preset]));
+    dispatch(incrementUpdateKey());
+  };
+
+  return (
+    <>
+      <GlueXWidget
+        config={{
+          ...config,
+          formUpdateKey: updateKey,
+        }}
+      />
+
+      <div className="controls">
+        <button onClick={() => handleUpdateFromChain(1)}>Ethereum</button>
+        <button onClick={() => handleUpdateFromChain(137)}>Polygon</button>
+        <button onClick={() => handlePresetTrade("eth-to-usdc")}>
+          ETH → USDC
+        </button>
+        <button onClick={() => handlePresetTrade("usdc-to-dai")}>
+          USDC → DAI
+        </button>
+      </div>
+    </>
+  );
+};
+
+// Redux slice with enhanced state management
+const swapSlice = createSlice({
+  name: "swap",
+  initialState: {
+    config: {
+      theme: "dark",
+      buildUrl: true,
+      slippage: 0.5,
+    },
+    updateKey: "0",
+    history: [], // Track configuration changes for debugging
+  },
+  reducers: {
+    updateSwapConfig: (state, action) => {
+      state.history.push({
+        timestamp: Date.now(),
+        previous: { ...state.config },
+        changes: action.payload,
+      });
+      state.config = { ...state.config, ...action.payload };
+    },
+    incrementUpdateKey: (state) => {
+      state.updateKey = (parseInt(state.updateKey) + 1).toString();
+    },
+    resetConfig: (state) => {
+      state.config = {
+        theme: "dark",
+        buildUrl: true,
+        slippage: 0.5,
+      };
+      state.updateKey = Date.now().toString();
+    },
+  },
+});
+```
+
+</Accordion>
+
+<Accordion title="Zustand">
+
+```typescript
+import { create } from "zustand";
+import { subscribeWithSelector } from "zustand/middleware";
+
+interface SwapStore {
+  config: WidgetConfig;
+  updateKey: string;
+  isUpdating: boolean;
+  lastUpdate: number;
+
+  // Actions
+  updateConfig: (updates: Partial<WidgetConfig>) => void;
+  resetConfig: () => void;
+  setPreset: (presetName: string) => void;
+
+  // Advanced features
+  batchUpdate: (updates: Partial<WidgetConfig>[]) => void;
+  scheduleUpdate: (updates: Partial<WidgetConfig>, delay: number) => void;
+}
+
+const useSwapStore = create<SwapStore>()(
+  subscribeWithSelector((set, get) => ({
+    config: {
+      theme: "dark",
+      buildUrl: true,
+      slippage: 0.5,
+    },
+    updateKey: "0",
+    isUpdating: false,
+    lastUpdate: Date.now(),
+
+    updateConfig: (updates) =>
+      set((state) => ({
+        config: { ...state.config, ...updates },
+        updateKey: Date.now().toString(),
+        lastUpdate: Date.now(),
+        isUpdating: false,
+      })),
+
+    resetConfig: () =>
+      set({
+        config: {
+          theme: "dark",
+          buildUrl: true,
+          slippage: 0.5,
+        },
+        updateKey: Date.now().toString(),
+        lastUpdate: Date.now(),
+        isUpdating: false,
+      }),
+
+    setPreset: (presetName) => {
+      const presets: Record<string, Partial<WidgetConfig>> = {
+        "ethereum-usdc": {
+          fromChain: 1,
+          toChain: 1,
+          fromToken: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          toToken: "0xA0b86a33E6441C8FFa4c02bae5a0Dd0D8e87fb8e",
+        },
+        "cross-chain-usdc": {
+          fromChain: 1,
+          toChain: 137,
+          fromToken: "0xA0b86a33E6441C8FFa4c02bae5a0Dd0D8e87fb8e",
+          toToken: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+        },
+      };
+
+      const preset = presets[presetName];
+      if (preset) {
+        get().updateConfig(preset);
+      }
+    },
+
+    batchUpdate: (updates) => {
+      const mergedUpdate = updates.reduce(
+        (acc, update) => ({ ...acc, ...update }),
+        {}
+      );
+      get().updateConfig(mergedUpdate);
+    },
+
+    scheduleUpdate: (updates, delay) => {
+      set({ isUpdating: true });
+      setTimeout(() => {
+        get().updateConfig(updates);
+      }, delay);
+    },
+  }))
+);
+
+// Subscribe to config changes for debugging
+useSwapStore.subscribe(
+  (state) => state.config,
+  (config, previousConfig) => {
+    console.log("Config updated:", {
+      previous: previousConfig,
+      current: config,
+    });
+  }
+);
+
+const WidgetWithZustand = () => {
+  const { config, updateKey, updateConfig, setPreset, isUpdating } =
+    useSwapStore();
+
+  const handleQuickUpdate = () => {
+    updateConfig({
+      fromChain: 1,
+      toChain: 137,
+      fromAmount: 1000000,
+    });
+  };
+
+  return (
+    <div>
+      <GlueXWidget
+        config={{
+          ...config,
+          formUpdateKey: updateKey,
+        }}
+      />
+
+      <div className="controls">
+        <button onClick={handleQuickUpdate} disabled={isUpdating}>
+          Quick Cross-chain Setup
+        </button>
+        <button onClick={() => setPreset("ethereum-usdc")}>
+          ETH → USDC Preset
+        </button>
+        <button onClick={() => setPreset("cross-chain-usdc")}>
+          Cross-chain USDC
+        </button>
+      </div>
+    </div>
+  );
+};
+```
+
+</Accordion>
+
+<Accordion title="React Context">
+
+```typescript
+import { createContext, useContext, useReducer, useCallback } from "react";
+
+interface SwapState {
+  config: WidgetConfig;
+  updateKey: string;
+  loading: boolean;
+  error: string | null;
+  history: Array<{
+    timestamp: number;
+    action: string;
+    config: WidgetConfig;
+  }>;
+}
+
+type SwapAction =
+  | { type: "UPDATE_CONFIG"; payload: Partial<WidgetConfig> }
+  | { type: "RESET_CONFIG" }
+  | { type: "SET_LOADING"; payload: boolean }
+  | { type: "SET_ERROR"; payload: string | null }
+  | { type: "CLEAR_HISTORY" };
+
+const swapReducer = (state: SwapState, action: SwapAction): SwapState => {
+  switch (action.type) {
+    case "UPDATE_CONFIG":
+      const newConfig = { ...state.config, ...action.payload };
+      return {
+        ...state,
+        config: newConfig,
+        updateKey: Date.now().toString(),
+        error: null,
+        history: [
+          ...state.history.slice(-9), // Keep last 10 entries
+          {
+            timestamp: Date.now(),
+            action: "UPDATE_CONFIG",
+            config: newConfig,
+          },
+        ],
+      };
+
+    case "RESET_CONFIG":
+      const resetConfig = {
+        theme: "dark",
+        buildUrl: true,
+        slippage: 0.5,
+      };
+      return {
+        ...state,
+        config: resetConfig,
+        updateKey: Date.now().toString(),
+        error: null,
+        history: [
+          ...state.history.slice(-9),
+          {
+            timestamp: Date.now(),
+            action: "RESET_CONFIG",
+            config: resetConfig,
+          },
+        ],
+      };
+
+    case "SET_LOADING":
+      return { ...state, loading: action.payload };
+
+    case "SET_ERROR":
+      return { ...state, error: action.payload, loading: false };
+
+    case "CLEAR_HISTORY":
+      return { ...state, history: [] };
+
+    default:
+      return state;
+  }
+};
+
+const SwapContext = createContext<{
+  state: SwapState;
+  dispatch: React.Dispatch<SwapAction>;
+  updateConfig: (updates: Partial<WidgetConfig>) => void;
+  resetConfig: () => void;
+} | null>(null);
+
+export const SwapProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [state, dispatch] = useReducer(swapReducer, {
+    config: {
+      theme: "dark",
+      buildUrl: true,
+      slippage: 0.5,
+    },
+    updateKey: "0",
+    loading: false,
+    error: null,
+    history: [],
+  });
+
+  const updateConfig = useCallback((updates: Partial<WidgetConfig>) => {
+    dispatch({ type: "SET_LOADING", payload: true });
+
+    // Validate updates before applying
+    try {
+      // Add validation logic here
+      if (updates.fromAmount && updates.fromAmount < 0) {
+        throw new Error("Amount cannot be negative");
+      }
+
+      dispatch({ type: "UPDATE_CONFIG", payload: updates });
+    } catch (error) {
+      dispatch({ type: "SET_ERROR", payload: error.message });
+    } finally {
+      dispatch({ type: "SET_LOADING", payload: false });
+    }
+  }, []);
+
+  const resetConfig = useCallback(() => {
+    dispatch({ type: "RESET_CONFIG" });
+  }, []);
+
+  return (
+    <SwapContext.Provider
+      value={{ state, dispatch, updateConfig, resetConfig }}
+    >
+      {children}
+    </SwapContext.Provider>
+  );
+};
+
+const WidgetWithContext = () => {
+  const context = useContext(SwapContext);
+  if (!context) throw new Error("Must be used within SwapProvider");
+
+  const { state, updateConfig, resetConfig } = context;
+
+  const handleUpdateConfig = (updates: Partial<WidgetConfig>) => {
+    updateConfig(updates);
+  };
+
+  const handleChainSwitch = (fromChain: number, toChain: number) => {
+    updateConfig({
+      fromChain,
+      toChain,
+      // Clear token selection when chains change
+      fromToken: undefined,
+      toToken: undefined,
+    });
+  };
+
+  return (
+    <div>
+      <GlueXWidget
+        config={{
+          ...state.config,
+          formUpdateKey: state.updateKey,
+        }}
+      />
+
+      <div className="controls">
+        <button onClick={() => handleChainSwitch(1, 137)}>ETH → Polygon</button>
+        <button onClick={() => handleChainSwitch(137, 1)}>Polygon → ETH</button>
+        <button onClick={resetConfig}>Reset Configuration</button>
+
+        {state.error && <div className="error">Error: {state.error}</div>}
+
+        {state.loading && (
+          <div className="loading">Updating configuration...</div>
+        )}
+      </div>
+
+      {/* Debug panel - remove in production */}
+      <details>
+        <summary>Configuration History ({state.history.length})</summary>
+        <pre>{JSON.stringify(state.history, null, 2)}</pre>
+      </details>
+    </div>
+  );
+};
+```
+
+</Accordion>
+
+</AccordionGroup>
+
+### URL search params
+
+To initialize form values in the widget using URL search parameters, you must ensure that `buildUrl` is set to `true` in the widget configuration. This feature enables deep linking, shareable swap configurations, and easy integration with web analytics and tracking systems
+
+```typescript
+const config = {
+  // instruct the widget to use and build url search params
+  buildUrl: true,
+};
+```
+
+**Parameter Structure**
+
+The widget accepts the following URL search parameters with comprehensive support for all configurable values:
+
+```
+https://<base-url>?fromAmount=<amount>&fromChain=<chainId>&fromToken=<tokenAddress>&toAddress=<destinationAddress>&toChain=<chainId>&toToken=<tokenAddress>
+```
+
+**Parameter Reference:**
+
+| Parameter    | Type   | Description                                   | Example            |
+| ------------ | ------ | --------------------------------------------- | ------------------ |
+| `fromAmount` | string | Source token amount in token's decimal format | `1000000` (1 USDC) |
+| `fromChain`  | string | Source blockchain ID                          | `1` (Ethereum)     |
+| `fromToken`  | string | Source token contract address                 | `0xA0b86a33...`    |
+| `toAddress`  | string | Destination wallet address                    | `0x742d35Cc...`    |
+| `toChain`    | string | Destination blockchain ID                     | `137` (Polygon)    |
+| `toToken`    | string | Destination token contract address            | `0x2791Bca1...`    |
+
+**Best Practices**
+
+When constructing URLs programmatically, ensure proper encoding and validation:
+
+```typescript
+const buildSwapUrl = (baseUrl: string, params: SwapParams) => {
+  const urlParams = new URLSearchParams();
+
+  // Add parameters with proper validation
+  if (params.fromAmount && params.fromAmount > 0) {
+    urlParams.set("fromAmount", params.fromAmount.toString());
+  }
+
+  if (params.fromChain) {
+    urlParams.set("fromChain", params.fromChain.toString());
+  }
+
+  if (params.fromToken && isValidAddress(params.fromToken)) {
+    urlParams.set("fromToken", params.fromToken);
+  }
+
+  if (params.toAddress && isValidAddress(params.toAddress)) {
+    urlParams.set("toAddress", params.toAddress);
+  }
+
+  if (params.toChain) {
+    urlParams.set("toChain", params.toChain.toString());
+  }
+
+  if (params.toToken && isValidAddress(params.toToken)) {
+    urlParams.set("toToken", params.toToken);
+  }
+
+  if (params.slippage && params.slippage > 0 && params.slippage <= 50) {
+    urlParams.set("slippage", params.slippage.toString());
+  }
+
+  if (params.orderType && ["BUY", "SELL"].includes(params.orderType)) {
+    urlParams.set("orderType", params.orderType);
+  }
+
+  return `${baseUrl}?${urlParams.toString()}`;
+};
+
+// Helper function for address validation
+const isValidAddress = (address: string): boolean => {
+  return /^0x[a-fA-F0-9]{40}$/.test(address);
+};
+
+// Example usage
+const swapUrl = buildSwapUrl("https://your-domain.com/swap", {
+  fromAmount: 1000000,
+  fromChain: 1,
+  fromToken: "0xA0b86a33E6441C8FFa4c02bae5a0Dd0D8e87fb8e",
+  toAddress: "0x742d35Cc6634C0532925a3b8d5c01B4FBf1234567",
+  toChain: 137,
+  toToken: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+  slippage: 0.5,
+  orderType: "SELL",
+});
+```
+
+**URL Parameter Behavior**
+
+URL parameters only affect the widget's initialization state. Dynamically changing search parameters in the URL without triggering a page reload will not update the widget's form values. For runtime updates after initialization, use the Form Reference method or Configuration Updates approach described in other sections
+
+<Note>
+  Configuration values take precedence over URL search parameters. If you want
+  URL parameters to control initial form values, ensure that `fromAmount`,
+  `fromChain`, `fromToken`, `toAddress`, `toChain`, `toToken`, and other
+  relevant parameters are not defined in the widget configuration object. If
+  both configuration values and URL parameters are present, the widget will
+  overwrite URL parameters with configuration values and update the URL
+  accordingly
+</Note>
+
+**Advanced URL Management:**
+
+- **State Synchronization**: Implement bidirectional sync between URL params and application state
+- **Parameter Validation**: Validate all URL parameters before applying them to prevent invalid states
+- **Fallback Values**: Provide sensible defaults for missing or invalid URL parameters
+- **SEO Optimization**: Use descriptive URL structures for better search engine indexing
+- **Analytics Integration**: Track URL parameter usage for user behavior analysis
+
+### Form Ref
+
+The Form Reference method provides the most flexibility and granular control for programmatic manipulation of widget form values after initialization. This approach is ideal for building custom interfaces, creating advanced user experiences, or responding to complex user interactions and external system events
+
+```typescript Example.tsx
+export const WidgetPage = () => {
+  const formRef = useRef<FormState>(null);
+
+  const handleSetEthereum = () => {
+    // Set source chain to Ethereum with URL update
+    formRef.current?.setFieldValue("fromChain", 1, {
+      setUrlSearchParam: true,
+    });
+  };
+
+  const handleSetPolygon = () => {
+    // Set destination chain to Polygon without URL update
+    formRef.current?.setFieldValue("toChain", 137, {
+      setUrlSearchParam: false,
+    });
+  };
+
+  <div>
+    <GlueXWidget config={/*..*/} formRef={formRef} />
+
+    <div className="controls">
+      <button onClick={handleSetEthereum} type="button">
+        Set Source to Ethereum
+      </button>
+      <button onClick={handleSetPolygon} type="button">
+        Set Destination to Polygon
+      </button>
+    </div>
+  </div>;
+};
+```
+
+## Allow and Deny Lists
+
+The widget provides comprehensive `allow` and `deny` configuration options to give you precise control over which chains, tokens and liquidity sources can be utilized within your application. These filtering mechanisms enable you to create curated experiences that align with your business requirements, regulatory constraints, and user safety considerations
+
+### Chains
+
+Chain filtering allows you to restrict which blockchain networks are available to users, helping you focus on supported networks
+
+```typescript
+const config = {
+  chains: {
+    // Deny specific chains from being shown in the chains list
+    deny: [1, 56], // Disable Ethereum and BSC
+
+    // Allow only specific chains
+    allow: [137, 42161, 10], // Allow only Polygon, Arbitrum, and Optimism
+  },
+};
+```
+
+### Tokens
+
+Token filtering provides granular control over which tokens are available for trading, enabling you to create curated token lists that match your platform's focus
+
+```typescript
+const config = {
+  tokens: {
+    // Deny specific tokens (blacklist approach)
+    deny: [
+      {
+        address: "0x...",
+        chainId: 1,
+      },
+      {
+        address: "0x...",
+        chainId: 137,
+      },
+    ],
+
+    // Allow only specific tokens (whitelist approach)
+    allow: [
+      {
+        address: "0xA0b86a33E6441C8FFa4c02bae5a0Dd0D8e87fb8e",
+        symbol: "USDC",
+        decimals: 6,
+        chainId: 1,
+        name: "USD Coin",
+        logoURI:
+          "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png",
+      },
+      {
+        address: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+        symbol: "USDC",
+        decimals: 6,
+        chainId: 137,
+        name: "USD Coin (PoS)",
+        logoURI:
+          "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png",
+      },
+    ],
+  },
+};
+```
+
+#### Featured Tokens
+
+Create curated lists of featured tokens to guide users toward high quality, liquid trading pairs and improve the overall trading experience
+
+```typescript
+const config = {
+  tokens: {
+    featured: [
+      {
+        address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        symbol: "WETH",
+        decimals: 18,
+        chainId: 1,
+        name: "Wrapped Ether",
+        logoURI:
+          "https://assets.coingecko.com/coins/images/2518/thumb/weth.png",
+      },
+      {
+        address: "0xA0b86a33E6441C8FFa4c02bae5a0Dd0D8e87fb8e",
+        symbol: "USDC",
+        decimals: 6,
+        chainId: 1,
+        name: "USD Coin",
+        logoURI:
+          "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png",
+      },
+      {
+        address: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+        symbol: "DAI",
+        decimals: 18,
+        chainId: 1,
+        name: "Dai Stablecoin",
+        logoURI:
+          "https://assets.coingecko.com/coins/images/9956/thumb/Badge_Dai.png",
+      },
+    ],
+  },
+};
+```
+
+### Liquidity Sources
+
+Control which liquidity sources and protocols are utilized for trade execution using the `modulesFilter` parameter, enabling you to optimize for specific characteristics like gas efficiency, slippage, or execution speed
+
+```typescript
+const config = {
+  modulesFilter: ["module_1", "module_2"],
+};
+```
+
+In this example, the router would only consider paths involving module_1 and module_2 liquidity, even if other more optimal routes existed on different protocols
+
+<Note>
+  To get the most current list of supported modules and their identifiers, you
+  can visit the [liquidity modules documentation
+  page](/documentation/get-started/introduction) or check the [live module
+  registry](https://router.gluex.xyz/liquidity)
+</Note>
+
+**Liquidity Source Management Best Practices:**
+
+- **Diversification**: Use multiple sources to ensure route availability and competitive pricing
+- **Regular Updates**: Keep module lists updated as new protocols launch and others become deprecated
+- **Reliability Focus**: Prioritize well-established protocols with proven track records
+
+## Destination address
+
+Developers can use the `toAddress` option to configure the destination address. The address property is required, while the name and logoURI properties are optional
+
+```typescript
+const config = {
+  toAddress: {
+    name: "Vault Deposit",
+    address: "0xMy...VaultAddress",
+    logoURI: "https://vault.address/image.svg",
+  },
+};
+```

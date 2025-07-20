@@ -1,0 +1,134 @@
+---
+title: "Variants and Sub-Variants"
+description: ""
+---
+
+GlueX widget comes in two variants - **compact** and **drawer**. Variants allow customization of the exterior of the widget, like the presenting as a drawer. There are also several subvariants that helps to customize the interior look and feel as well as functionality
+
+<video
+  autoPlay
+  muted
+  loop
+  playsInline
+  className="w-full aspect-video rounded-xl"
+  src="/images/products/widget/video/variant.webm"
+></video>
+
+## Variant
+
+Choose how the widget is presented on your page - a compact overlay for minimal footprint or a sliding drawer for a richer, side panel experience
+
+| Property   | Type                  | Default   | Notes |
+| ---------- | --------------------- | --------- | ----- |
+| variant    | "compact" \| "drawer" | "compact" |       |
+| subvariant | "router" \| "earn"    | "router"  |       |
+
+<Note>
+  Check out the [GlueX Studio](https://studio.gluex.xyz/playground) to play
+  around with variants
+</Note>
+
+To use one of the variants, set the variant option in the widget configuration
+
+```ts
+const config = {
+  // either of "compact" or "drawer"
+  variant: "drawer",
+
+  // either of "router" or "earn"
+  subvariant: "router",
+};
+```
+
+### Compact (Default)
+
+The compact variant is ideal for scenarios where screen real estate is limited, such as smaller screens or integrated sections of your web application. It provides all essential functionalities in a condensed view, allowing easy embedding anywhere on your page
+
+<img
+  className="rounded"
+  src="/images/products/widget/image/compact.png"
+  alt="widget variant - compact"
+/>
+
+To use the **compact** variant, set the variant option in the widget configuration
+
+```ts
+const config = {
+  // .. rest of the configuration ..
+  variant: "compact",
+};
+```
+
+### Drawer
+
+The drawer variant presents the widget as a sliding side panel, offering a richer user experience. It can be dynamically shown or hidden based on user interaction and maintains the same layout as the compact variant
+
+<img
+  className="rounded"
+  src="/images/products/widget/image/drawer.png"
+  alt="widget variant - drawer"
+/>
+
+To use the **drawer** variant, set the variant option in the widget configuration
+
+```ts
+const config = {
+  // .. rest of the configuration ..
+  variant: "drawer",
+};
+```
+
+**How do we control the drawer?**
+
+The drawer doesn’t have a pre built button to open and close it. To control the drawer you need to create and assign a `ref` to the widget
+
+Here is an example of controlling the drawer with ref:
+
+```typescript
+export const WidgetPage = () => {
+  const drawerRef = useRef<WidgetDrawer>(null);
+
+  const toggleWidget = () => {
+    drawerRef.current.toggleDrawer();
+  };
+
+  return (
+    <>
+      <button onClick={toggleWidget}>Open Widget</button>
+      <GlueXWidget
+        ref={drawerRef}
+        config={{
+          /* .. rest of the config .. */
+          variant: "drawer",
+        }}
+      />
+    </>
+  );
+};
+```
+
+## Sub Variant
+
+Subvariants enable you to present different workflows or specialized functionalities to your users within the widget
+
+To use a specific subvariant, simply set the subvariant option in your widget configuration
+
+```typescript
+const config = {
+  variant: "compact",
+  subvariant: "router",
+};
+```
+
+### Router (Default)
+
+The "router" (or default) subvariant provides the standard routing functionality in a compact view, allowing users to perform swaps or other core operations and is suitable for general purpose use
+
+To use the **router** variant, set the subvariant option in the widget configuration
+
+```ts
+const config = {
+  // .. rest of the configuration ..
+  subvariant: "router",
+};
+```

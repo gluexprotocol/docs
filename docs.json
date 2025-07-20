@@ -119,7 +119,10 @@
           {
             "group": "Exchange Rate",
             "pages": [
-              "build-with-gluex/exchange-rate/overview"
+              "build-with-gluex/exchange-rate/overview",
+              "build-with-gluex/exchange-rate/api-endpoints",
+              "build-with-gluex/exchange-rate/request-response-format",
+              "build-with-gluex/exchange-rate/api-tiers-limits"
             ]
           },
           {
@@ -149,9 +152,10 @@
                 ]
               },
               "build-with-gluex/widget/configuration",
+              "build-with-gluex/widget/variants",
               "build-with-gluex/widget/customizations",
               "build-with-gluex/widget/events",
-              "build-with-gluex/widget/wallets",
+              "build-with-gluex/widget/wallet-management",
               "build-with-gluex/widget/i18n"
             ]
           }

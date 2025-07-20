@@ -1,0 +1,69 @@
+---
+title: "Request and Response Format"
+description: "This document outlines the structure of requests and responses for Exchange Rate (common fields and endpoint specific fields)"
+---
+
+This document provides a comprehensive guide to the structures used when interacting with the Exchange Rate API. Understanding these formats is crucial for correctly constructing your requests and parsing the API responses
+
+## Request Parameters
+
+The following parameters may be included in the request payload for `/` endpoint
+
+| Name                  | Type   | Required | Description                                        |
+| --------------------- | ------ | -------- | -------------------------------------------------- |
+| `domestic_blockchain` | string | ✅       | Identifier for the domestic chain (eg: `ethereum`) |
+| `domestic_token`      | string | ✅       | Address of the domestic token                      |
+| `foreign_blockchain`  | string | ✅       | Identifier for the foreign chain                   |
+| `foreign_token`       | string | ✅       | Address of the foreign token                       |
+
+**Example Request Body**
+
+```json
+[
+  {
+    "domestic_blockchain": "ethereum",
+    "domestic_token": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "foreign_blockchain": "ethereum",
+    "foreign_token": "0xdac17f958d2ee523a2206206994597c13d831ec7"
+  },
+  {
+    "domestic_blockchain": "polygon",
+    "domestic_token": "0x2791bca1f2de4661ed88a30c99a7a9226cbefc3f",
+    "foreign_blockchain": "ethereum",
+    "foreign_token": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+  }
+]
+```
+
+## Common Response Fields
+
+The following fields are returned in both `/v1/price` and `/v1/quote` responses.
+
+| Field                 | Type   | Description                                                                                                                            |
+| --------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `domestic_blockchain` | string | Identifier for the domestic chain (eg: `ethereum`)                                                                                     |
+| `domestic_token`      | string | Address of the domestic token                                                                                                          |
+| `foreign_blockchain`  | string | Identifier for the foreign chain                                                                                                       |
+| `foreign_token`       | string | Address of the foreign token                                                                                                           |
+| `price`               | number | The exchange rate between the two tokens. This represents how much of the `foreign_token` you get for one unit of the `domestic_token` |
+
+**Example Response**
+
+```json
+[
+  {
+    "domestic_blockchain": "ethereum",
+    "domestic_token": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "foreign_blockchain": "ethereum",
+    "foreign_token": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+    "price": 1.00025
+  },
+  {
+    "domestic_blockchain": "polygon",
+    "domestic_token": "0x2791bca1f2de4661ed88a30c99a7a9226cbefc3f",
+    "foreign_blockchain": "ethereum",
+    "foreign_token": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "price": 0.00032
+  }
+]
+```

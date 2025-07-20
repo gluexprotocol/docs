@@ -4,20 +4,30 @@ description: ""
 ---
 
 The GlueX Widget provides a comprehensive event system through the `useWidgetEvents` hook that allows you to subscribe to various widget events.
-This enables users to track swap progress, monitor quote execution, observe chain and token selections, track UI interactions and more
+These hooks helps you retrieve helpful information and to track swap progress, monitor quote execution, observe chain and token selections, track UI interactions and more
+
+<Note>
+  We actively work on extending the list of available widget events. If you need
+  support for a specific event, please contact us via our [support
+  channels](https://bento.me/gluex-protocol)
+</Note>
 
 ## Setup
 
 First, import the necessary types and hooks:
 
 ```tsx
-import { WidgetEvent, useWidgetEvents, type Route, type RouteExecutionUpdate } from "@gluex/widget";
+import {
+  WidgetEvent,
+  useWidgetEvents,
+  type Route,
+  type RouteExecutionUpdate,
+} from "@gluex/widget";
 
 export const WidgetEvents = () => {
-  const widgetEvents = useWidgetEvents();
+  const events = useWidgetEvents();
 
   useEffect(() => {
-    // Event handlers for route execution
     const onRouteExecutionStarted = (route: Route) => {
       // Handle route start
     };
@@ -29,26 +39,34 @@ export const WidgetEvents = () => {
     const onRouteExecutionCompleted = (route: Route) => {
       // Handle route completion
     };
-    
+
     const onRouteExecutionFailed = (update: RouteExecutionUpdate) => {
       // Handle route failure
     };
 
-    // Subscribe to events
-    widgetEvents.on(WidgetEvent.RouteExecutionStarted, onRouteExecutionStarted);
-    widgetEvents.on(WidgetEvent.RouteExecutionUpdated, onRouteExecutionUpdated);
-    widgetEvents.on(WidgetEvent.RouteExecutionCompleted, onRouteExecutionCompleted);
-    widgetEvents.on(WidgetEvent.RouteExecutionFailed, onRouteExecutionFailed);
+    events.on(WidgetEvent.RouteExecutionStarted, onRouteExecutionStarted);
+    events.on(WidgetEvent.RouteExecutionUpdated, onRouteExecutionUpdated);
+    events.on(WidgetEvent.RouteExecutionCompleted, onRouteExecutionCompleted);
+    events.on(WidgetEvent.RouteExecutionFailed, onRouteExecutionFailed);
 
     // Cleanup subscriptions
-    return () => widgetEvents.all.clear();
-  }, [widgetEvents]);
+    return () => {
+      events.all.clear();
+    };
+  }, [events]);
 
-  return null;
+  return <></>;
 };
 ```
 
-## Available Events
+<Note>
+  For optimal performance and to avoid unnecessary re-renders or unexpected
+  behavior in your main widget component, we recommend using the
+  `useWidgetEvents` hook outside of the component where the primary
+  `GlueXWidget` is rendered
+</Note>
+
+## Event Type
 
 The widget emits various events that you can listen to:
 
@@ -72,7 +90,6 @@ enum WidgetEvent {
 
   // UI and Form Events
   PageEntered = "pageEntered"
-  WidgetExpanded = "widgetExpanded"
   FormFieldChanged = "formFieldChanged"
   SettingUpdated = "settingUpdated"
   TokenSearch = "tokenSearch"
@@ -80,3 +97,516 @@ enum WidgetEvent {
 }
 ```
 
+## Available Events
+
+### Route Events
+
+#### RouteExecutionStarted
+
+Fires when the user clicks the "Start swapping" or "Start bridging" button, initiating the execution of a selected route. This marks the beginning of the cross-chain transaction process.
+
+**Payload**: `Route`
+
+```typescript
+interface Route {
+  id: string; // Unique identifier for this route instance
+  fromChainId: number; // Numeric ID of source chain (e.g. 1 = Ethereum, 137 = Polygon)
+  fromAddress?: string; // Wallet address tokens are taken from (if pre-filled)
+  fromToken: TokenWithPriceAndAmount & WithAdditionalDetails; // Source token metadata + price/amount info
+  fromAmount: string; // Amount of source token user requested (in token units)
+  effectiveFromAmount?: string; // Actual amount used after fee/slippage adjustments
+  fromAmountUSD: string; // USD value of `fromAmount`
+  toChainId: number; // Numeric ID of destination chain
+  toAddress?: string; // Destination wallet address (if sending to different wallet)
+  toToken: TokenWithPriceAndAmount & WithAdditionalDetails; // Destination token metadata + price/amount info
+  toAmount: string; // Expected amount of destination token
+  toAmountReceive: string; // Amount that will actually arrive (after fees)
+  toAmountMin: string; // Minimum acceptable output (slippage protection floor)
+  toAmountUSD: string; // USD value of `toAmount`
+  gasCostUSD?: string; // Estimated gas cost in USD
+  steps: GlueXStep[]; // Ordered list of low-level execution steps (bridge, swap, etc.)
+}
+```
+
+**Handler**:
+
+```typescript
+const onRouteExecutionStarted = (route: Route) => {
+  console.log("Route execution started:", route.id);
+  console.log(
+    `Converting ${route.fromAmount} ${route.fromToken.symbol} on chain ${route.fromChainId}`
+  );
+  console.log(
+    `Expected to receive ${route.toAmountReceive} ${route.toToken.symbol} on chain ${route.toChainId}`
+  );
+};
+```
+
+#### RouteExecutionUpdated
+
+Fires during route execution to provide real-time progress updates. Contains the current process step and updated route information, allowing you to track execution progress and display status to users.
+
+**Payload**: `RouteExecutionUpdate`
+
+```typescript
+interface RouteExecutionUpdate {
+  route: Route; // Updated route object with current state
+  process: Process; // Current execution process details
+}
+
+interface Process {
+  id: string; // Unique process identifier
+  status: ProcessStatus; // Current status (pending, running, completed, failed)
+  type: ProcessType; // Type of process (swap, bridge, approval, etc.)
+  txHash?: string; // Transaction hash if available
+  message?: string; // Human-readable status message
+  error?: string; // Error message if process failed
+}
+```
+
+**Handler**:
+
+```typescript
+const onRouteExecutionUpdated = (update: RouteExecutionUpdate) => {
+  const { route, process } = update;
+
+  console.log(`Route ${route.id} update:`, process.status);
+  console.log(`Current step: ${process.type}`);
+
+  if (process.txHash) {
+    console.log(`Transaction hash: ${process.txHash}`);
+  }
+};
+```
+
+#### RouteExecutionCompleted
+
+Fires when a route execution completes successfully. All steps have been executed and the user has received their destination tokens.
+
+**Payload**: `Route`
+
+**Handler**:
+
+```typescript
+const onRouteExecutionCompleted = (route: Route) => {
+  console.log("Route execution completed successfully:", route.id);
+  console.log(
+    `Successfully converted ${route.fromAmount} ${route.fromToken.symbol} to ${route.toAmountReceive} ${route.toToken.symbol}`
+  );
+
+  // Show success notification
+  showSuccessNotification(
+    `Swap completed! You received ${route.toAmountReceive} ${route.toToken.symbol}`
+  );
+};
+```
+
+#### RouteExecutionFailed
+
+Fires when route execution fails at any step. Provides details about the failure through the process object.
+
+**Payload**: `RouteExecutionUpdate`
+
+**Handler**:
+
+```typescript
+const onRouteExecutionFailed = (update: RouteExecutionUpdate) => {
+  const { route, process } = update;
+
+  console.error("Route execution failed:", route.id);
+  console.error("Failure reason:", process.error);
+
+  // Show error notification to user
+  showErrorNotification(
+    `Swap failed: ${process.error || "Unknown error occurred"}`
+  );
+};
+```
+
+#### RouteHighValueLoss
+
+Fires when the system detects a significant value loss (high slippage, fees, or unfavorable market conditions) and displays a warning to the user.
+
+**Payload**: `RouteHighValueLossUpdate`
+
+```typescript
+interface RouteHighValueLossUpdate {
+  fromAmountUSD: number; // USD value of input amount
+  toAmountUSD: number; // USD value of expected output
+  gasCostUSD?: number; // Estimated gas costs in USD
+  feeCostUSD?: number; // Protocol/bridge fees in USD
+  valueLoss: number; // Total value loss as percentage (0.05 = 5%)
+}
+```
+
+**Handler**:
+
+```typescript
+const onRouteHighValueLoss = (valueLoss: RouteHighValueLossUpdate) => {
+  console.warn("High value loss detected:");
+  console.warn(`Input: $${valueLoss.fromAmountUSD}`);
+  console.warn(`Output: $${valueLoss.toAmountUSD}`);
+  console.warn(`Total loss: ${(valueLoss.valueLoss * 100).toFixed(2)}%`);
+
+  // Show warning modal
+  showHighValueLossWarning({
+    inputValue: valueLoss.fromAmountUSD,
+    outputValue: valueLoss.toAmountUSD,
+    lossPercentage: valueLoss.valueLoss,
+    gasCost: valueLoss.gasCostUSD,
+    fees: valueLoss.feeCostUSD,
+  });
+};
+```
+
+#### RouteSelected
+
+Fires when a user selects a specific route from the available options. This happens before execution begins.
+
+**Payload**: `RouteSelected`
+
+```typescript
+interface RouteSelected {
+  route: Route; // The selected route object
+}
+```
+
+**Handler**:
+
+```typescript
+const onRouteSelected = (selection: RouteSelected) => {
+  const { route } = selection;
+
+  console.log("Route selected:", route.id);
+  console.log(
+    `Route details: ${route.fromToken.symbol} → ${route.toToken.symbol}`
+  );
+  console.log(`Estimated output: ${route.toAmount} ${route.toToken.symbol}`);
+};
+```
+
+### Token and Chain Selection Events
+
+#### SourceChainTokenSelected
+
+Fires when the user selects or changes the source chain and token combination.
+
+**Payload**: `ChainTokenSelected`
+
+```typescript
+interface ChainTokenSelected {
+  chainId: Chain["id"]; // Numeric chain ID (e.g., 1 for Ethereum)
+  tokenAddress: string; // Token contract address (or "0x0" for native tokens)
+}
+```
+
+**Handler**:
+
+```typescript
+const onSourceChainTokenSelected = (selection: ChainTokenSelected) => {
+  console.log(
+    `Source selected: Token ${selection.tokenAddress} on chain ${selection.chainId}`
+  );
+};
+```
+
+#### DestinationChainTokenSelected
+
+Fires when the user selects or changes the destination chain and token combination.
+
+**Payload**: `ChainTokenSelected`
+
+**Handler**:
+
+```typescript
+const onDestinationChainTokenSelected = (selection: ChainTokenSelected) => {
+  console.log(
+    `Destination selected: Token ${selection.tokenAddress} on chain ${selection.chainId}`
+  );
+};
+```
+
+### Wallet Events
+
+#### WalletConnected
+
+Fires when a user successfully connects their wallet through the widget's internal wallet management UI.
+
+**Payload**: `WalletConnected`
+
+```typescript
+interface WalletConnected {
+  address?: string; // Connected wallet address
+  chainId?: number; // Currently connected chain ID
+  chainType?: ChainType; // Type of chain (EVM, Solana, etc.)
+}
+```
+
+**Handler**:
+
+```typescript
+const onWalletConnected = (wallet: WalletConnected) => {
+  console.log("Wallet connected:", wallet.address);
+  console.log("Connected to chain:", wallet.chainId);
+};
+```
+
+#### SendToWalletToggled
+
+Fires when the user toggles the "send to different wallet" option by clicking the wallet icon next to the action button.
+
+**Payload**: `boolean` (true if enabled, false if disabled)
+
+**Handler**:
+
+```typescript
+const onSendToWalletToggled = (isEnabled: boolean) => {
+  console.log("Send to wallet toggled:", isEnabled);
+
+  if (isEnabled) {
+    // Show destination wallet input
+    showDestinationWalletInput();
+    console.log("User can now specify a different destination wallet");
+  } else {
+    // Hide destination wallet input
+    hideDestinationWalletInput();
+    console.log("Tokens will be sent to connected wallet");
+  }
+};
+```
+
+### UI and Navigation Events
+
+#### PageEntered
+
+Fires when the user navigates to a different page within the widget.
+
+**Payload**: `NavigationRouteType` (string indicating the page/route name)
+
+**Handler**:
+
+```typescript
+const onPageEntered = (page: NavigationRouteType) => {
+  console.log("User navigated to page:", page);
+};
+```
+
+#### ReviewTransactionPageEntered
+
+Fires when the user enters the transaction review page by clicking on a specific route.
+
+**Payload**: `Route` (optional - the route being reviewed)
+
+**Handler**:
+
+```typescript
+const onReviewTransactionPageEntered = (route?: Route) => {
+  console.log("User entered transaction review page");
+
+  if (route) {
+    console.log("Reviewing route:", route.id);
+    console.log(
+      `Route summary: ${route.fromAmount} ${route.fromToken.symbol} → ${route.toAmount} ${route.toToken.symbol}`
+    );
+
+    // Pre-populate review page with route details
+    populateReviewPage(route);
+  }
+
+  // Track review page entry
+  analytics.track("review_page_entered", {
+    routeId: route?.id,
+    hasRoute: !!route,
+  });
+
+  // Show transaction warnings or additional info
+  showTransactionWarnings(route);
+};
+```
+
+### Form and Settings Events
+
+#### FormFieldChanged
+
+Fires whenever any form field value changes in the widget (amount input, slippage settings, etc.).
+
+**Payload**: `FormFieldChanged`
+
+```typescript
+type FormFieldChanged = {
+  [K in keyof DefaultValues]: {
+    fieldName: K; // Name of the changed field
+    newValue: DefaultValues[K]; // New value
+    oldValue: DefaultValues[K]; // Previous value
+  };
+}[keyof DefaultValues];
+```
+
+**Handler**:
+
+```typescript
+const onFormFieldChanged = (change: FormFieldChanged) => {
+  console.log(`Form field "${change.fieldName}" changed:`);
+  console.log(`  Old value: ${change.oldValue}`);
+  console.log(`  New value: ${change.newValue}`);
+
+  // Field-specific logic
+  switch (change.fieldName) {
+    case "amount":
+      // Recalculate routes when amount changes
+      if (change.newValue && parseFloat(change.newValue) > 0) {
+        debounceRecalculateRoutes();
+      }
+      break;
+    case "slippage":
+      // Update slippage warnings
+      validateSlippageSetting(change.newValue);
+      break;
+  }
+};
+```
+
+#### SettingUpdated
+
+Fires when any widget setting is updated (theme, slippage tolerance, gas price, etc.).
+
+**Payload**: `SettingUpdated`
+
+```typescript
+interface SettingUpdated<K extends keyof SettingsProps = keyof SettingsProps> {
+  setting: K; // Name of the updated setting
+  newValue: SettingsProps[K]; // New setting value
+  oldValue: SettingsProps[K]; // Previous setting value
+  newSettings: SettingsProps; // Complete updated settings object
+  oldSettings: SettingsProps; // Complete previous settings object
+}
+```
+
+**Handler**:
+
+```typescript
+const onSettingUpdated = (update: SettingUpdated) => {
+  console.log(`Setting "${update.setting}" updated:`);
+  console.log(`  Old value: ${update.oldValue}`);
+  console.log(`  New value: ${update.newValue}`);
+};
+```
+
+#### TokenSearch
+
+Fires when the user searches for tokens in the token selection interface.
+
+**Payload**: `TokenSearch`
+
+```typescript
+interface TokenSearch {
+  value: string; // Search query entered by user
+  tokens: TokenWithPriceAndAmount[]; // Array of tokens matching the search
+}
+```
+
+**Handler**:
+
+```typescript
+const onTokenSearch = (search: TokenSearch) => {
+  console.log(`User searched for: "${search.value}"`);
+  console.log(`Found ${search.tokens.length} matching tokens`);
+
+  // Display search results
+  displaySearchResults(search.tokens);
+};
+```
+
+### Error and Support Events
+
+#### TransactionError
+
+Fires when a transaction error occurs during route execution, providing detailed error information for debugging and support.
+
+**Payload**: `TransactionErrorEvent`
+
+```typescript
+interface TransactionErrorEvent {
+  supportId?: string; // Unique support ID for tracking
+  errorCode: string; // Standardized error code
+  errorMessage: string; // Human-readable error message
+  chainId?: number; // Chain where error occurred
+  tokenSymbol?: string; // Token involved in failed transaction
+  toolName?: string; // Bridge/DEX tool that failed
+  stepType?: string; // Type of step that failed (swap, bridge, approval)
+  txHash?: string; // Transaction hash if available
+  timestamp: string; // ISO timestamp of error
+}
+```
+
+**Handler**:
+
+```typescript
+const onTransactionError = (error: TransactionErrorEvent) => {
+  console.error("Transaction error occurred:");
+  console.error(`  Error code: ${error.errorCode}`);
+  console.error(`  Message: ${error.errorMessage}`);
+  console.error(`  Support ID: ${error.supportId}`);
+
+  if (error.txHash) {
+    console.error(`  Transaction: ${error.txHash}`);
+  }
+
+  // Show user-friendly error message
+  showErrorNotification({
+    title: "Transaction Failed",
+    message: error.errorMessage,
+    supportId: error.supportId,
+    actionButton: "Contact Support",
+  });
+};
+```
+
+#### ContactSupport
+
+Fires when the user clicks the "Contact support" button, typically from the transaction details page or error states.
+
+**Payload**: `ContactSupport`
+
+```typescript
+interface ContactSupport {
+  supportId?: string; // Unique identifier for support context
+}
+```
+
+**Handler**:
+
+```typescript
+const onContactSupport = (support: ContactSupport) => {
+  console.log("User requesting support");
+
+  if (support.supportId) {
+    console.log(`Support ID: ${support.supportId}`);
+  }
+};
+```
+
+#### LowAddressActivityConfirmed
+
+Fires when the user confirms they want to proceed despite low activity on the destination address, typically shown as a security warning.
+
+**Payload**: `LowAddressActivityConfirmed`
+
+```typescript
+interface LowAddressActivityConfirmed {
+  address: string; // The address with low activity
+  chainId: number; // Chain ID where address has low activity
+}
+```
+
+**Handler**:
+
+```typescript
+const onLowAddressActivityConfirmed = (
+  confirmation: LowAddressActivityConfirmed
+) => {
+  console.log("User confirmed low activity address:");
+  console.log(`  Address: ${confirmation.address}`);
+  console.log(`  Chain ID: ${confirmation.chainId}`);
+};
+```

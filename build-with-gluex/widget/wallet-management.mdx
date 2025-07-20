@@ -1,0 +1,105 @@
+---
+title: "Wallet Management"
+description: ""
+---
+
+The widget comes with a built in wallet management interface, allowing developers or partners to use the widget as a standalone application.
+However, when embedding the widget into an existing application, reusing the existing wallet management interface of that app makes the most sense
+
+<video
+  autoPlay
+  muted
+  loop
+  playsInline
+  className="w-full aspect-video rounded-xl"
+  src="/images/products/widget/video/wallet-management.webm"
+></video>
+
+## Wagmi
+
+The widget primarily uses [Wagmi](https://wagmi.sh/) internally and offers excellent support for all wagmi based libraries such as [RainbowKit](https://rainbowkit.com), [ReownAppKit](https://reown.com), [Dynamic](http://dynamic.xyz), etc.
+
+If your application already handles wallet management using wagmi or wagmi based library the widget will automatically detect if it's wrapped in `WagmiProvider` and reuse your existing wallet management setup without any extra configuration
+
+Here's an example of how to preconfigure basic wallet management using wagmi:
+
+```typescript
+import { GlueXWidget } from "@gluex/widget";
+
+import { createClient } from "viem";
+import { WagmiProvider, createConfig, http } from "wagmi";
+import { mainnet } from "wagmi/chains";
+import { injected } from "wagmi/connectors";
+
+const wagmiConfig = createConfig({
+  chains: [mainnet],
+  connectors: [injected()],
+  client({ chain }) {
+    return createClient({ chain, transport: http() });
+  },
+});
+
+export const WidgetPage = () => {
+  return (
+    <WagmiProvider config={wagmiConfig} reconnectOnMount>
+      <GlueXWidget config={/*..*/} />
+    </WagmiProvider>
+  );
+};
+```
+
+**Manage Chains**
+
+It's crucial to keep your wagmi chains configuration synchronized with the widget's chain list.
+This ensures all functionalities, such as switching chains, work correctly. You have two main approaches for this:
+
+- **Manual Configuration**: Manually update both the widget and wagmi chain configurations to include all the chains you want to support in your application and the widget. Refer to the configuration page for more details on the widget’s chain configuration
+
+- **Dynamic Updates**: Get all available chains supported by GlueX and dynamically update your wagmi configuration. The widget provides hooks to simplify this approach
+
+```typescript
+import React, { useRef } from "react";
+
+import { useSyncWagmiConfig } from "@gluex/wallet-management";
+import { injected } from "@wagmi/connectors";
+import { createClient, http } from "viem";
+import { mainnet } from "viem/chains";
+import { createConfig, WagmiProvider, type Config } from "wagmi";
+
+const connectors = [injected()];
+
+export const WalletProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
+  const wagmi = useRef<Config>();
+
+  if (!wagmi.current) {
+    wagmi.current = createConfig({
+      chains: [mainnet],
+      client({ chain }) {
+        return createClient({ chain, transport: http() });
+      },
+      ssr: true,
+    });
+  }
+
+  useSyncWagmiConfig(wagmi.current, connectors, [
+    /*.. chains ..*/
+  ]);
+
+  return (
+    <WagmiProvider config={wagmi.current} reconnectOnMount={false}>
+      {children}
+    </WagmiProvider>
+  );
+};
+```
+
+<Info>
+  For a complete working example, check out our [example
+  repository](https://github.com/gluexprotocol/gluex-examples)
+</Info>
+
+## Ethers.js
+
+If you're using [Ethers.js](https://docs.ethers.org/v5) or any other alternative library in your project, you can still integrate with the widget. You'll need to convert your `Signer / Provider` objects to wagmi’s [injected connector](https://wagmi.sh/react/api/connectors/injected) before wrapping the widget with `WagmiProvider`
