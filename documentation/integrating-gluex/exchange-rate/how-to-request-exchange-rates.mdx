@@ -1,15 +1,28 @@
 ---
-title: "How to Request Exchange Rates"
-description: "Step-by-step guide to fetch exchange rates for token pairs using the GlueX Exchange Rates API."
+title: "Requesting Exchange Rates"
+description: "A comprehensive guide to fetch exchange rates for any token pairs"
 ---
 
-## Overview
+This guide provides a structured, step by step approach to fetch exchange rates for token pair using GlueX Exchange Rates API. It covers everything about fetching exchange rates, from basic requests to advanced implementation patterns for production applications
 
-This tutorial walks you through fetching on-chain exchange rates for any token pairs using the GlueX Exchange Rates API.
+## Prerequisites
 
-## Step 1: Prepare Your Request
+Before you begin, ensure you have:
 
-The API expects a POST request with a JSON body specifying the token pairs and blockchains.
+- Basic understanding of REST API concepts
+- Access to a development environment with HTTP request capabilities
+- Understanding of blockchain token addresses and chain identifiers
+
+## Preparing the Request
+
+The Exchange Rates API uses a flexible request structure that supports both single token lookups and batch operations
+
+### Request Body
+
+- **domestic_token**: The primary token address you want to price
+- **domestic_blockchain**: The blockchain where the domestic token resides
+- **foreign_blockchain**: The blockchain for the comparison token
+- **foreign_token**: The comparison token address
 
 ```json
 [
@@ -28,19 +41,17 @@ The API expects a POST request with a JSON body specifying the token pairs and b
 ]
 ```
 
-## Step 2: Make the Request
+## Making the Request
 
-### Using curl
+<CodeGroup>
 
-```bash
+```bash bash
 curl -X POST "https://exchange-rates.gluex.xyz" \
   -H "Content-Type: application/json" \
   -d '[{"domestic_token": "tokenA-address", "foreign_token": null, "domestic_blockchain": "blockchain_id_1", "foreign_blockchain": "blockchain_id_1"}, {"domestic_token": "tokenB-address", "foreign_token": "tokenC-address", "domestic_blockchain": "blockchain_id_2", "foreign_blockchain": "blockchain_id_2"}]'
 ```
 
-### Using Python
-
-```python
+```python python
 import requests
 import json
 
@@ -64,9 +75,11 @@ response = requests.post(url, headers=headers, data=json.dumps(data))
 print(response.json())
 ```
 
-## Step 3: Handle the Response
+</CodeGroup>
 
-The response will contain a list of exchange rates for the requested token pairs.
+## Handling the Response
+
+The response will contain a list of exchange rates for the requested token pairs
 
 ```json
 [
@@ -87,4 +100,4 @@ The response will contain a list of exchange rates for the requested token pairs
 ]
 ```
 
-You're ready to integrate real-time exchange rates into your app!
+You're ready to integrate real time exchange rates into your app!

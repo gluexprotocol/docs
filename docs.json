@@ -61,7 +61,9 @@
           {
             "group": "Using GlueX",
             "pages": [
-              "documentation/integrating-gluex/getting-an-api-key"
+              "documentation/integrating-gluex/getting-an-api-key",
+              "documentation/integrating-gluex/router/getting-your-first-quote",
+              "documentation/integrating-gluex/exchange-rate/how-to-request-exchange-rates"
             ]
           },
           {
@@ -70,7 +72,8 @@
               "documentation/requests/token-list-or-asset-update-request",
               "documentation/requests/liquidity-module-integration-request",
               "documentation/requests/chain-integration-request",
-              "documentation/requests/feature-request"
+              "documentation/requests/feature-request",
+              "documentation/requests/support-ticket"
             ]
           },
           {
@@ -186,14 +189,19 @@
             "pages": [
               "api-reference/router-api/get-liquidity",
               "api-reference/router-api/post-price",
-              "api-reference/router-api/post-quote"
+              "api-reference/router-api/post-quote",
+              "api-reference/router-api/rate-limits",
+              "api-reference/router-api/api-authentication",
+              "api-reference/router-api/error-codes"
             ]
           },
           {
             "group": "Exchange Rates API",
             "pages": [
-              "api-reference/exchange-rate-api/get-chains",
-              "api-reference/exchange-rate-api/post-price"
+              "api-reference/exchange-rate-api/post-price",
+              "api-reference/exchange-rate-api/rate-limits",
+              "api-reference/exchange-rate-api/api-authentication",
+              "api-reference/exchange-rate-api/error-codes"
             ]
           },
           {
@@ -202,45 +210,19 @@
               "api-reference/yield-api/get-protocols",
               "api-reference/yield-api/post-historical-apy",
               "api-reference/yield-api/post-diluted-apy",
-              "api-reference/yield-api/post-tvl"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Guides",
-        "groups": [
-          {
-            "group": "Router API",
-            "pages": [
-              "guides/router/getting-started"
-            ]
-          },
-          {
-            "group": "Exchange Rate",
-            "pages": [
-              "guides/exchange-rate/how-to-request-exchange-rates",
-              "guides/exchange-rate/how-to-request-all-supported-chains"
+              "api-reference/yield-api/post-tvl",
+              "api-reference/yield-api/rate-limits",
+              "api-reference/yield-api/api-authentication",
+              "api-reference/yield-api/error-codes"
             ]
           }
         ]
       },
       {
         "tab": "Tutorials",
-        "groups": [
-          {
-            "group": "DeFi Tutorials",
-            "pages": [
-              "tutorials/defi/deposit-to-a-lending-vault",
-              "tutorials/defi/swap-native-tokens"
-            ]
-          },
-          {
-            "group": "Yield Tutorials",
-            "pages": [
-              "tutorials/yield/all-about-diluted-apy"
-            ]
-          }
+        "pages": [
+          "tutorials/deposit-to-a-lending-vault",
+          "tutorials/swap-native-tokens"
         ]
       },
       {

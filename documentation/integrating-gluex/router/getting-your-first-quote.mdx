@@ -1,0 +1,246 @@
+---
+title: "Getting Your First Quote"
+description: "A comprehensive guide to integrating with the GlueX Router API"
+---
+
+This guide provides a structured, step by step approach to integrating with the Router API. It covers everything from obtaining access credentials to executing onchain swaps through the router, ensuring developers can quickly implement token routing functionality in their applications
+
+---
+
+## Prerequisites
+
+Before starting this integration guide, ensure you have:
+
+- Basic understanding of blockchain concepts and smart contract interactions
+- A web3 enabled development environment
+- Access to the target blockchain networks you wish to support
+- A wallet or application requiring token swap functionality
+
+## Obtain an API Key
+
+To begin using the GlueX Router API, developers must register via the official GlueX developer portal. This registration process ensures proper access control and enables tracking of API usage for your specific integration
+
+### Registration Process
+
+1. **Navigate to the Portal**: Visit the [GlueX developer portal](https://portal.gluex.xyz/login)
+2. **Complete Registration**: Fill out the onboarding form, providing details about:
+   - Personal information
+   - Your application or project name
+   - Target use cases and supported chains
+3. **Receive Credentials**: Upon successful login, you will receive:
+   - **API Key**: A unique identifier for authenticating your requests
+   - **Partner Identifier**: A distinct identifier linking transactions to your integration
+
+<Note>
+  For a detailed walkthrough of the registration process, refer to the [Get a
+  GlueX API key – Portal](/documentation/integrating-gluex/getting-an-api-key)
+  guide
+</Note>
+
+### Important Considerations
+
+- Store your API credentials securely and never expose them in client side code
+- Implement proper environment variable management in your deployment pipeline
+- Consider using API key rotation strategies for enhanced security
+- Monitor your API usage to detect any unauthorized access
+
+## Fetch Available Liquidity
+
+Before initiating any trade, it's crucial to verify which chains and liquidity modules are currently supported. This step ensures your application can make informed routing decisions and provide users with accurate availability information.
+
+### Endpoint
+
+```http
+GET /liquidity
+```
+
+The endpoint returns supported chains and liquidity modules, which help optimize your routing logic
+
+### Request Headers
+
+```http
+x-api-key: your-api-key
+Content-Type: application/json
+```
+
+### Best Practices
+
+- **Cache Strategically**: Store liquidity data with appropriate TTL (recommended: 15 minutes)
+- **Update Regularly**: Poll this endpoint periodically to ensure your application reflects current network conditions
+
+## Estimate Swap Using `/v1/price`
+
+The `/v1/price` endpoint provides real time price estimates for token swaps. This endpoint should be frequently polled in applications to show users up to date price quotes and ensure optimal trading conditions
+
+### Endpoint
+
+```http
+POST /v1/price
+```
+
+### Request Headers
+
+```http
+x-api-key: your-api-key
+Content-Type: application/json
+```
+
+### Request Parameters
+
+- **`inputToken`**: Contract address of the token being sold
+- **`outputToken`**: Contract address of the token being purchased
+- **`inputAmount`** or **`outputAmount`**: Specify either input or output amount (not both)
+- **`uniquePID`**: Your partner identifier from the registration process
+
+**Example**
+
+```json
+{
+  "inputToken": "0x...abc",
+  "outputToken": "0x...xyz",
+  "inputAmount": "1000000000000000000",
+  "userAddress": "0x...user",
+  "outputReceiver": "0x...user",
+  "chainID": "<chain-identifier>",
+  "uniquePID": "<your-integrator-id></your-integrator-id>"
+}
+```
+
+The price endpoint returns information about the estimated output amount, price impact, route information, fee breakdown and gas estimates
+
+### Best Practices
+
+- **Polling Frequency**: Update quotes every 10 - 30 seconds for active interfaces
+- **Error Handling**: Implement retry logic with exponential backoff for failed price requests
+- **Price Staleness**: Warn users when quotes are older than 30 - 60 seconds
+
+## Approve Token Transfer
+
+Before the router can execute any swap, users must grant permission for the router contract to spend their input tokens. This is a standard ERC 20 approval process that ensures secure token handling
+
+### Standard Approval
+
+Before executing a swap, users must approve the router contract to spend their input tokens. This is done by calling the ERC-20 `approve` method, specifying the router address and the exact amount to be swapped. This step is required for all ERC-20 tokens and ensures secure token handling
+
+### Permit2 (Optional)
+
+GlueX supports Permit2, a more efficient approval mechanism that combines approval and execution into a single transaction, improving user experience and reducing gas costs.
+Enable by setting:
+
+```json
+{
+  // ...
+  "isPermit2": true
+}
+```
+
+### Best Practices
+
+- **Exact Amount**: Approve only the required amount for maximum security
+
+## Obtain Calldata Using `/v1/quote`
+
+Once the user confirms the swap parameters and all necessary approvals are in place, the `/v1/quote` endpoint provides the exact calldata required to execute the trade on-chain
+
+### Endpoint
+
+```http
+POST /v1/quote
+```
+
+### Request Headers
+
+```http
+x-api-key: your-api-key
+Content-Type: application/json
+```
+
+### Request Parameters
+
+- **`inputToken`**: Contract address of the token being sold
+- **`outputToken`**: Contract address of the token being purchased
+- **`inputAmount`** or **`outputAmount`**: Specify either input or output amount (not both)
+- **`uniquePID`**: Your partner identifier from the registration process
+
+**Example**
+
+```json
+{
+  "inputToken": "0x...abc",
+  "outputToken": "0x...xyz",
+  "inputAmount": "1000000000000000000",
+  "userAddress": "0x...user",
+  "outputReceiver": "0x...user",
+  "chainID": "<chain-identifier>",
+  "uniquePID": "<your-integrator-id></your-integrator-id>"
+}
+```
+
+### Response
+
+- **`calldata`**: ABI-encoded transaction data ready for execution
+- **`router`**: Contract to send the transaction to
+- **`value`**: Native token amount to include with the transaction (for ETH/native token swaps)
+
+### Quote Expiration
+
+Quotes have limited validity periods. Implement proper expiration handling:
+
+- **Timestamp Tracking**: Monitor quote creation time
+- **Automatic Refresh**: Re-fetch quotes before expiration
+- **User Warnings**: Alert users when quotes are approaching expiration
+- **Fallback Logic**: Handle expired quotes gracefully
+
+## Execute Onchain
+
+The final step involves submitting the calldata from the quote endpoint to the router contract. This transaction must be properly signed by the user and broadcast to the network
+
+- Use a web3 library like `ethers.js` or `web3.js`
+- Send transaction to the router contract address with the specified `value`
+- Monitor the transaction for success
+
+### Using ethers.js
+
+```javascript
+const transaction = {
+  to: quoteData.routerAddress,
+  data: quoteData.calldata,
+  value: quoteData.value || 0,
+  gasLimit: quoteData.gasLimit,
+  gasPrice: quoteData.gasPrice,
+};
+
+const txResponse = await signer.sendTransaction(transaction);
+const receipt = await txResponse.wait();
+
+console.log(`Swap executed: ${receipt.transactionHash}`);
+```
+
+### Using web3.js
+
+```javascript
+const tx = {
+  to: quoteData.routerAddress,
+  data: quoteData.calldata,
+  value: web3.utils.toHex(quoteData.value || 0),
+  gas: quoteData.gasLimit,
+  gasPrice: quoteData.gasPrice,
+};
+
+const signedTx = await web3.eth.accounts.signTransaction(tx, privateKey);
+const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+```
+
+### Error Handling Strategies
+
+- **Insufficient Gas**: Transaction runs out of gas during execution
+- **Price Impact**: Actual price differs significantly from quote
+- **Liquidity Changes**: Available liquidity shifts between quote and execution
+- **Network Congestion**: Transaction stuck in mempool
+
+## Explore More
+
+To accelerate your integration and learn advanced implementation patterns, explore our comprehensive tutorial library:
+
+- [Deposit to a lending vault](/tutorials/defi/deposit-to-a-lending-vault)
+- [Swapping native tokens](/tutorials/defi/swap-native-tokens)
