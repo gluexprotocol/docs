@@ -1,0 +1,243 @@
+---
+title: "Authentication, Limits and Errors"
+description: ""
+---
+
+The GlueX Router API provides secure, scalable access to decentralized exchange routing and trading functionality. This comprehensive guide covers authentication requirements, rate limiting policies, and error handling mechanisms to ensure successful integration with your applications
+
+---
+
+## API Authentication
+
+All GlueX Router API requests require proper authentication using an API key and integrator ID. This dual-authentication approach ensures secure access, enables comprehensive usage tracking, and applies appropriate rate limits based on your access tier
+
+### Getting your API credentials
+
+- Navigate to the [GlueX Portal](https://portal.gluex.xyz/) and complete the registration process by creating your account
+- Navigate to the "API Key" section and click "Generate Key" to generate a new API key
+- In the same dashboard, locate your unique integrator ID
+
+<Note>
+  For a detailed walkthrough of the complete registration process, refer to the
+  [Get a GlueX API key –
+  Portal](/documentation/integrating-gluex/getting-an-api-key) guide
+</Note>
+
+### Using the Credentials
+
+**Authentication Headers**
+
+Every API request must include your API key in the request headers:
+
+```http
+x-api-key: <your-api-key>
+```
+
+**Request Body**
+
+Include your integrator ID as the `uniquePID` parameter in the body of each API request:
+
+```json
+"uniquePID": "<your-integrator-id>"
+```
+
+**Example Request**
+
+```http
+POST /v1/price
+Host: https://router.gluex.xyz
+x-api-key: your-api-key
+Content-Type: application/json
+```
+
+```json
+{
+  "chainID": "ethereum",
+  "inputToken": "0x...",
+  "outputToken": "0x...",
+  "inputAmount": "100000000",
+  "userAddress": "0x...",
+  "outputReceiver": "0x...",
+  "uniquePID": "your-integrator-id"
+}
+```
+
+---
+
+## Rate Limits and Access Tiers
+
+GlueX provides tiered API access levels to accommodate diverse integration requirements, from initial prototyping and testing to high frequency, large scale production deployments. These tiers ensure fair resource allocation and optimal service performance for all partners
+
+### Access Tiers Overview
+
+To ensure the stability, reliability and equitable access of the Router API for all users, we implement a system of rate limits organized into distinct access tiers. These limits protect our infrastructure from abuse, manage system load efficiently and guarantee a high quality experience even during peak demand. Each access tier offers a specific API request rate, burst capacity and a corresponding level of support, tailored to different development and production needs
+
+| Tier           | Requests Per Second (RPS) | Burst Capacity | Use Case                                                                                                                                                |
+| :------------- | :------------------------ | :------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Basic**      | 3                         | 3              | Ideal for initial development, proof of concept projects, testing and small scale application with infrequent API calls                                 |
+| **Growth**     | 10                        | 30             | Suitable for mid sized production application, services and applications with moderate user traffic                                                     |
+| **Premium**    | 20                        | 50             | Designed for large scale production applications, real time trading interfaces and platforms requiring consistent high throughput                       |
+| **Enterprise** | Custom                    | Custom         | Tailored solutions for high volume exchanges, large scale aggregators, institutional trading desks and partners with unique infrastructure requirements |
+
+### Understanding RPS and Burst Capacity
+
+- **Requests Per Second (RPS):** This is the **sustained rate** at which your application can make API calls over a longer period. For example, a tier with 3 RPS can make, on average, 3 requests every second
+- **Burst Capacity:** This represents the **maximum number of requests** your application can send in a very short spike _above_ its sustained RPS limit before hitting a rate limit error. It acts as a buffer to absorb sudden, short term surges in traffic. Once the burst capacity is depleted, requests will be throttled back to the sustained RPS rate until the bucket refills
+
+### Upgrading your Tier
+
+As your application scales and your API usage grows, GlueX offers seamless tier upgrades to meet your evolving demands. Higher tiers unlock significant advantages, including increased API throughput, enhanced reliability guarantees and dedicated support
+
+<Note>
+  Partners interested in upgrading their access tier are encouraged to reach out
+  directly to the **GlueX team** via our [official Telegram
+  channel](https://t.me/+_VmO_gIrNjxiZWE0). During this process, we will discuss
+  your specific needs, projected API usage and provide tailored solutions
+</Note>
+
+⚠️ **Important Note on Endpoint Usage**
+
+To maintain platform stability and ensure optimal performance for all users, GlueX enforces **stricter rate limits on high computation endpoints**, specifically `/v1/quote`. The `/v1/quote` endpoint performs intensive onchain simulations, which are
+resource heavy
+
+Conversely, the `/v1/price` endpoint is designed to be lightweight and highly performant for frequent polling. It provides rapid price estimates without deep onchain simulation
+
+**Best Practice:**
+
+- **`/v1/price`** should be the **primary endpoint used in your application**
+  for displaying real time indicative prices and general market information
+- **`/v1/quote`** should be called **only when a user is ready to execute a
+  swap** and requires precise, executable transaction data.
+
+Adhering to this practice will help you stay within your rate limits and ensure a smooth user experience
+
+### Benefits of Higher Tiers
+
+- **Increased Rate Limits:** Access significantly higher RPS and burst capacities to support larger user bases and more demanding applications
+- **Service Level Agreements (SLAs):** Enterprise and Premium tiers often come with formal SLAs, guaranteeing specific uptime, performance metrics and response times for critical issues
+- **Priority Support:** Receive expedited assistance from our technical team, ensuring your queries and issues are addressed promptly
+- **Custom Integration Guidance:** Benefit from dedicated technical consultations and integration support to optimize your application's performance and integrate the features effectively
+- **Custom Pricing and Billing:** For Enterprise partners, flexible pricing models can be arranged to align with your business operations
+
+We are committed to providing a reliable and scalable API experience. If you anticipate exceeding your current tier's limits or have any questions regarding your access tier, please [contact us](https://t.me/+_VmO_gIrNjxiZWE0) for further assistance
+
+### Whitelist Domains
+
+GlueX provides an optional security feature that allows you to restrict API key usage to specific domains. This is particularly valuable for frontend integrations and helps prevent unauthorized usage of your credentials
+
+**Configure**
+
+- Navigate to the **"Keys"** page in the GlueX Portal
+- Choose the API key you want to configure
+- Add the domains you want to whitelist (eg: `gluex.xyz`)
+- Apply the whitelist settings
+
+Requests originating from unlisted domains will be rejected, helping you prevent unauthorized use of your key, so ensure all legitimate domains are included in your whitelist
+
+For assistance or issues related to authentication, contact the GlueX team via the [Telegram support channel](https://t.me/+_VmO_gIrNjxiZWE0)
+
+---
+
+## Error Codes
+
+The Router API performs various validations and simulations to ensure that transactions are safe and executable before returning calldata. If a request fails validation or simulation, the API responds with a standardized error format
+
+### Error Format
+
+All API errors follow a consistent JSON structure for predictable error handling:
+
+```json
+{
+  "statusCode": <HTTP_STATUS_CODE>,
+  "error": "<DESCRIPTIVE_ERROR_MESSAGE>"
+}
+```
+
+### Error Reference
+
+#### Authorization Errors
+
+**Missing API Key**
+
+```json
+{
+  "statusCode": 401,
+  "error": "Forbidden"
+}
+```
+
+- **Cause:** API key not provided in request headers
+- **Resolution:** Ensure `x-api-key` header is included with valid API key
+- **Common Scenarios:** Missing header, empty header value
+
+#### Domain Not Whitelisted
+
+```json
+{
+  "statusCode": 403,
+  "error": "Request origin not in whitelist"
+}
+```
+
+- **Cause:** Request originates from a domain not in your whitelist
+- **Resolution:** Add the requesting domain to your whitelist in the portal
+- **Common Scenarios:** New domain deployment, subdomain access, local development
+
+#### Rate Limiting Errors
+
+```json
+{
+  "statusCode": 429,
+  "error": "Rate limit exceeded. Please try again later"
+}
+```
+
+- **Cause:** Request rate exceeds your tier's RPS or burst capacity limits
+- **Resolution:** Implement proper rate limiting in your application or upgrade your tier
+- **Prevention Strategies:**
+  - Implement exponential backoff retry logic
+  - Monitor your request patterns
+  - Consider tier upgrade for higher limits
+  - Use `/v1/price` for frequent polling instead of `/v1/quote`
+
+#### Simulation Failure
+
+If the transaction fails during pre-trade simulation (to prevent onchain reverts), the API will return:
+
+```json
+{
+  "statusCode": 400,
+  "error": "Unable to fetch a solution for the user request"
+}
+```
+
+- **Cause:** The router was unable to find a valid routing path or execution strategy that would succeed based on the current market conditions, balances or configuration
+- **Common Reasons:**
+  - Insufficient liquidity for the requested trade
+  - Token pair not supported on specified network
+  - Amount exceeds available liquidity
+  - Network congestion or temporary routing issues
+- **Resolution Strategies:**
+  - Reduce trade amount
+  - Try different token pairs
+  - Check network status
+  - Retry after a brief delay
+
+#### Validation Error
+
+If the request contains any invalid parameter that is unrecognized or unsupported, the API will return:
+
+```json
+{
+  "statusCode": 400,
+  "error": "Invalid <parameter_name> provided"
+}
+```
+
+- **Cause:** Request contains unrecognized, unsupported, or malformed parameters
+- **Resolution:** Validate all parameters against API specification
+- **Common Issues:**
+  - Invalid token addresses
+  - Unsupported chain IDs
+  - Malformed amounts or addresses
+  - Missing required parameters

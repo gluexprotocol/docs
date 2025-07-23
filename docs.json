@@ -189,18 +189,14 @@
               "api-reference/router-api/get-liquidity",
               "api-reference/router-api/post-price",
               "api-reference/router-api/post-quote",
-              "api-reference/router-api/rate-limits",
-              "api-reference/router-api/api-authentication",
-              "api-reference/router-api/error-codes"
+              "api-reference/router-api/authentication-limits-and-errors"
             ]
           },
           {
             "group": "Exchange Rates API",
             "pages": [
               "api-reference/exchange-rate-api/post-price",
-              "api-reference/exchange-rate-api/rate-limits",
-              "api-reference/exchange-rate-api/api-authentication",
-              "api-reference/exchange-rate-api/error-codes"
+              "api-reference/exchange-rate-api/authentication-limits-and-errors"
             ]
           },
           {
@@ -210,9 +206,7 @@
               "api-reference/yield-api/post-historical-apy",
               "api-reference/yield-api/post-diluted-apy",
               "api-reference/yield-api/post-tvl",
-              "api-reference/yield-api/rate-limits",
-              "api-reference/yield-api/api-authentication",
-              "api-reference/yield-api/error-codes"
+              "api-reference/yield-api/authentication-limits-and-errors"
             ]
           }
         ]
