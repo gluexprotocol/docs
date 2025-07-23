@@ -119,8 +119,7 @@
                   "build-with-gluex/router/advanced-features/liquidity-module-filtering"
                 ]
               },
-              "build-with-gluex/router/fee-structure",
-              "build-with-gluex/router/api-tiers-limits"
+              "build-with-gluex/router/fee-structure"
             ]
           },
           {
