@@ -1,4 +1,284 @@
 ---
 title: "Authentication, Limits and Errors"
-description: ""
+description: "Documentation for the Yield API's open authentication model, system resource limits, comprehensive error handling with detailed error types and steps, and monitoring capabilities."
 ---
+### Authentication
+
+The APY Calculator API currently operates as an **open API** without authentication requirements. All endpoints are publicly accessible without API keys, tokens, or other authentication mechanisms.
+
+### CORS Policy
+
+The API implements permissive CORS settings to allow cross-origin requests:
+
+```python
+allow_origins=["*"]
+allow_credentials=True
+allow_methods=["GET", "POST"]
+allow_headers=["*"]
+```
+
+This configuration allows requests from any origin, making it suitable for frontend integrations and testing.
+
+### Request Identification
+
+While authentication is not required, each request receives a unique identifier for tracking and debugging purposes:
+
+```http
+X-Request-ID: uuid4-generated-string
+```
+
+This header is automatically added to all responses and can be used for support inquiries.
+
+## Rate Limits and Usage Constraints
+
+### Calculation Limits
+
+The API implements several built-in constraints to ensure optimal performance:
+
+#### Input Amount Validation
+- **Diluted APY calculations**: Input amounts must be non-negative integers (≥ 0)
+- **Maximum multicall size**: Limited to 30 calls per batch to prevent timeouts
+
+#### Blockchain Support
+The API supports the following blockchain networks:
+
+- Ethereum (`ethereum`)
+- Base (`base`)
+- Arbitrum (`arbitrum`)
+- BNB Chain (`bnb`, `binance smart chain`, `bsc`)
+- Avalanche (`avalanche`)
+- Gnosis (`gnosis`)
+- Polygon (`polygon`)
+- Optimism (`optimism`)
+- Mantle (`mantle`)
+- Linea (`linea`)
+- Scroll (`scroll`)
+- Taiko (`taiko`)
+- Blast (`blast`)
+- Sonic (`sonic`)
+- Berachain (`berachain`)
+- Unichain (`unichain`)
+- HyperEVM (`hyperevm`)
+
+### Timeout Configurations
+
+The service implements different timeout values based on operation type and environment:
+
+| Operation Type | Production Timeout | Local Timeout |
+|---|---|---|
+| Liquidity States | 1s | 20s |
+| Dependent States | 1s | 20s |
+
+### Cache Configuration
+
+- **Cache Size**: 10,000 entries maximum
+- **Cache TTL**: 300 seconds (5 minutes)
+- **APY Cache**: 3,600 seconds (1 hour)
+
+### System Resource Limits
+
+The API monitors system resources and may reject requests when:
+
+- **CPU Usage**: Above 95%
+- **Memory Usage**: Above 95%
+- **Error Rate**: Above 75% (when total requests > 10)
+
+## Error Handling
+
+### Error Response Format
+
+All API errors follow a consistent JSON structure:
+
+```json
+{
+  "success": false,
+  "error": "Error message description",
+  "error_type": "error_category",
+  "step": "operation_step",
+  "request_id": "uuid4-request-identifier"
+}
+```
+
+### Error Types
+
+#### Validation Errors (`validation_error`)
+
+**Status Code: 422**
+
+Occurs when request parameters are invalid:
+
+```json
+{
+  "success": false,
+  "error": "pool_address must be a valid Ethereum address (0x...)",
+  "error_type": "validation_error",
+  "step": "input_validation"
+}
+```
+
+Common validation errors:
+- Invalid Ethereum addresses (must be 42 characters with 0x prefix)
+- Unsupported blockchain networks
+- Missing required parameters (`pool_address` or `lp_token_address`)
+- Invalid input amounts (negative values)
+- Input token same as LP token
+
+#### Calculation Errors (`calculation_failed`)
+
+**Status Code: 404**
+
+Occurs when the calculation process fails:
+
+```json
+{
+  "success": false,
+  "error": "Pool data not found for pool_address=0x... in chain ethereum",
+  "error_type": "calculation_failed",
+  "step": "pool_data_retrieval"
+}
+```
+
+Common calculation errors:
+- Pool not found in database
+- Incomplete pool states
+- Missing protocol modules
+- Network timeout during state calls
+
+#### Internal Server Errors (`internal_error`)
+
+**Status Code: 500**
+
+System-level errors:
+
+```json
+{
+  "success": false,
+  "error": "Database connectivity failed",
+  "error_type": "internal_error",
+  "request_id": "abc123-def456-ghi789"
+}
+```
+
+#### Service Unavailable (`startup_error`)
+
+**Status Code: 503**
+
+Service initialization failures:
+
+```json
+{
+  "success": false,
+  "error": "Service initialization failed",
+  "error_type": "startup_error"
+}
+```
+
+### Calculation-Specific Error Steps
+
+Different calculation types can fail at various steps:
+
+#### Common Steps
+- `input_validation`: Parameter validation failed
+- `pool_data_retrieval`: Cannot fetch pool data from database
+- `protocol_id_validation`: Missing or invalid protocol identifier
+- `module_import_failed`: Cannot load required blockchain modules
+- `initialization_failed`: Pool initialization error
+
+#### APY Calculation Steps
+- `input_token_validation`: Invalid input token address
+- `lp_token_validation`: Input token conflicts with LP token
+- `apy_calculation_error`: Mathematical calculation failed
+- `states_incomplete`: Required blockchain states not available
+
+#### TVL Calculation Steps
+- `tvl_calculation_error`: TVL computation failed
+- `pool_creation_failed`: Cannot instantiate pool object
+
+### Database Errors
+
+Database connectivity issues are handled gracefully:
+
+```json
+{
+  "success": false,
+  "error": "Database error during pool_address lookup: Connection timeout",
+  "error_type": "calculation_failed",
+  "step": "pool_data_retrieval"
+}
+```
+
+### Network and Timeout Errors
+
+Blockchain network calls may timeout:
+
+```json
+{
+  "success": false,
+  "error": "Timeout during state calls",
+  "error_type": "calculation_failed",
+  "step": "state_calls_timeout"
+}
+```
+
+## Health Monitoring
+
+### Health Check Endpoint
+
+`GET /health-check` performs comprehensive system validation:
+
+- Router initialization status
+- Database connectivity
+- Error rate analysis (must be < 75%)
+- System resource usage (CPU and memory < 95%)
+
+### Metrics Monitoring
+
+`GET /metrics` provides detailed performance metrics:
+
+```json
+{
+  "success": true,
+  "request_metrics": {
+    "total_requests": 1000,
+    "cache_hit_rate_percent": 85.5,
+    "error_rate_percent": 2.1,
+    "avg_response_time_seconds": 0.245
+  },
+  "system_metrics": {
+    "cpu_usage_percent": 45.2,
+    "memory_usage_percent": 68.1,
+    "pending_tasks": 3,
+    "cache_size": 150,
+    "uptime_seconds": 86400
+  }
+}
+```
+
+## Best Practices
+
+### Error Handling in Client Applications
+
+1. **Always check the `success` field** before processing response data
+2. **Use `error_type` for programmatic error handling** rather than parsing error messages
+3. **Include `request_id` in support requests** for faster debugging
+4. **Implement retry logic** for timeout and network errors
+5. **Cache successful responses** to reduce API load
+
+### Request Optimization
+
+1. **Use caching**: Identical requests within 5 minutes return cached results
+2. **Validate addresses client-side**: Ensure Ethereum addresses are properly formatted
+3. **Handle both lookup methods**: Support both `pool_address` and `lp_token_address` parameters
+4. **Specify input tokens**: Avoid auto-selection overhead when possible
+
+### Error Recovery
+
+For transient errors (timeouts, network issues):
+- Use different endpoints if available (`pool_address` vs `lp_token_address`)
+
+For permanent errors (validation, not found):
+- Validate input data
+- Check supported chains and protocols via `/active-protocols`
+
+### Community Support
+- **Telegram**: (https://t.me/+_VmO_gIrNjxiZWE0)
