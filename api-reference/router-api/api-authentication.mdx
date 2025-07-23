@@ -1,4 +1,75 @@
 ---
 title: "API Authentication"
-description: ""
+description: "Authentication is required for all interactions with the GlueX Router API. This ensures secure access, usage tracking, and integration-specific rate limits."
 ---
+
+## Step 1: Login to the GlueX Portal
+
+To begin, navigate to the official GlueX Portal:
+
+👉 [https://portal.gluex.xyz/](https://portal.gluex.xyz/)
+
+Log in with your registered credentials to access your integration dashboard.
+
+
+## Step 2: Retrieve Your Credentials
+
+After logging in:
+1. Navigate to the **"Keys"** page in the portal.
+2. Copy the following values:
+   - **API Key** (`x-api-key`)
+   - **Integrator ID** (`uniquePID`)
+
+These values are essential for making authenticated API requests.
+
+---
+
+## Step 3: Use Credentials in API Calls
+
+### Headers
+Include the API key in every request header:
+```http
+x-api-key: your-api-key
+```
+
+### Request Body
+Include your integrator ID as the `uniquePID` parameter in the body of each request:
+```json
+"uniquePID": "your-integrator-id"
+```
+
+### Example Request
+```http
+POST /v1/price
+Host: https://router.gluex.xyz
+x-api-key: your-api-key
+Content-Type: application/json
+```
+```json
+{
+  "chainID": "ethereum",
+  "inputToken": "0x...",
+  "outputToken": "0x...",
+  "inputAmount": "100000000",
+  "userAddress": "0x...",
+  "outputReceiver": "0x...",
+  "uniquePID": "your-integrator-id"
+}
+```
+
+---
+
+## Step 4 (Optional): Whitelist Domains
+
+GlueX provides the option to restrict the usage of your API key to specific domains for added security. This is especially useful for frontend integrations.
+
+### To configure:
+- Go to the **"Keys"** page in the GlueX Portal
+- Select your API key
+- Add the domains you want to whitelist (e.g., `gluex.xyz`)
+
+Requests originating from unlisted domains will be rejected, helping you prevent unauthorized use of your key.
+
+---
+
+For assistance or issues related to authentication, contact the GlueX team via the [Telegram support channel](https://t.me/+_VmO_gIrNjxiZWE0).
