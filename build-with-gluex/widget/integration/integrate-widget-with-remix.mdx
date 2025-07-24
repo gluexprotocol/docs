@@ -1,0 +1,86 @@
+---
+title: "Integrate GlueX widget with Remix"
+sidebarTitle: "Remix Installation"
+description: "Learn how to integrate the widget into your Remix application enabling users to perform swaps, bridge assets, lend, stake, zap and swidge directly within the application"
+---
+
+import ConfigurationAndCustomization from "/snippets/content/widget/configuration-and-customization.mdx";
+
+GlueX Widget is fully compatible with Remix (React) applications and requires minimal configuration for smooth integration
+
+<Info>
+  For a complete working example, check out our full [Remix example
+  repository](https://github.com/gluexprotocol/gluex-examples/tree/main/widget-remix-integration)
+</Info>
+
+### Prerequisites
+
+Before proceeding with Remix specific integration, ensure you have completed the general installation steps outlined in the [General Installation](/build-with-gluex/widget/integration/installing-the-widget)
+
+### Integration
+
+Create a `Widget.tsx` file in your components directory to encapsulate the GlueX widget:
+
+<CodeGroup>
+
+```tsx Widget.tsx
+"use client";
+
+import React, { useEffect, useState } from "react";
+import type { WidgetConfigPartialProps } from "@gluex/widget";
+
+const ClientSideWidget = ({ config }: { config: WidgetConfigPartialProps["config"] }) => {
+  const [Widget, setWidget] = useState<React.ComponentType<{ config: any }> | null>(null);
+  
+  useEffect(() => {
+    import("@gluex/widget").then(module => {
+      setWidget(() => module.GlueXWidget);
+    });
+  }, []);
+
+  if (!Widget) {
+    return <div>Loading...</div>;
+  }
+
+  return <Widget config={config} />;
+};
+
+export const Widget = () => {
+  const config: WidgetConfigPartialProps["config"] = {
+    integrator: "",
+    apiKey: "",
+
+    // ... rest of the widget configuration
+    // appearance: 'dark',
+    // theme: {
+    //   container: {
+    //     boxShadow: '0px 8px 32px rgba(0, 0, 0, 0.08)',
+    //     borderRadius: '16px',
+    //   },
+    // },
+  };
+
+  return <ClientSideWidget config={config} />;
+};
+```
+
+</CodeGroup>
+
+**Usage in Your App**
+
+You can now import and use the widget component anywhere in your Remix application:
+
+```tsx app/routes/_index.tsx
+import { Widget } from "../components/Widget";
+
+export default function Index() {
+  return (
+    <div>
+      <h1>My DeFi App</h1>
+      <Widget />
+    </div>
+  );
+}
+```
+
+<ConfigurationAndCustomization />

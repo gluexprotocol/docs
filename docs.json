@@ -154,6 +154,11 @@
                   "build-with-gluex/widget/integration/integrate-widget-with-gatsby",
                   "build-with-gluex/widget/integration/integrate-widget-with-vue",
                   "build-with-gluex/widget/integration/integrate-widget-with-rainbowkit",
+                  "build-with-gluex/widget/integration/integrate-widget-with-connectkit",
+                  "build-with-gluex/widget/integration/integrate-widget-with-nuxt",
+                  "build-with-gluex/widget/integration/integrate-widget-with-reown",
+                  "build-with-gluex/widget/integration/integrate-widget-with-remix",
+                  "build-with-gluex/widget/integration/integrate-widget-with-dynamic",
                   "build-with-gluex/widget/integration/integrate-the-widget-as-iframe"
                 ]
               },
