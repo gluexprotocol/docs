@@ -1,23 +1,30 @@
 ---
 title: "Authentication, Limits and Errors"
-description: "Documentation for the Yield API's open authentication model, system resource limits, comprehensive error handling with detailed error types and steps, and monitoring capabilities."
+description: "Documentation for the Yield API's open authentication model, system resource limits, comprehensive error handling with detailed error types and steps, and monitoring capabilities"
 ---
-### Authentication
 
-The APY Calculator API currently operates as an **open API** without authentication requirements. All endpoints are publicly accessible without API keys, tokens, or other authentication mechanisms.
+## API Authentication
+
+The APY Calculator API currently operates as an **open API** without authentication requirements. This design choice prioritizes accessibility and ease of integration for developers while maintaining service reliability through other protective mechanisms
 
 ### CORS Policy
 
-The API implements permissive CORS settings to allow cross-origin requests:
+The API implements comprehensive Cross-Origin Resource Sharing (CORS) settings to maximize compatibility across different client environments:
 
 ```python
-allow_origins=["*"]
-allow_credentials=True
-allow_methods=["GET", "POST"]
-allow_headers=["*"]
+allow_origins=["*"]           # Accepts requests from any domain
+allow_credentials=True        # Supports cookies and authentication headers
+allow_methods=["GET", "POST"] # Supports primary HTTP methods
+allow_headers=["*"]           # Accepts any request headers
 ```
 
-This configuration allows requests from any origin, making it suitable for frontend integrations and testing.
+This configuration allows requests from any origin, making it suitable for frontend integrations and testing
+
+**Security Considerations:**
+
+- While permissive, the API relies on input validation and rate limiting for protection
+- No sensitive authentication data is exposed due to the open access model
+- All requests are logged with unique identifiers for monitoring
 
 ### Request Identification
 
@@ -27,20 +34,62 @@ While authentication is not required, each request receives a unique identifier 
 X-Request-ID: uuid4-generated-string
 ```
 
-This header is automatically added to all responses and can be used for support inquiries.
+This header is automatically added to all responses and can be used for support inquiries
+
+---
 
 ## Rate Limits and Usage Constraints
 
-### Calculation Limits
+The API implements intelligent constraints designed to balance performance, reliability, and fair resource allocation across all users
 
-The API implements several built-in constraints to ensure optimal performance:
+### Input Amount Validation
 
-#### Input Amount Validation
-- **Diluted APY calculations**: Input amounts must be non-negative integers (≥ 0)
-- **Maximum multicall size**: Limited to 30 calls per batch to prevent timeouts
+**Diluted APY Calculations:**
 
-#### Blockchain Support
-The API supports the following blockchain networks:
+- **Constraint**: Input amounts must be non-negative integers (≥ 0)
+- **Rationale**: Negative amounts would produce meaningless yield calculations
+- **Validation**: Performed at the endpoint level before processing
+- **Error Response**: Returns `422` status with `validation_error` type
+
+**Example Valid Inputs:**
+
+```json
+{
+  "input_amount": 1000, // ✅ Valid
+  "input_amount": 0, // ✅ Valid (edge case)
+  "input_amount": 1000000000 // ✅ Valid (large amounts supported)
+}
+```
+
+**Invalid Examples:**
+
+```json
+{
+  "input_amount": -100, // ❌ Negative value
+  "input_amount": 1000.5, // ❌ Decimal value
+  "input_amount": "1000" // ❌ String format
+}
+```
+
+### Batch Processing Limits
+
+**Maximum Multicall Size**: 30 calls per batch request
+
+**Technical Reasoning:**
+
+- **Timeout Prevention**: Larger batches risk exceeding response time limits
+- **Memory Management**: Prevents excessive memory allocation per request
+- **Fair Resource Distribution**: Ensures no single request monopolizes system resources
+
+**Optimal Batch Strategies:**
+
+- Group related calculations (same protocol/chain) for better caching efficiency
+- Split large datasets into multiple sequential batch requests
+- Implement client side batching logic for datasets exceeding 30 items
+
+### Blockchain Support
+
+The API provides comprehensive coverage across major EVM-compatible networks, with standardized naming conventions and aliases for developer convenience
 
 - Ethereum (`ethereum`)
 - Base (`base`)
@@ -62,14 +111,22 @@ The API supports the following blockchain networks:
 
 ### Timeout Configurations
 
-The service implements different timeout values based on operation type and environment:
+The API implements environment-aware timeout settings optimized for different deployment contexts
 
-| Operation Type | Production Timeout | Local Timeout |
-|---|---|---|
-| Liquidity States | 1s | 20s |
-| Dependent States | 1s | 20s |
+| Operation Type   | Production Timeout | Local Timeout |
+| ---------------- | ------------------ | ------------- |
+| Liquidity States | 1s                 | 20s           |
+| Dependent States | 1s                 | 20s           |
+
+**Timeout Strategy:**
+
+- **Production**: Aggressive timeouts ensure responsive user experience
+- **Development**: Extended timeouts accommodate debugging and testing
+- **Automatic Failover**: Requests failing due to timeouts trigger retry mechanisms where applicable
 
 ### Cache Configuration
+
+The API employs multi-tiered caching for optimal performance and resource utilization
 
 - **Cache Size**: 10,000 entries maximum
 - **Cache TTL**: 300 seconds (5 minutes)
@@ -77,17 +134,21 @@ The service implements different timeout values based on operation type and envi
 
 ### System Resource Limits
 
-The API monitors system resources and may reject requests when:
+The API implements dynamic resource monitoring with automatic request rejection when system constraints are exceeded
 
 - **CPU Usage**: Above 95%
 - **Memory Usage**: Above 95%
 - **Error Rate**: Above 75% (when total requests > 10)
 
+---
+
 ## Error Handling
 
-### Error Response Format
+The API provides comprehensive error handling with structured responses designed for both human debugging and programmatic error recovery
 
-All API errors follow a consistent JSON structure:
+### Error Format
+
+All API errors follow a consistent, machine-readable JSON structure that provides multiple levels of diagnostic information:
 
 ```json
 {
@@ -99,13 +160,22 @@ All API errors follow a consistent JSON structure:
 }
 ```
 
+**Field Descriptions:**
+
+- **success**: Always `false` for error responses (enables quick programmatic checks)
+- **error**: Human readable message suitable for logging and debugging
+- **error_type**: Standardized category for programmatic error handling
+- **step**: Specific operation stage where failure occurred
+- **request_id**: Unique identifier for support and debugging correlation
+
 ### Error Types
 
-#### Validation Errors (`validation_error`)
+#### Validation Errors
 
-**Status Code: 422**
+**HTTP Status Code: 422 Unprocessable Entity**
+**Error Type: `validation_error`**
 
-Occurs when request parameters are invalid:
+These errors occur during input parameter validation before any processing begins. They indicate client-side issues that require request modification
 
 ```json
 {
@@ -116,18 +186,20 @@ Occurs when request parameters are invalid:
 }
 ```
 
-Common validation errors:
+**Common validation errors**
+
 - Invalid Ethereum addresses (must be 42 characters with 0x prefix)
 - Unsupported blockchain networks
 - Missing required parameters (`pool_address` or `lp_token_address`)
 - Invalid input amounts (negative values)
 - Input token same as LP token
 
-#### Calculation Errors (`calculation_failed`)
+#### Calculation Errors
 
-**Status Code: 404**
+**HTTP Status Code: 404 Not Found**
+**Error Type: `calculation_failed`**
 
-Occurs when the calculation process fails:
+These errors occur when the API successfully validates inputs but cannot complete the requested calculation due to missing data or computational issues
 
 ```json
 {
@@ -139,16 +211,18 @@ Occurs when the calculation process fails:
 ```
 
 Common calculation errors:
+
 - Pool not found in database
 - Incomplete pool states
 - Missing protocol modules
 - Network timeout during state calls
 
-#### Internal Server Errors (`internal_error`)
+#### Internal Server Errors
 
-**Status Code: 500**
+**HTTP Status Code: 500 Internal Server Error**
+**Error Type: `internal_error`**
 
-System-level errors:
+System level errors:
 
 ```json
 {
@@ -159,9 +233,10 @@ System-level errors:
 }
 ```
 
-#### Service Unavailable (`startup_error`)
+#### Service Unavailable
 
-**Status Code: 503**
+**HTTP Status Code: 503 Service Unavailable**
+**Error Type: `startup_error` or `resource_exhaustion`**
 
 Service initialization failures:
 
@@ -173,28 +248,7 @@ Service initialization failures:
 }
 ```
 
-### Calculation-Specific Error Steps
-
-Different calculation types can fail at various steps:
-
-#### Common Steps
-- `input_validation`: Parameter validation failed
-- `pool_data_retrieval`: Cannot fetch pool data from database
-- `protocol_id_validation`: Missing or invalid protocol identifier
-- `module_import_failed`: Cannot load required blockchain modules
-- `initialization_failed`: Pool initialization error
-
-#### APY Calculation Steps
-- `input_token_validation`: Invalid input token address
-- `lp_token_validation`: Input token conflicts with LP token
-- `apy_calculation_error`: Mathematical calculation failed
-- `states_incomplete`: Required blockchain states not available
-
-#### TVL Calculation Steps
-- `tvl_calculation_error`: TVL computation failed
-- `pool_creation_failed`: Cannot instantiate pool object
-
-### Database Errors
+#### Database Errors
 
 Database connectivity issues are handled gracefully:
 
@@ -207,7 +261,7 @@ Database connectivity issues are handled gracefully:
 }
 ```
 
-### Network and Timeout Errors
+#### Network and Timeout Errors
 
 Blockchain network calls may timeout:
 
@@ -220,11 +274,38 @@ Blockchain network calls may timeout:
 }
 ```
 
+### Error Step Mapping
+
+#### Common Steps
+
+- `input_validation`: Parameter validation failed
+- `pool_data_retrieval`: Cannot fetch pool data from database
+- `protocol_id_validation`: Missing or invalid protocol identifier
+- `module_import_failed`: Cannot load required blockchain modules
+- `initialization_failed`: Pool initialization error
+
+#### APY Calculation Steps
+
+- `input_token_validation`: Invalid input token address
+- `lp_token_validation`: Input token conflicts with LP token
+- `apy_calculation_error`: Mathematical calculation failed
+- `states_incomplete`: Required blockchain states not available
+
+#### TVL Calculation Steps
+
+- `tvl_calculation_error`: TVL computation failed
+- `pool_creation_failed`: Cannot instantiate pool object
+
+---
+
 ## Health Monitoring
+
+The API provides comprehensive health monitoring capabilities designed for both operational oversight and integration into larger monitoring ecosystems
 
 ### Health Check Endpoint
 
-`GET /health-check` performs comprehensive system validation:
+**Endpoint**: `GET /health-check`
+**Purpose**: Comprehensive system validation suitable for load balancer health checks and monitoring systems
 
 - Router initialization status
 - Database connectivity
@@ -233,7 +314,10 @@ Blockchain network calls may timeout:
 
 ### Metrics Monitoring
 
-`GET /metrics` provides detailed performance metrics:
+**Endpoint**: `GET /metrics`
+**Purpose**: Detailed performance and operational metrics for observability and optimization
+
+**Response Format:**
 
 ```json
 {
@@ -253,6 +337,8 @@ Blockchain network calls may timeout:
   }
 }
 ```
+
+---
 
 ## Best Practices
 
@@ -274,11 +360,10 @@ Blockchain network calls may timeout:
 ### Error Recovery
 
 For transient errors (timeouts, network issues):
+
 - Use different endpoints if available (`pool_address` vs `lp_token_address`)
 
 For permanent errors (validation, not found):
+
 - Validate input data
 - Check supported chains and protocols via `/active-protocols`
-
-### Community Support
-- **Telegram**: (https://t.me/+_VmO_gIrNjxiZWE0)

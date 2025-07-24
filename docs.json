@@ -233,9 +233,6 @@
       {
         "tab": "Changelog",
         "pages": [
-          "changelog/router",
-          "changelog/exchange-rate",
-          "changelog/yield",
           "changelog/widget"
         ]
       }
@@ -268,7 +265,7 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Get Started for Free",
+      "label": "Get Started (It's Free)",
       "href": "https://portal.gluex.xyz"
     }
   },
