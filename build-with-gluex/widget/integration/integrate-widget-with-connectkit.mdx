@@ -1,16 +1,16 @@
 ---
-title: "Integrate GlueX widget with React"
-sidebarTitle: "React Installation"
-description: "Learn how to integrate the widget into your React application enabling users to perform swaps, bridge assets, lend, stake, zap and swidge directly within the application"
+title: "Integrate GlueX widget with ConnectKit"
+sidebarTitle: "ConnectKit Installation"
+description: "Learn how to integrate the widget into your ConnectKit + Next.js application enabling users to perform swaps, bridge assets, lend, stake, zap and swidge directly within the application"
 ---
 
 import ConfigurationAndCustomization from "/snippets/content/widget/configuration-and-customization.mdx";
 
-GlueX Widget is fully compatible with React applications and requires minimal configuration for smooth integration
+GlueX Widget is fully compatible with ConnectKit (Next.js) applications and requires minimal configuration for smooth integration
 
 <Info>
-  For a complete working example, check out our full [React example
-  repository](https://github.com/gluexprotocol/gluex-examples/widget/react-integration)
+  For a complete working example, check out our full [ConnectKit example
+  repository](https://github.com/gluexprotocol/gluex-examples/tree/main/widget-connectkit-integration)
 </Info>
 
 <Accordion title="Why client side rendering?">
@@ -24,7 +24,7 @@ GlueX Widget is fully compatible with React applications and requires minimal co
 
 ### Prerequisites
 
-Before proceeding with React specific integration, ensure you have completed the general installation steps outlined in the [General Installation](/build-with-gluex/widget/integration/installing-the-widget)
+Before proceeding with ConnectKit specific integration, ensure you have completed the general installation steps outlined in the [General Installation](/build-with-gluex/widget/integration/installing-the-widget)
 
 ### Integration
 
@@ -91,7 +91,7 @@ export const ClientSideRender: React.FC<ClientSideRenderProps> = ({
 
 **Usage in your App**
 
-You can now import and use the widget component anywhere in your React application
+You can now import and use the widget component anywhere in your ConnectKit + Next.js application
 
 ```tsx App.tsx
 import { Widget } from "./components/Widget";

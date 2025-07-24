@@ -1,0 +1,87 @@
+---
+title: "Integrate GlueX widget with Nuxt"
+sidebarTitle: "Nuxt Installation"
+description: "Learn how to integrate the widget into your Nuxt application enabling users to perform swaps, bridge assets, lend, stake, zap and swidge directly within the application"
+---
+
+import ConfigurationAndCustomization from "/snippets/content/widget/configuration-and-customization.mdx";
+
+GlueX Widget is fully compatible with Nuxt applications and requires minimal configuration for smooth integration
+
+<Info>
+  For a complete working example, check out our full [Nuxt example
+  repository](https://github.com/gluexprotocol/gluex-examples/tree/main/widget-nuxt-integration)
+</Info>
+
+### Prerequisites
+
+Before proceeding with Nuxt specific integration, ensure you have completed the general installation steps outlined in the [General Installation](/build-with-gluex/widget/integration/installing-the-widget)
+
+### Integration
+
+Create a `Widget.vue` file in your components directory to encapsulate the GlueX widget:
+
+<CodeGroup>
+
+```vue Widget.vue
+<script setup>
+import { onMounted, onUnmounted, ref } from 'vue';
+import { createRoot } from 'react-dom/client';
+import { createElement } from 'react';
+import { GlueXWidget } from '@gluex/widget';
+
+const container = ref(null)
+let root = null
+
+const config = {
+  integrator: "",
+  apiKey: "",
+
+  // ... rest of the widget configuration
+  // Example:
+  // appearance: 'dark',
+  // theme: {
+  //   container: {
+  //     boxShadow: '0px 8px 32px rgba(0, 0, 0, 0.08)',
+  //     borderRadius: '16px',
+  //   },
+  // },
+};
+
+onMounted(() => {
+  const mountNode = document.createElement('div')
+  container.value.appendChild(mountNode)
+
+  root = createRoot(mountNode)
+  root.render(createElement(GlueXWidget, { config }))
+})
+
+onUnmounted(() => {
+  if (root) root.unmount()
+})
+</script>
+
+<template>
+  <div class="widget-container" ref="container"></div>
+</template>
+```
+
+</CodeGroup>
+
+**Usage in Your App**
+
+You can now import and use the widget component anywhere in your Nuxt application:
+
+```vue pages/index.vue
+<script setup>
+import Widget from '~/components/Widget.vue'
+</script>
+<template>
+  <div>
+    <h1>My DeFi App</h1>
+    <Widget />
+  </div>
+</template>
+```
+
+<ConfigurationAndCustomization />
