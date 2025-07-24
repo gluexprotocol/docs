@@ -1,85 +1,84 @@
 ---
 title: "Fee Structure"
-description: ""
+description: "Transparent and fair Router API fees at GlueX"
 ---
 
-At GlueX, transparency and fairness are our core values. The Router API is engineered to provide not just optimal trade execution, but also a clear and equitable fee structure that aligns incentives across users, integrators and the protocol itself. Unlike traditional models, we impose **no direct routing fees** and innovatively distribute any **positive slippage**, alongside a flexible partner fee model and advanced surplus sharing mechanism
+At GlueX, **transparency and fairness** are core to our philosophy. Our Router API is designed not only for optimal trade execution, but also with a fee model that aligns the incentives of users, integrators, and the protocol itself.
 
-## Zero Routing Fees
+We apply a **0.03%–0.05% settlement fee** to all trades, which is shared between GlueX and the integrator. In addition, we implement a flexible **positive slippage sharing**, **partner fee configuration**, and an **surplus sharing mechanism** to ensure equitable outcomes for all parties.
 
-We believe in maximizing value for the end user. That's why we proudly charge **absolutely zero routing fees** for any swap executed through our Router API, with no hidden markups or backend commissions embedded in the trade execution
+---
+
+## Settlement Fees
+
+GlueX applies a **0.03%–0.05% settlement fee** on every trade executed through the Router API. This fee is shared **50/50** between GlueX and the integrator.
 
 ### Highlights
 
-- **0% routing fees:** Your users will never pay a direct fee to the protocol for facilitating their swaps
-- **No hidden costs or surcharges:** The price you quote is the price your user gets, free from unexpected deductions
-- **User first pricing execution:** Our model ensures that every transaction is executed with the user's best interest, optimizing for the greatest possible output without additional costs
+- **Low settlement fees**: Between 0.03% and 0.05% per trade
+- **Revenue sharing**: Settlement fees are split equally between GlueX and the integrator
+- **No hidden costs**: What you quote is what the user gets — with all fees accounted for transparently in the returned values
 
 ---
 
 ## Partner Fee Model
 
-GlueX empowers integrators and partners to build sustainable businesses by enabling them to monetize their valuable contribution to the DeFi ecosystem. Our configurable partner fee mechanism allows you to define a fee that is integrated into the trade. This is done via two fields in the request:
+To help integrators monetize their services, GlueX supports a configurable **partner fee mechanism** that allows a portion of the output amount to be automatically redirected to a designated wallet.
 
 ### Configuration
 
 ```json
 {
   // ... other parameters
-  "partnerFee": <bps_of_output_amount>,
+  "partnerFee": "<bps_of_output_amount>",
   "partnerAddress": "<0x_partner_wallet_address>"
 }
 ```
 
-- `partnerFee`: Fee in basis points (bps) applied to the output amount (this fee is automatically deducted from the user's final output)
-- `partnerAddress`: EOA address to receive the collected fee
-
-These fees are automatically accounted for in the returned output amount and transferred accordingly
+- `partnerFee`: Basis points (bps) applied to the output amount, deducted before final output.
+- `partnerAddress`: Wallet address where partner fees are sent.
 
 ### How It Works
 
-Once configured, these fees are automatically accounted for in the `minOutputAmount` and `effectiveOutputAmount` returned by the API. Upon successful onchain execution, the specified `partnerFee` amount is automatically transferred to your `partnerAddress`, ensuring a smooth and automated monetization stream for your integration
+Partner fees are factored into both `minOutputAmount` and `effectiveOutputAmount`. Once the trade is executed on-chain, the fee amount is automatically transferred to your `partnerAddress`.
 
 ---
 
 ## Positive Slippage Rewards
 
-In dynamic decentralized markets, trades can sometimes execute at a more favorable rate than initially quoted (ie. the user receives more output tokens than expected). This "positive slippage" means the user receives more output tokens than they initially expected and at GlueX, we ensure that the entire difference is distributed to the user, partner and the protocol. This enhances transparency and builds trust with integrators and users alike
+When trades execute better than quoted (i.e., **positive slippage**), GlueX ensures that this extra value is **fairly distributed** between the user, the integrator, and the protocol.
 
-### Commitment to Fairness
+### Distribution
 
-If a swap results in "positive slippage", GlueX ensures that this entire difference is transparently distributed. This distribution ensures a stronger ecosystem and builds trust with both our integrators and their end users. The positive slippage is divided among:
+- **User**: Gets the primary share of the extra output.
+- **Integrator**: Rewarded for routing users and optimizing experience.
+- **GlueX**: Retains a portion to support protocol growth and sustainability.
 
-- **End Users**: Receives the primary benefit, ensuring they get the best possible outcome from their trade
-- **Partner or Integrator**: You, as the integrator, are incentivized for bringing the user and optimizing their experience
-- **Protocol**: A portion is allocated to the protocol, supporting ongoing protocol development, maintenance and innovation, all without charging direct routing fees
-
-This mechanism not only enhances transparency but also creates a win-win-win scenario for all participants, directly aligning our success with yours and your users' benefit
+This transparent, win-win-win mechanism fosters long-term trust and collaboration across all stakeholders.
 
 ---
 
-## Surplus Sharing (Advanced)
+## Surplus Sharing 
 
-**Surplus** refers to the additional value captured when GlueX's advanced routing engine significantly outperforms other routers or expected trade benchmarks (market expectations). Surplus arises from:
+“**Surplus**” refers to the added value when GlueX’s routing achieves **better-than-benchmark** execution (e.g., compared to next best aggregator's market rate). This can result from:
 
-- **Better routing decisions**: Our highly optimized algorithms identify the most efficient and least fragmented paths across various liquidity sources
-- **Gas optimizations**: Intelligent transaction structuring and execution to minimize on-chain gas costs, effectively leading to more net output for the user
-- **Internal execution advantages**: Proprietary methods and designs that allow GlueX to achieve better execution than standard market operations
-- **Preferential pool pricing and Partnerships**: Through strategic agreements with certain liquidity protocols and market makers, GlueX may access exclusive pricing, reduced trading fees, or deeper liquidity that is not generally available to the public
+- **Optimized routing paths** across liquidity sources
+- **Gas savings** via efficient transaction design
+- **Proprietary internal methods**
+- **Exclusive liquidity partnerships**
 
-When such a surplus is detected and captured, it is then intelligently shared to maximize benefits across the ecosystem
+### Surplus Distribution
 
 | Recipient  | Share of Surplus |
-|-------------|------------------|
-| User        | ≤ 33 %           |
-| Integrator  | ≤ 33 %           |
-| GlueX       | ≤ 33 %           |
+|------------|------------------|
+| User       | ≥ 33%            |
+| Integrator | ≤ 33%            |
+| GlueX      | ≤ 33%            |
 
-Note: The surplus is capped at 0.3% on the total volume when GlueX outperforms the benchmark by more than 0.3%.
 
 ### Activation
 
-To enable the advanced surplus sharing mechanism and allow your `partnerAddress` to receive its allocated share of this additional value, include the following in your API request
+To receive your share of surplus rewards:
 
 ```json
 {
@@ -89,13 +88,21 @@ To enable the advanced surplus sharing mechanism and allow your `partnerAddress`
 }
 ```
 
-<Note>
-  Activating `activateSurplusFee` enables the use of specialized surplus fee
-  contracts that handle the fair allocation and distribution of this captured
-  value according to the agreed upon distribution model. Ensure your
-  `partnerAddress` is correctly set up to receive these distributions
-</Note>
+> When `activateSurplusFee` is enabled, specialized contracts handle the fair distribution of captured surplus, ensuring your `partnerAddress` receives its portion automatically.
+
+## Positive Slippage Rewards
+
+When trades execute better than quoted (i.e., **positive slippage exists**), GlueX ensures that this extra value is **fairly distributed** between the user, the integrator, and the protocol - in the same ratio as the surplus.
+
+### Distribution
+
+- **User**: Gets the primary share of the extra output.
+- **Integrator**: Rewarded for brinding orderflow and optimizing experience.
+- **GlueX**: Retains a portion to support protocol growth and sustainability.
+
+This transparent, win-win-win mechanism fosters long-term trust and collaboration across all stakeholders.
+
 
 ---
 
-At GlueX, our fee structure is built on principles of fairness and mutual growth. We aim to be the most transparent and beneficial routing solution for the entire DeFi ecosystem. For personalized assistance with fee integrations, detailed information on surplus sharing distribution models or to explore deeper partnership opportunities, please don't hesitate to contact the GlueX team via our [official Telegram channel](https://t.me/+_VmO_gIrNjxiZWE0)
+At GlueX, our commitment is to building a **transparent, fair, and sustainable** ecosystem for all participants. For help with fee setup, surplus activation, or to explore partnership opportunities, reach out via our [official Telegram](https://t.me/+_VmO_gIrNjxiZWE0).
