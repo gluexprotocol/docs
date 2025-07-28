@@ -7,9 +7,21 @@ description: "This tutorial provides a step-by-step guide on how to swap native 
 
 Before running the script, ensure you have the following installed:
 
+**Python:**
 - Python 3.10
 - Web3 (`pip install web3`)
 - Requests (`pip install requests`)
+
+**TypeScript:**
+- Node.js 18+
+- TypeScript (`npm install -g typescript`)
+- Web3 (`npm install web3`)
+- Axios (`npm install axios`)
+
+**JavaScript:**
+- Node.js 18+
+- Web3 (`npm install web3`)
+- Axios (`npm install axios`)
 
 Additionally, you need access to an Ethereum-compatible blockchain node, such as an Infura or Tenderly RPC endpoint.
 
@@ -26,7 +38,9 @@ The GlueX Router simplifies the token swap process by:
 
 The following script initializes the necessary configurations:
 
-```python
+<CodeGroup>
+
+```python setup.py
 from web3 import Web3
 import requests
 import json
@@ -53,16 +67,115 @@ COMPUTATION_UNITS = 1000000
 COMPUTATION_COST = web3.eth.gas_price
 ```
 
+```typescript setup.ts
+import { Web3 } from 'web3';
+import axios from 'axios';
+
+// Configuration
+const API_KEY = "your_api_key";
+const UNIQUE_PID = "your_unique_pid";
+const QUOTE_ENDPOINT = "https://router.gluex.xyz/v1/quote";
+const RPC_URL = "https://mainnet.gateway.co/your_rpc_url";
+const PRIVATE_KEY = "your_private_key";
+
+// Token Information
+const NATIVE_TOKEN_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"; // Represents native ETH
+const TOKEN_IN = NATIVE_TOKEN_ADDRESS;
+const TOKEN_OUT = "0xTokenOutAddress"; // Replace with the desired output token address
+const INPUT_AMOUNT = BigInt("1000000000000000000"); // Example: 1 ETH in Wei
+
+// Initialize Web3
+const web3 = new Web3(RPC_URL);
+const account = web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY);
+const COMPUTATION_UNITS = 1000000;
+
+// Types
+interface QuoteBody {
+    chainID: string;
+    userAddress: string;
+    outputReceiver: string;
+    uniquePID: string;
+    inputToken: string;
+    outputToken: string;
+    inputAmount: bigint;
+    isPermit2: boolean;
+}
+
+interface QuoteRequestBody {
+    chainID: string;
+    userAddress: string;
+    outputReceiver: string;
+    uniquePID: string;
+    inputToken: string;
+    outputToken: string;
+    inputAmount: string;
+    isPermit2: boolean;
+}
+
+interface QuoteResponse {
+    statusCode: number;
+    result?: {
+        router: string;
+        calldata: string;
+    };
+}
+```
+
+```javascript setup.js
+import { Web3 } from 'web3';
+import axios from 'axios';
+
+// Configuration
+const API_KEY = "your_api_key";
+const UNIQUE_PID = "your_unique_pid";
+const QUOTE_ENDPOINT = "https://router.gluex.xyz/v1/quote";
+const RPC_URL = "https://mainnet.gateway.co/your_rpc_url";
+const PRIVATE_KEY = "your_private_key";
+
+// Token Information
+const NATIVE_TOKEN_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"; // Represents native ETH
+const TOKEN_IN = NATIVE_TOKEN_ADDRESS;
+const TOKEN_OUT = "0xTokenOutAddress"; // Replace with the desired output token address
+const INPUT_AMOUNT = BigInt("1000000000000000000"); // Example: 1 ETH in Wei
+
+// Initialize Web3
+const web3 = new Web3(RPC_URL);
+const account = web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY);
+const COMPUTATION_UNITS = 1000000;
+```
+
+</CodeGroup>
+
 ### 2. **Fetching a Swap Quote**
 
 Before executing the swap, obtain a quote from the GlueX Router. This ensures that you get the best rate available:
 
-```python
+<CodeGroup>
+
+```python fetch_quote.py
 def fetch_quote(body, headers):
     """Fetch a quote from the GlueX Router."""
     response = requests.post(QUOTE_ENDPOINT, json=body, headers=headers)
     return response.json()
 ```
+
+```typescript fetch_quote.ts
+const fetchQuote = async (body: QuoteRequestBody, headers: { [key: string]: string }): Promise<QuoteResponse> => {
+    console.log("Fetch a quote from the GlueX Router.");
+    const response = await axios.post(QUOTE_ENDPOINT, body, { headers });
+    return response.data;
+};
+```
+
+```javascript fetch_quote.js
+const fetchQuote = async (body, headers) => {
+    console.log("Fetch a quote from the GlueX Router.");
+    const response = await axios.post(QUOTE_ENDPOINT, body, { headers });
+    return response.data;
+};
+```
+
+</CodeGroup>
 
 This function sends a request to the GlueX Router to retrieve a quote for swapping native tokens.
 
@@ -70,7 +183,9 @@ This function sends a request to the GlueX Router to retrieve a quote for swappi
 
 Once the quote is retrieved, execute the swap transaction by sending the appropriate calldata:
 
-```python
+<CodeGroup>
+
+```python execute_transaction.py
 def execute_transaction(calldata, router_address, account, value=0):
     """Execute transaction on the GlueX Router."""
     txn = {
@@ -80,7 +195,8 @@ def execute_transaction(calldata, router_address, account, value=0):
         "gas": COMPUTATION_UNITS,
         "gasPrice": web3.eth.gas_price,
         "nonce": web3.eth.get_transaction_count(account.address),
-        "value": value
+        "value": value,
+        "chainId": 1
     }
     signed_txn = web3.eth.account.sign_transaction(txn, account.key)
     txn_hash = web3.eth.send_raw_transaction(signed_txn.raw_transaction)
@@ -88,17 +204,73 @@ def execute_transaction(calldata, router_address, account, value=0):
     return txn_hash
 ```
 
+```typescript execute_transaction.ts
+const executeTransaction = async (
+    calldata: string,
+    routerAddress: string,
+    account: any,
+    value: bigint = BigInt(0)
+): Promise<string> => {
+    const txn = {
+        from: account.address,
+        to: web3.utils.toChecksumAddress(routerAddress),
+        data: calldata,
+        gas: COMPUTATION_UNITS,
+        gasPrice: await web3.eth.getGasPrice(),
+        nonce: await web3.eth.getTransactionCount(account.address),
+        value: value,
+        chainId: 1
+    };
+
+    const signedTxn = await account.signTransaction(txn);
+    const receipt = await web3.eth.sendSignedTransaction(signedTxn.rawTransaction);
+    const txHash = web3.utils.toHex(receipt.transactionHash);
+    console.log(`Transaction Hash: ${txHash}`);
+    return txHash;
+};
+```
+
+```javascript execute_transaction.js
+const executeTransaction = async (
+    calldata,
+    routerAddress,
+    account,
+    value = BigInt(0)
+) => {
+    const txn = {
+        from: account.address,
+        to: web3.utils.toChecksumAddress(routerAddress),
+        data: calldata,
+        gas: COMPUTATION_UNITS,
+        gasPrice: await web3.eth.getGasPrice(),
+        nonce: await web3.eth.getTransactionCount(account.address),
+        value: value,
+        chainId: 1
+    };
+
+    const signedTxn = await account.signTransaction(txn);
+    const receipt = await web3.eth.sendSignedTransaction(signedTxn.rawTransaction);
+    const txHash = web3.utils.toHex(receipt.transactionHash);
+    console.log(`Transaction Hash: ${txHash}`);
+    return txHash;
+};
+```
+
+</CodeGroup>
+
 This function constructs and signs the transaction, ensuring it is sent to the Ethereum blockchain for processing.
 
 ### 4. **End-to-End Swap Execution**
 
 The `main()` function ties everything together by fetching a quote and executing the transaction:
 
-```python
+<CodeGroup>
+
+```python main.py
 def main():
     headers = {"x-api-key": API_KEY}
     body = {
-        "chainID": "1",  # Ethereum Mainnet
+        "chainID": "ethereum",  # Ethereum Mainnet
         "userAddress": account.address,
         "outputReceiver": account.address,
         "uniquePID": UNIQUE_PID,
@@ -135,13 +307,127 @@ if __name__ == "__main__":
     main()
 ```
 
+```typescript main.ts
+const main = async (): Promise<void> => {
+    const headers = { "x-api-key": API_KEY };
+    const body: QuoteBody = {
+        chainID: "ethereum", // Ethereum Mainnet
+        userAddress: account.address,
+        outputReceiver: account.address,
+        uniquePID: UNIQUE_PID,
+        inputToken: TOKEN_IN,
+        outputToken: TOKEN_OUT,
+        inputAmount: INPUT_AMOUNT,
+        isPermit2: false
+    };
+
+    // Convert BigInt to string for axios serialization
+    const requestBody = {
+        ...body,
+        inputAmount: body.inputAmount.toString()
+    };
+
+    console.log("============================================================================");
+    console.log("Fetching swap quote...");
+    console.log(requestBody);
+    
+    const quoteData = await fetchQuote(requestBody, headers);
+
+    if (quoteData.statusCode !== 200) {
+        console.log("Error fetching quote:", quoteData);
+        return;
+    }
+
+    console.log("Quote received successfully:");
+    console.log(quoteData);
+
+    const routerAddress = quoteData.result!.router;
+    const calldata = quoteData.result!.calldata;
+
+    console.log("Executing transaction...");
+    const executeTxn = await executeTransaction(calldata, routerAddress, account, INPUT_AMOUNT);
+
+    const receipt = await web3.eth.getTransactionReceipt(executeTxn);
+    console.log("Transaction confirmed. Receipt:");
+    console.log(receipt);
+    console.log("");
+};
+
+// Run the main function
+main().catch(console.error);
+```
+
+```javascript main.js
+const main = async () => {
+    const headers = { "x-api-key": API_KEY };
+    const body = {
+        chainID: "ethereum", // Ethereum Mainnet
+        userAddress: account.address,
+        outputReceiver: account.address,
+        uniquePID: UNIQUE_PID,
+        inputToken: TOKEN_IN,
+        outputToken: TOKEN_OUT,
+        inputAmount: INPUT_AMOUNT,
+        isPermit2: false
+    };
+
+    // Convert BigInt to string for axios serialization
+    const requestBody = {
+        ...body,
+        inputAmount: body.inputAmount.toString()
+    };
+
+    console.log("============================================================================");
+    console.log("Fetching swap quote...");
+    console.log(requestBody);
+    
+    const quoteData = await fetchQuote(requestBody, headers);
+
+    if (quoteData.statusCode !== 200) {
+        console.log("Error fetching quote:", quoteData);
+        return;
+    }
+
+    console.log("Quote received successfully:");
+    console.log(quoteData);
+
+    const routerAddress = quoteData.result.router;
+    const calldata = quoteData.result.calldata;
+
+    console.log("Executing transaction...");
+    const executeTxn = await executeTransaction(calldata, routerAddress, account, INPUT_AMOUNT);
+
+    const receipt = await web3.eth.getTransactionReceipt(executeTxn);
+    console.log("Transaction confirmed. Receipt:");
+    console.log(receipt);
+    console.log("");
+};
+
+// Run the main function
+main().catch(console.error);
+```
+
+</CodeGroup>
+
 ### 5. **Running the Script**
 
 To execute the swap, run the script as follows:
 
-```bash
+<CodeGroup>
+
+```bash python
 python swap_native_tokens.py
 ```
+
+```bash typescript
+npx tsx swap_native_tokens.ts
+```
+
+```bash javascript
+node swap_native_tokens.js
+```
+
+</CodeGroup>
 
 ### 6. **Understanding the Workflow**
 
