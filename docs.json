@@ -220,6 +220,7 @@
         "tab": "Tutorials",
         "pages": [
           "tutorials/deposit-to-a-lending-vault",
+          "tutorials/dex-transaction",
           "tutorials/swap-native-tokens",
           "tutorials/wrap-token",
           "tutorials/staking-a-token",

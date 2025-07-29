@@ -1,47 +1,7 @@
 ---
-title: "Deposit to a Lending Vault"
-description: "Atomically deposit any token into any lending vaults (Aave, Morpho, Compound, Euler, Yearn, Beefy, Lido, Fluid and more) in a single atomic transaction"
+title: "DEX Transaction"
+description: "This tutorial provides a step-by-step guide on how to swap USDC to ETH using the GlueX Router."
 ---
-
-## Case
-
-Suppose you hold \$GALA and want to put it to work earning yield in a lending protocol, specifically by converting it into interest bearing \$aETHWETH in a single atomic transaction. With GlueX’s unified Router API and smart contract integrations, you can swap one token and deposit the proceeds into a lending vault atomically, without juggling approvals or multiple onchain calls.
-
-In this guide, we’ll walk through exactly how to:
-
-1. Build a swap quote to convert \$GALA into \$WETH
-2. Bundle that quote into a Zap that deposits directly into the Aave vault to receive \$aETHWETH
-3. Submit the transaction and verify the resulting vault deposit
-
-We’ll use a real Ethereum mainnet transaction as our reference example <br/>
-Transaction hash: [0xd0c48d25ac3e0ab111b3ab401903d4a357baa22ee9c9efb832e0b80278ba5ba3](https://etherscan.io/tx/0xd0c48d25ac3e0ab111b3ab401903d4a357baa22ee9c9efb832e0b80278ba5ba3)
-
-<img
-  className="hidden dark:block"
-  src="/images/tutorials/lending-example-transfer.png"
-  alt="0xd0c48d25ac3e0ab111b3ab401903d4a357baa22ee9c9efb832e0b80278ba5ba3 Example Txn"
-/>
-
-### How It Works
-
-1. Transfer \$GALA from the user's wallet
-2. Swap \$GALA for \$WETH via Uniswap V3
-3. Receive \$aETHWETH via Aave V3
-4. Start earning yield automatically
-
-### Why This Matters?
-
-Moving from a regular token to a yield bearing asset usually requires multiple platforms, manual steps and higher fees. GlueX removes these barriers, bringing:
-
-✅ Time efficiency - One transaction instead of many
-
-✅ Cost savings - Lesser gas fees
-
-✅ Simplicity - No manual interactions with multiple protocols
-
-This tutorial uses \$GALA → \$aETHWETH as an example, but GlueX allows you to swap any token to any yield generating token in a single transaction
-
-## Implementation
 
 ### Prerequisites
 
@@ -83,11 +43,9 @@ RPC_URL = "https://mainnet.gateway.tenderly.co/your_rpc_url"
 PRIVATE_KEY = "your_private_key"
 
 # Token Addresses
-GALA_ADDRESS = "0xd1d2Eb1B1e90B638588728b4130137D262C87cae"
-AETHWETH_ADDRESS = "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8"
-
-# Input amount (in decimals)
-INPUT_AMOUNT = 2000000000000  # 2,000,000 GALA (including decimals)
+USDC_ADDRESS = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"  # USDC on Ethereum
+ETH_ADDRESS = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"    # ETH on Ethereum
+INPUT_AMOUNT = 1000000  # 1 USDC (6 decimals)
 
 # Initialize Web3
 web3 = Web3(Web3.HTTPProvider(RPC_URL))
@@ -108,11 +66,9 @@ const RPC_URL = "https://mainnet.gateway.tenderly.co/your_rpc_url";
 const PRIVATE_KEY = "your_private_key";
 
 // Token Addresses
-const GALA_ADDRESS = "0xd1d2Eb1B1e90B638588728b4130137D262C87cae";
-const AETHWETH_ADDRESS = "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8";
-
-// Input amount (in decimals)
-const INPUT_AMOUNT = BigInt("2000000000000"); // 2,000,000 GALA (including decimals)
+const USDC_ADDRESS = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"; // USDC on Ethereum
+const ETH_ADDRESS = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";   // ETH on Ethereum
+const INPUT_AMOUNT = BigInt("1000000"); // 1 USDC (6 decimals)
 
 // Initialize Web3
 const web3 = new Web3(RPC_URL);
@@ -163,11 +119,9 @@ const RPC_URL = "https://mainnet.gateway.tenderly.co/your_rpc_url";
 const PRIVATE_KEY = "your_private_key";
 
 // Token Addresses
-const GALA_ADDRESS = "0xd1d2Eb1B1e90B638588728b4130137D262C87cae";
-const AETHWETH_ADDRESS = "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8";
-
-// Input amount (in decimals)
-const INPUT_AMOUNT = BigInt("2000000000000"); // 2,000,000 GALA (including decimals)
+const USDC_ADDRESS = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"; // USDC on Ethereum
+const ETH_ADDRESS = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";   // ETH on Ethereum
+const INPUT_AMOUNT = BigInt("1000000"); // 1 USDC (6 decimals)
 
 // Initialize Web3
 const web3 = new Web3(RPC_URL);
@@ -185,15 +139,15 @@ Before executing the transaction, fetch a quote from the GlueX Router
 
 ```python fetch_quote.py
 def fetch_quote():
-    """Fetch a quote from the GlueX Router for $GALA to $aETHWETH swap"""
+    """Fetch a quote from the GlueX Router for $USDC to $ETH swap"""
     headers = {"x-api-key": API_KEY}
     body = {
-        "chainID": "ethereum",
+        "chainID": "1",  # Ethereum Mainnet
         "userAddress": account.address,
         "outputReceiver": account.address,
         "uniquePID": UNIQUE_PID,
-        "inputToken": GALA_ADDRESS,
-        "outputToken": AETHWETH_ADDRESS,
+        "inputToken": USDC_ADDRESS,
+        "outputToken": ETH_ADDRESS,
         "inputAmount": INPUT_AMOUNT,
         "isPermit2": False
     }
@@ -205,7 +159,7 @@ def fetch_quote():
 
 ```typescript fetch_quote.ts
 const fetchQuote = async (body: QuoteRequestBody, headers: { [key: string]: string }): Promise<QuoteResponse> => {
-    console.log("Fetch a quote from the GlueX Router for $GALA to $aETHWETH swap");
+    console.log("Fetch a quote from the GlueX Router for $USDC to $ETH swap");
     const response = await axios.post(QUOTE_ENDPOINT, body, { headers });
     return response.data;
 };
@@ -213,7 +167,7 @@ const fetchQuote = async (body: QuoteRequestBody, headers: { [key: string]: stri
 
 ```javascript fetch_quote.js
 const fetchQuote = async (body, headers) => {
-    console.log("Fetch a quote from the GlueX Router for $GALA to $aETHWETH swap");
+    console.log("Fetch a quote from the GlueX Router for $USDC to $ETH swap");
     const response = await axios.post(QUOTE_ENDPOINT, body, { headers });
     return response.data;
 };
@@ -223,13 +177,13 @@ const fetchQuote = async (body, headers) => {
 
 ### Approving the Router Contract
 
-Before executing the swap, the router contract needs permission to spend the user's GALA tokens
+Before executing the swap, the router contract needs permission to spend the user's USDC tokens
 
 <CodeGroup>
 
 ```python approve_spender.py
 def approve_spender(spender, amount, token_address):
-    """Approve the router contract to spend $GALA"""
+    """Approve the router contract to spend $USDC"""
     signature = "0x095ea7b3"
     padded_spender = Web3.to_checksum_address(spender)[2:].zfill(64)
     calldata = f"{signature}{padded_spender}{int(amount):064x}"
@@ -421,8 +375,8 @@ def main():
     calldata = quote_data["result"]["calldata"]
 
     # Approve the router contract
-    print("Approving router contract to spend GALA...")
-    txn_hash = approve_spender(router_address, INPUT_AMOUNT, GALA_ADDRESS)
+    print("Approving router contract to spend USDC...")
+    txn_hash = approve_spender(router_address, INPUT_AMOUNT, USDC_ADDRESS)
     print("Waiting for approval transaction confirmation...")
     approval_receipt = web3.eth.wait_for_transaction_receipt(txn_hash)
     if approval_receipt.status != 1:
@@ -446,12 +400,12 @@ if __name__ == "__main__":
 const main = async (): Promise<void> => {
     const headers = { "x-api-key": API_KEY };
     const body: QuoteBody = {
-        chainID: "ethereum",
+        chainID: "1", // Ethereum Mainnet
         userAddress: account.address,
         outputReceiver: account.address,
         uniquePID: UNIQUE_PID,
-        inputToken: GALA_ADDRESS,
-        outputToken: AETHWETH_ADDRESS,
+        inputToken: USDC_ADDRESS,
+        outputToken: ETH_ADDRESS,
         inputAmount: INPUT_AMOUNT,
         isPermit2: false
     };
@@ -475,8 +429,8 @@ const main = async (): Promise<void> => {
     const calldata = quoteData.result!.calldata;
 
     // Approve the router contract
-    console.log("Approving router contract to spend GALA...");
-    const txnHash = await approveSpender(routerAddress, INPUT_AMOUNT, GALA_ADDRESS);
+    console.log("Approving router contract to spend USDC...");
+    const txnHash = await approveSpender(routerAddress, INPUT_AMOUNT, USDC_ADDRESS);
     console.log("Waiting for approval transaction confirmation...");
     const approvalReceipt = await web3.eth.getTransactionReceipt(txnHash);
     if (!approvalReceipt || !approvalReceipt.status) {
@@ -501,12 +455,12 @@ main().catch(console.error);
 const main = async () => {
     const headers = { "x-api-key": API_KEY };
     const body = {
-        chainID: "ethereum",
+        chainID: "1", // Ethereum Mainnet
         userAddress: account.address,
         outputReceiver: account.address,
         uniquePID: UNIQUE_PID,
-        inputToken: GALA_ADDRESS,
-        outputToken: AETHWETH_ADDRESS,
+        inputToken: USDC_ADDRESS,
+        outputToken: ETH_ADDRESS,
         inputAmount: INPUT_AMOUNT,
         isPermit2: false
     };
@@ -530,8 +484,8 @@ const main = async () => {
     const calldata = quoteData.result.calldata;
 
     // Approve the router contract
-    console.log("Approving router contract to spend GALA...");
-    const txnHash = await approveSpender(routerAddress, INPUT_AMOUNT, GALA_ADDRESS);
+    console.log("Approving router contract to spend USDC...");
+    const txnHash = await approveSpender(routerAddress, INPUT_AMOUNT, USDC_ADDRESS);
     console.log("Waiting for approval transaction confirmation...");
     const approvalReceipt = await web3.eth.getTransactionReceipt(txnHash);
     if (!approvalReceipt || !approvalReceipt.status) {
@@ -572,11 +526,9 @@ RPC_URL = "https://mainnet.gateway.tenderly.co/your_rpc_url"
 PRIVATE_KEY = "your_private_key"
 
 # Token Addresses
-GALA_ADDRESS = "0xd1d2Eb1B1e90B638588728b4130137D262C87cae"
-AETHWETH_ADDRESS = "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8"
-
-# Input amount (in decimals)
-INPUT_AMOUNT = 2000000000000  # 2,000,000 GALA (including decimals)
+USDC_ADDRESS = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"  # USDC on Ethereum
+ETH_ADDRESS = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"    # ETH on Ethereum
+INPUT_AMOUNT = 1000000  # 1 USDC (6 decimals)
 
 # Initialize Web3
 web3 = Web3(Web3.HTTPProvider(RPC_URL))
@@ -585,15 +537,15 @@ COMPUTATION_UNITS = 1000000
 COMPUTATION_COST = web3.eth.gas_price
 
 def fetch_quote():
-    """Fetch a quote from the GlueX Router for $GALA to $aETHWETH swap"""
+    """Fetch a quote from the GlueX Router for $USDC to $ETH swap"""
     headers = {"x-api-key": API_KEY}
     body = {
-        "chainID": "ethereum",
+        "chainID": "1",  # Ethereum Mainnet
         "userAddress": account.address,
         "outputReceiver": account.address,
         "uniquePID": UNIQUE_PID,
-        "inputToken": GALA_ADDRESS,
-        "outputToken": AETHWETH_ADDRESS,
+        "inputToken": USDC_ADDRESS,
+        "outputToken": ETH_ADDRESS,
         "inputAmount": INPUT_AMOUNT,
         "isPermit2": False
     }
@@ -603,7 +555,7 @@ def fetch_quote():
     return response.json()
 
 def approve_spender(spender, amount, token_address):
-    """Approve the router contract to spend $GALA"""
+    """Approve the router contract to spend $USDC"""
     signature = "0x095ea7b3"
     padded_spender = Web3.to_checksum_address(spender)[2:].zfill(64)
     calldata = f"{signature}{padded_spender}{int(amount):064x}"
@@ -662,8 +614,8 @@ def main():
     calldata = quote_data["result"]["calldata"]
 
     # Approve the router contract
-    print("Approving router contract to spend GALA...")
-    txn_hash = approve_spender(router_address, INPUT_AMOUNT, GALA_ADDRESS)
+    print("Approving router contract to spend USDC...")
+    txn_hash = approve_spender(router_address, INPUT_AMOUNT, USDC_ADDRESS)
     print("Waiting for approval transaction confirmation...")
     approval_receipt = web3.eth.wait_for_transaction_receipt(txn_hash)
     if approval_receipt.status != 1:
@@ -697,11 +649,9 @@ const RPC_URL = "https://mainnet.gateway.tenderly.co/your_rpc_url";
 const PRIVATE_KEY = "your_private_key";
 
 // Token Addresses
-const GALA_ADDRESS = "0xd1d2Eb1B1e90B638588728b4130137D262C87cae";
-const AETHWETH_ADDRESS = "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8";
-
-// Input amount (in decimals)
-const INPUT_AMOUNT = BigInt("2000000000000"); // 2,000,000 GALA (including decimals)
+const USDC_ADDRESS = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"; // USDC on Ethereum
+const ETH_ADDRESS = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";   // ETH on Ethereum
+const INPUT_AMOUNT = BigInt("1000000"); // 1 USDC (6 decimals)
 
 // Initialize Web3
 const web3 = new Web3(RPC_URL);
@@ -740,7 +690,7 @@ interface QuoteResponse {
 }
 
 const fetchQuote = async (body: QuoteRequestBody, headers: { [key: string]: string }): Promise<QuoteResponse> => {
-    console.log("Fetch a quote from the GlueX Router for $GALA to $aETHWETH swap");
+    console.log("Fetch a quote from the GlueX Router for $USDC to $ETH swap");
     const response = await axios.post(QUOTE_ENDPOINT, body, { headers });
     return response.data;
 };
@@ -805,12 +755,12 @@ const executeTransaction = async (
 const main = async (): Promise<void> => {
     const headers = { "x-api-key": API_KEY };
     const body: QuoteBody = {
-        chainID: "ethereum",
+        chainID: "1", // Ethereum Mainnet
         userAddress: account.address,
         outputReceiver: account.address,
         uniquePID: UNIQUE_PID,
-        inputToken: GALA_ADDRESS,
-        outputToken: AETHWETH_ADDRESS,
+        inputToken: USDC_ADDRESS,
+        outputToken: ETH_ADDRESS,
         inputAmount: INPUT_AMOUNT,
         isPermit2: false
     };
@@ -834,8 +784,8 @@ const main = async (): Promise<void> => {
     const calldata = quoteData.result!.calldata;
 
     // Approve the router contract
-    console.log("Approving router contract to spend GALA...");
-    const txnHash = await approveSpender(routerAddress, INPUT_AMOUNT, GALA_ADDRESS);
+    console.log("Approving router contract to spend USDC...");
+    const txnHash = await approveSpender(routerAddress, INPUT_AMOUNT, USDC_ADDRESS);
     console.log("Waiting for approval transaction confirmation...");
     const approvalReceipt = await web3.eth.getTransactionReceipt(txnHash);
     if (!approvalReceipt || !approvalReceipt.status) {
@@ -870,11 +820,9 @@ const RPC_URL = "https://mainnet.gateway.tenderly.co/your_rpc_url";
 const PRIVATE_KEY = "your_private_key";
 
 // Token Addresses
-const GALA_ADDRESS = "0xd1d2Eb1B1e90B638588728b4130137D262C87cae";
-const AETHWETH_ADDRESS = "0x4d5F47FA6A74757f35C14fD3a6Ef8E3C9BC514E8";
-
-// Input amount (in decimals)
-const INPUT_AMOUNT = BigInt("2000000000000"); // 2,000,000 GALA (including decimals)
+const USDC_ADDRESS = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"; // USDC on Ethereum
+const ETH_ADDRESS = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";   // ETH on Ethereum
+const INPUT_AMOUNT = BigInt("1000000"); // 1 USDC (6 decimals)
 
 // Initialize Web3
 const web3 = new Web3(RPC_URL);
@@ -882,7 +830,7 @@ const account = web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY);
 const COMPUTATION_UNITS = 1000000;
 
 const fetchQuote = async (body, headers) => {
-    console.log("Fetch a quote from the GlueX Router for $GALA to $aETHWETH swap");
+    console.log("Fetch a quote from the GlueX Router for $USDC to $ETH swap");
     const response = await axios.post(QUOTE_ENDPOINT, body, { headers });
     return response.data;
 };
@@ -940,12 +888,12 @@ const executeTransaction = async (calldata, routerAddress) => {
 const main = async () => {
     const headers = { "x-api-key": API_KEY };
     const body = {
-        chainID: "ethereum",
+        chainID: "1", // Ethereum Mainnet
         userAddress: account.address,
         outputReceiver: account.address,
         uniquePID: UNIQUE_PID,
-        inputToken: GALA_ADDRESS,
-        outputToken: AETHWETH_ADDRESS,
+        inputToken: USDC_ADDRESS,
+        outputToken: ETH_ADDRESS,
         inputAmount: INPUT_AMOUNT,
         isPermit2: false
     };
@@ -969,8 +917,8 @@ const main = async () => {
     const calldata = quoteData.result.calldata;
 
     // Approve the router contract
-    console.log("Approving router contract to spend GALA...");
-    const txnHash = await approveSpender(routerAddress, INPUT_AMOUNT, GALA_ADDRESS);
+    console.log("Approving router contract to spend USDC...");
+    const txnHash = await approveSpender(routerAddress, INPUT_AMOUNT, USDC_ADDRESS);
     console.log("Waiting for approval transaction confirmation...");
     const approvalReceipt = await web3.eth.getTransactionReceipt(txnHash);
     if (!approvalReceipt || !approvalReceipt.status) {
@@ -994,38 +942,35 @@ main().catch(console.error);
 
 ### Running the Script
 
-To execute the deposit, run the script as follows:
+To execute the swap, run the script as follows:
 
 <CodeGroup>
 
 ```bash python
-python deposit_to_lending_vault.py
+python dex-transaction.py
 ```
 
 ```bash typescript
-npx tsx deposit_to_lending_vault.ts
+npx tsx dex-transaction.ts
 ```
 
 ```bash javascript
-node deposit_to_lending_vault.js
+node dex-transaction.js
 ```
 
 </CodeGroup>
 
+
 ## Conclusion
 
-With GlueX, moving from \$GALA to a yield generating asset like \$aETHWETH takes just one transaction. This tutorial demonstrates:
-
-- Fetching a swap quote
-- Approving the router contract to spend \$GALA
-- Executing the transaction to swap and deposit smoothly
+By following this tutorial, users can seamlessly swap USDC for ETH using the GlueX Router. The script automates fetching quotes, handling approvals, and executing swaps securely. Users can modify this script to suit their specific needs, such as swapping different tokens, changing input amounts, or integrating it into larger applications.
 
 ## Opportunities
 
-🔹 Instant access to yield without manual interventions
+🔹 Instant access to best swap rates across DEXs
 
-🔹 Seamless diversification into yield generating assets
+🔹 Seamless token swaps with proper approval handling
 
 🔹 Cost savings by reducing gas fees across multiple steps
 
-With GlueX, DeFi becomes as easy as sending an email 🚀
+With GlueX, DeFi becomes as easy as sending an email 🚀 
