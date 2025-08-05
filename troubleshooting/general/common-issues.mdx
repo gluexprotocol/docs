@@ -1,4 +1,401 @@
 ---
 title: "Common Issues"
-description: "Lorem ipsum"
+description: "Troubleshooting guide for frequent integration challenges, authentication problems, rate limiting issues, and error resolution strategies"
 ---
+
+This comprehensive troubleshooting guide addresses the most frequently encountered issues when integrating with GlueX APIs. Each section provides detailed problem identification, root cause analysis, and step by step resolution strategies to help you quickly resolve integration challenges
+
+## Authentication Issues
+
+### Missing or Invalid API Key
+
+Authentication failures are among the most common integration issues, often manifesting as `401` or `403` errors that prevent access to API endpoints. These errors typically occur during initial setup or when credentials are incorrectly configured in the application
+
+**Symptoms:**
+
+- Receiving `401 Forbidden` or `401 Unauthorized` responses
+- Error messages indicating missing authentication
+- Requests failing consistently across all endpoints
+- Development environment working but production failing
+
+**Causes:**
+
+- API key not included in request headers
+- Incorrect header name or casing (eg: `X-API-KEY` instead of `x-api-key`)
+- API key value contains extra spaces or newline characters
+- Using expired or revoked credentials
+- Missing required authentication parameters in request body
+
+**Solutions:**
+
+1. Verify the API key is included in the correct header format
+2. Check for whitespace or formatting issues in the credential string
+3. Confirm the API key is active and not expired in your dashboard
+4. Ensure all required authentication parameters are included in requests
+5. Test with a freshly generated API key to rule out corruption
+
+**Best Practices:**
+
+- Store API keys in environment variables, never in source code
+- Implement credential validation during application startup
+- Use secure credential management systems in production
+- Regularly rotate API keys according to security policies
+- Monitor authentication failure rates to detect credential issues early
+- Set up a proxy server or configure domain whitelisting if using API keys on the client side
+
+### Incorrect Request Format
+
+Authentication credentials may be present but formatted incorrectly, leading to persistent authorization failures
+
+**Symptoms:**
+
+- Intermittent authentication failures
+- Authentication working for some requests but not others
+- Error messages about malformed requests
+
+**Causes:**
+
+- Integrator ID missing from request body
+- Authentication headers using wrong case sensitivity
+- Request body missing required authentication fields
+- Content-Type header not matching request format
+- Special characters in credentials not properly encoded
+
+**Solutions:**
+
+1. Ensure all required fields are present in both headers and request body
+2. Validate request format against API documentation
+3. Check Content-Type headers match the request payload format
+4. Verify special characters in credentials are properly URL-encoded
+5. Test requests using API testing tools to isolate formatting issues
+
+**Best Practices:**
+
+- Create request templates with all required authentication fields
+- Implement request validation before sending to APIs
+- Use established HTTP client libraries rather than custom implementations
+- Log request formats (excluding sensitive data) for debugging
+- Maintain consistent request formatting across all API calls
+
+### Domain Whitelist Restrictions
+
+Domain based access controls can block legitimate requests when the requesting domain is not properly configured in the API whitelist settings
+
+**Symptoms:**
+
+- `403 Request origin not in whitelist` errors
+- Requests working from some domains but not others
+- Local development working but production deployments failing
+- CORS related error messages in browser console
+
+**Causes:**
+
+- Requesting domain not added to API whitelist
+- Subdomain differences (www vs non-www)
+- Different domains between staging and production
+- Local development domains not whitelisted
+- Case sensitivity in domain names
+
+**Solutions:**
+
+1. Add all necessary domains to the whitelist in your API dashboard
+2. Include both www and non-www versions of domains
+3. Add development and staging environment domains
+4. Verify domain names match exactly (including subdomains)
+5. Test from each domain after whitelist updates
+
+**Best Practices:**
+
+- Maintain a comprehensive list of all domains requiring API access
+- Add domains to whitelist before deployment to avoid downtime
+- Include common development domains (localhost, staging URLs)
+- Document domain requirements for team members
+- Regularly audit and update whitelisted domains
+
+## Rate Limiting Issues
+
+### Exceeding Request Limits
+
+Rate limiting protects API infrastructure by controlling request frequency, but can disrupt service when applications exceed allocated limits during peak usage periods
+
+**Symptoms:**
+
+- `429 Rate limit exceeded` HTTP responses
+- Requests succeeding initially then failing during high usage
+- Service degradation during peak hours
+- Intermittent failures with successful retries
+
+**Causes:**
+
+- Application request rate exceeding tier limits
+- Burst traffic overwhelming burst capacity
+- Multiple application instances sharing same API key
+- Inefficient API usage patterns (excessive polling)
+- No rate limiting implementation in client code
+
+**Solutions:**
+
+1. Implement exponential backoff retry logic for 429 responses
+2. Add request queuing to control outbound request rate
+3. Cache responses to reduce redundant API calls
+4. Optimize API usage patterns to minimize requests
+5. Consider upgrading to higher tier for increased limits
+
+**Best Practices:**
+
+- Monitor request rates and implement alerting for approaching limits
+- Use client-side request queuing to smooth traffic bursts
+- Implement caching strategies to reduce API dependency
+- Design applications to handle rate limiting gracefully
+- Plan capacity requirements and upgrade tiers proactively
+
+### Inefficient API Usage
+
+Poor API usage patterns can quickly exhaust rate limits even at moderate traffic levels, leading to unnecessary service disruptions
+
+**Symptoms:**
+
+- High API usage relative to application functionality
+- Frequent rate limiting despite low user activity
+- Multiple identical requests in short time periods
+- Performance degradation during normal operation
+
+**Causes:**
+
+- Excessive polling of endpoints
+- Making redundant requests for unchanged data
+- Using computationally expensive endpoints for simple queries
+- No caching of API responses
+- Inefficient batch processing patterns
+
+**Solutions:**
+
+1. Implement response caching to avoid redundant requests
+2. Use appropriate polling intervals based on data change frequency
+3. Choose optimal endpoints for specific use cases
+4. Batch related requests when supported
+5. Implement client side data management to reduce API dependency
+
+**Best Practices:**
+
+- Cache API responses appropriately based on data volatility
+- Use webhooks or real-time connections instead of polling when available
+- Batch requests efficiently to minimize API calls
+- Monitor API usage patterns and optimize high-frequency operations
+- Design applications with offline capabilities to reduce API dependency
+
+## API Response Issues
+
+### Validation Errors
+
+Input validation failures occur when request parameters don't meet API requirements, resulting in 400 or 422 status codes that prevent request processing
+
+**Symptoms:**
+
+- `400 Bad Request` or `422 Unprocessable Entity` responses
+- Error messages indicating invalid parameters
+- Requests failing consistently for specific input values
+- Different validation behavior across API environments
+
+**Causes:**
+
+- Invalid address formats (incorrect length, missing prefix)
+- Negative values where only positive numbers accepted
+- Unsupported network or protocol identifiers
+- Missing required parameters
+- Parameter values outside acceptable ranges
+
+**Solutions:**
+
+1. Validate input parameters client side before sending requests
+2. Ensure address formats match blockchain standards (42 characters with 0x prefix)
+3. Check parameter values against documented acceptable ranges
+4. Include all required parameters in requests
+5. Use supported network and protocol identifiers
+
+**Best Practices:**
+
+- Implement comprehensive client side validation
+- Use established validation libraries for common formats (addresses, amounts)
+- Provide clear error messages to users for validation failures
+- Test edge cases and boundary conditions during development
+- Maintain validation logic consistent with API requirements
+
+### Service Unavailable Errors
+
+Service availability issues can cause widespread request failures, typically manifesting as 5xx status codes during system maintenance or high load periods
+
+**Symptoms:**
+
+- `500 Internal Server Error` or `503 Service Unavailable` responses
+- Requests failing across all endpoints
+- Timeout errors during request processing
+- Intermittent service availability
+
+**Causes:**
+
+- API service experiencing high load or maintenance
+- Database connectivity issues
+- Network timeouts during blockchain calls
+- System resource exhaustion
+- Service deployment or updates in progress
+
+**Solutions:**
+
+1. Implement retry logic with exponential backoff for 5xx errors
+2. Use circuit breaker patterns to avoid cascading failures
+3. Implement graceful degradation when APIs are unavailable
+4. Cache recent successful responses for fallback data
+5. Monitor service status and adjust request patterns accordingly
+
+**Best Practices:**
+
+- Design applications to handle temporary service unavailability
+- Implement comprehensive error handling for all API calls
+- Use health check endpoints to monitor service availability
+- Plan for maintenance windows and API updates
+- Implement circuit breakers to prevent overwhelming unavailable services
+
+## Network and Connectivity Issues
+
+### Timeout Problems
+
+Network timeouts occur when requests take longer than configured limits to complete, often due to complex calculations or network congestion
+
+**Symptoms:**
+
+- Requests failing with timeout errors
+- Inconsistent response times for similar requests
+- Higher failure rates during peak network usage
+- Successful requests when retried after delays
+
+**Causes:**
+
+- Network congestion affecting request routing
+- Complex calculations requiring extended processing time
+- Blockchain network delays during state calls
+- Insufficient timeout values for request complexity
+- Client network connectivity issues
+
+**Solutions:**
+
+1. Implement appropriate timeout values based on request complexity
+2. Add retry logic for timeout failures
+3. Use connection pooling to improve network efficiency
+4. Monitor network conditions and adjust timeout settings
+5. Implement request queuing to manage network load
+
+**Best Practices:**
+
+- Set timeout values appropriate for each endpoint's expected response time
+- Implement retry strategies with progressive delays
+- Monitor network performance and adjust configurations accordingly
+- Use connection pooling and keep-alive connections for efficiency
+- Provide user feedback during long-running operations
+
+### Connection Failures
+
+Network connectivity issues can prevent requests from reaching API servers, resulting in connection errors rather than HTTP status codes
+
+**Symptoms:**
+
+- Network connection errors or DNS resolution failures
+- Requests failing before receiving HTTP responses
+- Inconsistent connectivity across different network environments
+- Successful connections from some locations but not others
+
+**Causes:**
+
+- DNS resolution issues
+- Firewall or proxy blocking API endpoints
+- Network routing problems
+- TLS/SSL certificate issues
+- Client network configuration problems
+
+**Solutions:**
+
+1. Verify DNS resolution for API endpoints
+2. Check firewall and proxy settings allow API access
+3. Test connectivity from different network environments
+4. Validate TLS/SSL certificate configuration
+5. Implement connection health checks and monitoring
+
+**Best Practices:**
+
+- Test API connectivity from all deployment environments
+- Document network requirements for API access
+- Implement connection health monitoring
+- Use multiple DNS servers for redundancy
+- Plan for network environment differences between development and production
+
+## Data Quality Issues
+
+### Missing or Invalid Data
+
+Data availability issues occur when requested information is not found or cannot be calculated due to missing dependencies or invalid states
+
+**Symptoms:**
+
+- `404 Not Found` responses for valid looking requests
+- Inconsistent data availability across similar requests
+- Calculations failing due to incomplete information
+- Error messages indicating missing required data
+
+**Causes:**
+
+- Requested data not available in API databases
+- Blockchain state calls failing or timing out
+- Invalid or non-existent addresses in requests
+- Data synchronization delays
+- Protocol or network not supported
+
+**Solutions:**
+
+1. Verify addresses and parameters using blockchain explorers
+2. Check if requested protocols and networks are supported
+3. Implement fallback strategies for missing data
+4. Use alternative lookup methods when available
+5. Retry requests after brief delays for transient data issues
+
+**Best Practices:**
+
+- Validate addresses and parameters before making requests
+- Implement fallback data sources when possible
+- Provide meaningful error messages when data is unavailable
+- Monitor data availability patterns and report persistent issues
+- Cache successful responses to reduce dependency on real-time data
+
+### Calculation Failures
+
+Complex calculations may fail due to various factors including insufficient data, computational limits, or external dependencies
+
+**Symptoms:**
+
+- Calculation endpoints returning error responses
+- Inconsistent results for similar input parameters
+- Failures during specific market conditions
+- Error messages indicating calculation problems
+
+**Causes:**
+
+- Insufficient liquidity for requested calculations
+- Missing blockchain state information
+- Network congestion affecting data retrieval
+- Computational timeouts during complex operations
+- Invalid or incompatible parameter combinations
+
+**Solutions:**
+
+1. Reduce calculation complexity by adjusting parameters
+2. Retry calculations after brief delays
+3. Use alternative calculation methods when available
+4. Verify input parameters are compatible and realistic
+5. Implement graceful handling of calculation failures
+
+**Best Practices:**
+
+- Design applications to handle calculation failures gracefully
+- Provide alternative data or functionality when calculations fail
+- Monitor calculation success rates and identify patterns
+- Implement appropriate error messaging for users
+- Cache successful calculation results to reduce recalculation needs
