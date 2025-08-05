@@ -12,7 +12,7 @@
       "https://raw.githubusercontent.com/gluexprotocol/gluex-openapis/main/router-api/openapi.json",
       "https://raw.githubusercontent.com/gluexprotocol/gluex-openapis/main/exchange-rates-api/openapi.json",
       "https://raw.githubusercontent.com/gluexprotocol/gluex-openapis/refs/heads/main/yield-router-api/openapi.json",
-      "https://raw.githubusercontent.com/gluexprotocol/gluex-openapis/refs/heads/main/tokens-api/openapi.json"
+      "https://raw.githubusercontent.com/gluexprotocol/gluex-openapis/main/tokens-api/openapi.json"
     ]
   },
   "contextual": {
