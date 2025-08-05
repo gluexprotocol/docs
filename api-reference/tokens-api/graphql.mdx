@@ -1,0 +1,279 @@
+---
+title: GraphQL Playground
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+GlueX token API exposes a **single**, public GraphQL endpoint that lets you retrieve token metadata across all [supported chains](/documentation/references/supported-networks) with:
+
+- **Fuzzy search** on symbol, name and address
+- **Category filters** (eg: stablecoins, LP tokens)
+- **Offset based pagination** suitable for stateless clients
+
+Each token record includes it's contract address, symbol, decimals, economic type, a priority score for sorting and brand assets
+
+<Note title="Try it now">
+  Spin up the schema, auto complete queries and inspect live response via the \
+  [interactive GraphQL Playground](https://tokens.gluex.xyz/graphql).
+</Note>
+
+---
+
+## Endpoint
+
+**Method**: `POST`
+
+**Endpoint**: `https://tokens.gluex.xyz/graphql`
+
+**Request body**
+
+```jsonc
+{
+  "query": "GraphQL document as a string",
+  "variables": {
+    /* optional */
+  },
+  "operationName": "OptionalOperationName"
+}
+```
+
+**Response**
+
+| field          | purpose                                                                   |
+| -------------- | ------------------------------------------------------------------------- |
+| `tokenAddress` | Canonical EIPF55 checksum address                                         |
+| `symbol`       | Ticker (≤ 11 chars)                                                       |
+| `name`         | Name of the token                                                         |
+| `decimals`     | ERC20 decimal (6, 8, 18 …)                                                |
+| `type`         | Type of the token (`tradable`, `lp`, `stake`, `lend`, `invest`, `stable`) |
+| `priority`     | Relevance score - assigned based on liqudity depth and trade volume       |
+| `branding.*`   | Brand assets                                                              |
+
+<Info>
+  Launch the fully typed schema explorer, run ad hoc queries and inspect live
+  JSON in the **[interactive GraphQL
+  Playground](https://tokens.gluex.xyz/graphql)** — no auth token required
+</Info>
+
+## Quick Start
+
+<CodeGroup>
+```bash bash
+curl -X POST https://tokens.gluex.xyz/graphql \
+  -H "content-type: application/json" \
+  -d '{
+        "query": "query ($chain:String!,$limit:Int!){tokens(chain:$chain,limit:$limit){items{symbol name}}}",
+        "variables": { "chain": "ethereum", "limit": 5 }
+      }'
+```
+
+```javascript javascript (fetch)
+// Browser / Node 18+ native fetch
+const body = JSON.stringify({
+  query: `query Tokens($chain:String!,$limit:Int!){
+            tokens(chain:$chain,limit:$limit){items{symbol name}}}`,
+  variables: { chain: "ethereum", limit: 5 },
+});
+
+const res = await fetch("https://tokens.gluex.xyz/graphql", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body,
+});
+console.log(await res.json());
+```
+
+```javascript javascript (axios)
+import axios from "axios";
+
+const { data } = await axios.post(
+  "https://tokens.gluex.xyz/graphql",
+  {
+    query: `query ($chain:String!,$limit:Int!){
+              tokens(chain:$chain,limit:$limit){items{symbol name}}}`,
+    variables: { chain: "ethereum", limit: 5 },
+  },
+  { headers: { "content-type": "application/json" } }
+);
+
+console.log(data);
+```
+
+```javascript javascript (graphql client)
+import { request, gql } from "graphql-request";
+
+const endpoint = "https://tokens.gluex.xyz/graphql";
+
+const query = gql`
+  query Tokens($chain: String!, $limit: Int!) {
+    tokens(chain: $chain, limit: $limit) {
+      items {
+        symbol
+        name
+      }
+    }
+  }
+`;
+
+const data = await request(endpoint, query, { chain: "ethereum", limit: 5 });
+console.log(data);
+```
+
+```typescript typescript (urql)
+import { createClient, gql } from "@urql/core";
+
+const client = createClient({ url: "https://tokens.gluex.xyz/graphql" });
+
+const Tokens = gql`
+  query ($chain: String!, $limit: Int!) {
+    tokens(chain: $chain, limit: $limit) {
+      items {
+        symbol
+        name
+      }
+    }
+  }
+`;
+
+const result = await client
+  .query(Tokens, { chain: "ethereum", limit: 5 })
+  .toPromise();
+console.log(result.data);
+```
+
+```python python
+import requests, json
+
+query = '''
+query Tokens($chain:String!,$limit:Int!){
+  tokens(chain:$chain, limit:$limit){ items { symbol name } }
+}'''
+
+variables = { "chain": "ethereum", "limit": 5 }
+
+resp = requests.post(
+    "https://tokens.gluex.xyz/graphql",
+    json={ "query": query, "variables": variables },
+    headers={ "content-type": "application/json" }
+)
+print(json.dumps(resp.json(), indent=2))
+```
+
+```python python (graphql)
+from gql import gql, Client
+from gql.transport.aiohttp import AIOHTTPTransport
+import asyncio, json
+
+async def main():
+    transport = AIOHTTPTransport(url="https://tokens.gluex.xyz/graphql")
+    async with Client(transport=transport) as session:
+        query = gql("""
+          query ($chain:String!, $limit:Int!){
+            tokens(chain:$chain, limit:$limit){ items { symbol name } }
+          }""")
+        result = await session.execute(query, variable_values={"chain":"ethereum","limit":5})
+        print(json.dumps(result, indent=2))
+
+asyncio.run(main())
+```
+
+</CodeGroup>
+
+---
+
+## Core Queries
+
+### All Tokens
+
+```graphql
+query Tokens($chain: String!, $limit: Int = 20, $offset: Int = 0) {
+  tokens(chain: $chain, limit: $limit, offset: $offset) {
+    items {
+      tokenAddress
+      symbol
+      name
+      decimals
+      type
+      priority
+      branding {
+        logoUri
+      }
+    }
+    total
+    hasMore
+  }
+}
+```
+
+| Variable | Required | Default | Description                                                           | Possible Values / Type                                 |
+| -------- | :------: | ------- | --------------------------------------------------------------------- | ------------------------------------------------------ |
+| chain    |    ✅    | —       | Identifier for the chain (eg: "ethereum", "hyperevm", "polygon", ...) | [string](/documentation/references/supported-networks) |
+| limit    |    ❌    | 20      | Maximum number of results to return per page (recommended max: 50)    | integer                                                |
+| offset   |    ❌    | 0       | Number of items to skip for pagination                                | integer                                                |
+
+### Tokens by Type
+
+```graphql
+query TokensByType(
+  $chain: String!
+  $tokenType: String! # tradable | lp | stake | lend | invest | stable
+  $limit: Int = 20
+  $offset: Int = 0
+) {
+  tokensByType(
+    chain: $chain
+    tokenType: $tokenType
+    limit: $limit
+    offset: $offset
+  ) {
+    items {
+      tokenAddress
+      symbol
+      name
+    }
+    total
+    hasMore
+  }
+}
+```
+
+| Variable  | Required | Default | Description                                                           | Possible Values / Type                                 |
+| --------- | :------: | ------- | --------------------------------------------------------------------- | ------------------------------------------------------ |
+| chain     |    ✅    | —       | Identifier for the chain (eg: "ethereum", "hyperevm", "polygon", ...) | [string](/documentation/references/supported-networks) |
+| tokenType |    ✅    | —       | Enum that describes type of token                                     | tradable \| lp \| stake \| lend \| invest \| stable    |
+| limit     |    ❌    | 20      | Maximum number of results to return per page (recommended max: 50)    | integer                                                |
+| offset    |    ❌    | 0       | Number of items to skip for pagination                                | integer                                                |
+
+### Search Tokens
+
+```graphql
+query SearchTokens(
+  $chain: String!
+  $pattern: String! # case insensitive substring
+  $limit: Int = 20
+  $offset: Int = 0
+) {
+  searchTokens(
+    chain: $chain
+    pattern: $pattern
+    limit: $limit
+    offset: $offset
+  ) {
+    items {
+      tokenAddress
+      symbol
+      name
+    }
+    total
+    hasMore
+  }
+}
+```
+
+| Variable | Required | Default | Description                                                               | Type / Possible Values                                 |
+| -------- | :------: | ------- | ------------------------------------------------------------------------- | ------------------------------------------------------ |
+| chain    |    ✅    | —       | Identifier for the chain (eg: "ethereum", "hyperevm", "polygon", ...)     | [string](/documentation/references/supported-networks) |
+| pattern  |    ✅    | —       | Case insensitive substring to match against token address, name or symbol | string                                                 |
+| limit    |    ❌    | 20      | Maximum number of results to return per page (recommended max: 50)        | integer                                                |
+| offset   |    ❌    | 0       | Number of items to skip for pagination                                    | integer                                                |

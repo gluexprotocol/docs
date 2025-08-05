@@ -11,7 +11,8 @@
     "openapi": [
       "https://raw.githubusercontent.com/gluexprotocol/gluex-openapis/main/router-api/openapi.json",
       "https://raw.githubusercontent.com/gluexprotocol/gluex-openapis/main/exchange-rates-api/openapi.json",
-      "https://raw.githubusercontent.com/gluexprotocol/gluex-openapis/refs/heads/main/yield-router-api/openapi.json"
+      "https://raw.githubusercontent.com/gluexprotocol/gluex-openapis/refs/heads/main/yield-router-api/openapi.json",
+      "https://raw.githubusercontent.com/gluexprotocol/gluex-openapis/refs/heads/main/tokens-api/openapi.json"
     ]
   },
   "contextual": {
@@ -206,6 +207,13 @@
               "api-reference/yield-api/post-diluted-apy",
               "api-reference/yield-api/post-tvl",
               "api-reference/yield-api/authentication-limits-and-errors"
+            ]
+          },
+          {
+            "group": "Tokens API",
+            "pages": [
+              "api-reference/tokens-api/reference",
+              "api-reference/tokens-api/graphql"
             ]
           }
         ]
