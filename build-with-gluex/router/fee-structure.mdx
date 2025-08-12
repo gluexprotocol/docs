@@ -44,21 +44,7 @@ Partner fees are factored into both `minOutputAmount` and `effectiveOutputAmount
 
 ---
 
-## Positive Slippage Rewards
-
-When trades execute better than quoted (i.e., **positive slippage**), GlueX ensures that this extra value is **fairly distributed** between the user, the integrator, and the protocol.
-
-### Distribution
-
-- **User**: Gets the primary share of the extra output.
-- **Integrator**: Rewarded for routing users and optimizing experience.
-- **GlueX**: Retains a portion to support protocol growth and sustainability.
-
-This transparent, win-win-win mechanism fosters long-term trust and collaboration across all stakeholders.
-
----
-
-## Surplus Sharing
+## Surplus Rebates
 
 “**Surplus**” refers to the added value when GlueX’s routing achieves **better-than-benchmark** execution (e.g., compared to next best aggregator's market rate). This can result from:
 
@@ -89,7 +75,7 @@ To receive your share of surplus rewards:
 
 > When `activateSurplusFee` is enabled, specialized contracts handle the fair distribution of captured surplus, ensuring your `partnerAddress` receives its portion automatically.
 
-## Positive Slippage Rewards
+## Positive Slippage Rebates
 
 When trades execute better than quoted (i.e., **positive slippage exists**), GlueX ensures that this extra value is **fairly distributed** between the user, the integrator, and the protocol - in the same ratio as the surplus.
 
