@@ -1,2 +1,40 @@
 # GlueX Documentation
 
+At GlueX, our mission is to provide the most efficient and comprehensive decentralized trading experience possible.
+A core part of this mission is supporting a wide array of blockchain networks, allowing you to access fragmented liquidity
+and execute trades across diverse ecosystems from a single interface
+
+We continuously evaluate and integrate new networks based on their liquidity, user activity, technological advancements and community demand.
+Our focus is primarily on EVM compatible chains due to their broad adoption in DeFi, but we will soon explore and integrate key non EVM chains where significant liquidity
+and innovative protocols reside
+
+## Our Supported Networks
+
+Below is a detailed list of the chains currently supported by GlueX, along with their key identifiers and official websites:
+
+| Chain Name        | Chain ID | Key identifier | Chain Type |
+| ----------------- | -------- | -------------- | ---------- |
+| [Arbitrum](https://gluex.xyz/chain/arbitrum)   | 42161    | arbitrum       | EVM        | 
+| [Avalanche C-Chain](https://gluex.xyz/chain/avalanche) | 43114    | avalanche      | EVM        |
+| [Base](https://gluex.xyz/chain/base) | 8453     | base           | EVM        |
+| [Berachain](https://gluex.xyz/chain/berachain)  | 80094    | berachain      | EVM        |
+| [Blast](https://gluex.xyz/chain/blast)    | 81457    | blast          | EVM        |
+| [BNB Smart Chain](https://gluex.xyz/chain/bnb)  | 56       | bnb            | EVM        |
+| [Ethereum](https://gluex.xyz/chain/ethereum)       | 1        | ethereum       | EVM        |
+| [Gnosis Chain](https://gluex.xyz/chain/gnosis)     | 100      | gnosis         | EVM        |
+| [HyperEVM](https://gluex.xyz/chain/hyperevm)       | 999      | hyperevm       | EVM        |
+| [Linea](https://gluex.xyz/chain/linea)         | 59144    | linea          | EVM        |
+| [Mantle](https://gluex.xyz/chain/mantle)        | 5000     | mantle         | EVM        |
+| [Optimism](https://gluex.xyz/chain/optimism)      | 10       | optimism       | EVM        |
+| [Polygon](https://gluex.xyz/chain/polygon)         | 137      | polygon        | EVM        |
+| [Scroll](https://gluex.xyz/chain/scroll)        | 534352   | scroll         | EVM        |
+| [Sonic](https://gluex.xyz/chain/sonic)        | 146      | sonic          | EVM        |
+| [Taiko](https://gluex.xyz/chain/taiko)        | 167000   | taiko          | EVM        |
+| [Unichain](https://gluex.xyz/chain/unichain)       | 130      | unichain       | EVM        |
+
+## Quick Access
+
+You can use the https://router.gluex.xyz/liquidity endpoint to get the list of supported networks and liquidity modules programmatically.
+
+You can use GlueX Protocol's officially supported [dApp](https://dapp.gluex.xyz) to interact with DeFi
+on any of the supported networks. Beware of imitations. Always verify you are interacting via our official URL. 
