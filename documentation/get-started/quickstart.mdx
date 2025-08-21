@@ -81,19 +81,212 @@ Simply construct your transaction object with those fields, sign it with your EO
 
 <AccordionGroup>
   <Accordion title="Token Swap">
+    With **Router’s token swap API**, you can swap **any token A → token B** on any supported blockchain in just **one call**. 
+    Instead of dealing with multiple steps like approvals, liquidity sourcing and slippage calculations, 
+    Router takes care of everything under the hood, letting you focus on what matters - receiving your desired token directly in your wallet
+
+    ## Why use GlueX for token swaps?
+
+    Traditionally, swapping tokens on a blockchain involves:
+
+    1. **Finding liquidity pools** across decentralized exchanges (DEXs)
+    2. **Checking prices and slippage tolerance** to avoid bad execution
+    3. **Manually approving tokens** so they can be spent by a smart contract
+    4. **Building and broadcasting the transaction** with correct gas settings
+    5. **Tracking the transaction** until it confirms
+
+    Router simplifies all of this into a single, streamlined API call. When you specify:
+
+    - The **input token** (what you’re swapping from)
+    - The **output token** (what you’re receiving)
+    - The **amount**
+    - Your **wallet address**
+
+    Router will:
+
+    - **Aggregate liquidity across multiple sources** to find the best route
+    - **Handle token approvals automatically**
+    - **Execute the transaction in one step**
+    - **Send the output tokens directly** to your wallet (or any another specified address)
+
+    This guarantees a **faster**, **more efficient** and **user friendly** swap experience
+
+    ---
+
+    ## Example: Swap **USDT → WBTC** on Ethereum
+
+    Here’s how you can swap **100 USDT** into **WBTC** on Ethereum in a single API request:
+
+    ```json
+    POST /v1/quote
+    {
+      "inputToken": "0xdac17f958d2ee523a2206206994597c13d831ec7",     // USDT contract address
+      "outputToken": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",    // WBTC contract address
+      "inputAmount": "100000000",                                     // 100 USDT (6 decimals)
+      "userAddress": "0xb06B08B7bDb9C21c3a95F6688994172C25A54d91",    // Wallet executing the swap
+      "outputReceiver": "0xb06B08B7bDb9C21c3a95F6688994172C25A54d91", // Wallet receiving WBTC
+      "chainID": "ethereum",                                          // Target blockchain
+      "uniquePID": "<your-unique-pid>"                                // Integrator ID
+    }
+    ```
+
+    Here’s a real USDT → WBTC one call swap - [0x91c969f626d80c273008627d1a9d47b5f4600d9584ee045f0fdd57a080320dce](https://etherscan.io/tx/0x91c969f626d80c273008627d1a9d47b5f4600d9584ee045f0fdd57a080320dce)
 
   </Accordion>
 
   <Accordion title="Vault Entry">
+    With **Router’s vault entry flow**, you can deposit into yield vaults (like Yearn, Aave, etc.) in **just one transaction**
+    No matter if you already hold the vault’s underlying asset or need to swap into it first,
+    Router handles all the required steps automatically, saving you from manual approvals and multiple transactions
+
+    ## Why use GlueX for vault deposits?
+
+    Normally, entering a vault requires several steps:
+
+    1. **Acquire the correct deposit token** (swap into the asset the vault accepts)
+    2. **Approve the vault contract** to spend your tokens
+    3. **Deposit the tokens** into the vault
+    4. **Wait for confirmation** before receiving vault shares in your wallet
+
+    Router simplifies this process into **a single API call**. You just specify:
+
+    - The **input token** (what you’re starting with)
+    - The **vault token** (the token you’ll receive, eg: yvUSDC)
+    - The **amount**
+    - Your **wallet address**
+
+    Router will:
+
+    - **Swap into the correct deposit asset** if needed
+    - **Approve the vault contract automatically**
+    - **Deposit the tokens on your behalf**
+    - **Send the vault shares (yvTokens) directly** to your wallet (or any another specified address)
+
+    This makes vault entry **seamless**, **gas efficient** and **user friendly**
+
+    ---
+
+    ## Example: Example: Deposit **WBTC → MEVCapital USDC Vault**
+
+    Here’s how you can deposit **WBTC** directly into the **MEVCapital USDC Vault** in one step:
+
+    ```json
+    POST /v1/quote
+    {
+      "inputToken": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",     // WBTC contract address
+      "outputToken": "0xd63070114470f685b75b74d60eec7c1113d33a3d",    // MEVCapital USDC Vault token address
+      "inputAmount": "50000",                                         // Amount of WBTC in satoshis (5 decimals)
+      "userAddress": "0xb06B08B7bDb9C21c3a95F6688994172C25A54d91",    // Wallet executing the deposit
+      "outputReceiver": "0xb06B08B7bDb9C21c3a95F6688994172C25A54d91", // Wallet receiving yvUSDC
+      "chainID": "ethereum",                                          // Target blockchain
+      "uniquePID": "<your-unique-pid>"                                // Integrator ID
+    }
+    ```
+
+    Here’s a real WBTC → MEVCapital USDC vault deposit transaction - [0xe608be4745380168d4b882f012cb37b0282ff0ff96749ad579747143a4693c6b](https://etherscan.io/tx/0xe608be4745380168d4b882f012cb37b0282ff0ff96749ad579747143a4693c6b)
 
   </Accordion>
 
   <Accordion title="Lending">
+    With **Router’s lending flow**, you can supply assets to lending protocols (like Aave, Compound, etc) and 
+    receive interest-bearing tokens (aTokens, cTokens, etc) in **one unified action**. 
+    Whether you already hold the protocol’s required asset or need to swap into it first, Router automates the entire process
+
+    ## Why use GlueX for Lending?
+
+    Normally, lending assets requires several manual steps:
+
+    1. **Swap into the correct deposit token** (eg: swap USDC into WETH if the protocol requires WETH)
+    2. **Approve the lending protocol contract** to spend your tokens
+    3. **Call the protocol’s deposit method** to supply liquidity
+    4. **Receive the corresponding aToken/cToken** representing your deposit
+
+    Router compresses this into **a single call**. You only need to specify:
+
+    - The **input token** (what you’re starting with)
+    - The **deposit token** you want to receive (eg: aWETH)
+    - The **amount**
+    - Your **wallet address**
+
+    Router will:
+
+    - **Swap into the correct asset if needed**
+    - **Handle approvals automatically**
+    - **Supply liquidity to the protocol**
+    - **Deliver the interest bearing token directly** to your wallet (or any another specified address)
+
+    ---
+
+    ## Example: Lend **USDC → Receive aWETH**
+
+    Here’s how to lend **50 USDC** and receive **aWETH** in a single API request:
+
+    ```json
+      POST /v1/quote
+      {
+        "inputToken": "0xa0b86991c6218b36c1d19D4a2e9eb0ce3606eb48",     // USDC contract address
+        "outputToken": "0x4d5f47fa6a74757f35c14fd3a6ef8e3c9bc514e8",    // aWETH contract address (Aave)
+        "inputAmount": "50000000",                                      // 50 USDC (6 decimals)
+        "userAddress": "0xb06B08B7bDb9C21c3a95F6688994172C25A54d91",    // Wallet executing the deposit
+        "outputReceiver": "0xb06B08B7bDb9C21c3a95F6688994172C25A54d91", // Wallet receiving yvUSDC
+        "chainID": "ethereum",                                          // Target blockchain
+        "uniquePID": "<your-unique-pid>"                                // Integrator ID
+      }
+    ```
+
+    Here’s a real USDC → Receive aWETH lending transaction - [0x37cdcdf63b962f3a945c37436da2965c12f590cc340eee72dde1187aa9ae0a40](https://etherscan.io/tx/0x37cdcdf63b962f3a945c37436da2965c12f590cc340eee72dde1187aa9ae0a40)
 
   </Accordion>
 
   <Accordion title="Staking">
+    With **Router’s staking flow**, you can stake any token into a staking protocol (such as Lido, Swell, Rocket Pool, etc) 
+    and receive the staked token in **a single call**. Whether you already hold the staking asset or need to swap into it first, 
+    Router automates the full lifecycle - from swap, to staking - in one gas optimized transaction
 
+    ---
+
+    ## Why Use Router for Staking?  
+
+    Normally, staking involves multiple steps:  
+
+    1. **Swap into the staking asset** if you don’t already hold it
+    2. **Approve the staking contract** to spend your tokens
+    3. **Send the stake transaction** to the protocol
+    4. **Receive your staked token** in return
+
+    Router combines these steps into **one unified API call**. You just specify:  
+
+    - The **input token** (what you’re staking with)
+    - The **staked token** you want to receive
+    - The **amount**
+    - Your **wallet address**
+
+    Router will:  
+
+    - **Swap if required** into the correct staking asset
+    - **Approve the staking contract**
+    - **Stake on your behalf**
+    - **Deliver the staked token directly** to your wallet
+
+    ---
+    ## Example: Stake **DAI → swETH**  
+
+    Here’s how to stake **DAI** → **swETH** in one call using Router:  
+
+    ```json
+      POST /v1/quote
+      {
+        "inputToken": "0x6b175474e89094c44da98b954eedeac495271d0f",                      // DAI contract address
+        "outputToken": "0xf951e335afb289353dc249e82926178eac7ded78",                     // swETH contract address
+        "inputAmount": "506591370407006083313",                                           // Amount of DAI (18 decimals)
+        "userAddress": "0xb06B08B7bDb9C21c3a95F6688994172C25A54d91",                                       // Wallet executing the stake
+        "outputReceiver": "0xb06B08B7bDb9C21c3a95F6688994172C25A54d91                   "                  , // Wallet receiving swETH
+        "chainID": "ethereum",                                                          // Target blockchain
+        "uniquePID": "866a61811189692e8eccae5d2759724a812fa6f8703ebffe90c29dc1f886bbc1" // Unique request ID
+      }
+    ```
+
+    Here’s a real USDC → Receive DAI** into **swETH** lending transaction - [0x37cdcdf63b962f3a945c37436da2965c12f590cc340eee72dde1187aa9ae0a40](https://etherscan.io/tx/0x37cdcdf63b962f3a945c37436da2965c12f590cc340eee72dde1187aa9ae0a40)
   </Accordion>
   
   <Accordion title="Crosschain">

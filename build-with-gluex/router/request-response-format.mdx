@@ -30,6 +30,7 @@ The following parameters may be included in the request payload for `/v1/price` 
 | `partnerFee`         | string/integer | Optional    | 0             | Fee in bps applied to output                         |
 | `partnerAddress`     | string         | Conditional |               | EOA to receive partner fee and surplus               |
 | `modulesFilter`      | array          | Optional    | []            | Restrict routing to specified liquidity modules      |
+| `modulesDisabled`    | array          | Optional    | []            | Restrict routing via specified liquidity modules     |
 | `activateSurplusFee` | boolean        | Optional    | false         | Enable surplus sharing contract                      |
 
 ## Common Response Fields
