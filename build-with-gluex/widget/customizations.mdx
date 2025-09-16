@@ -86,6 +86,33 @@ const config = {
 };
 ```
 
+Available keys:
+
+```ts
+export enum HiddenUI {
+  Header = "header",
+  Appearance = "appearance",
+  DrawerCloseButton = "drawerCloseButton",
+  History = "history",
+  Language = "language",
+  PoweredBy = "poweredBy",
+  ToAddress = "toAddress",
+  ToToken = "toToken",
+  WalletMenu = "walletMenu",
+  IntegratorStepDetails = "integratorStepDetails",
+  ReverseTokensButton = "reverseTokensButton",
+  RouteTokenDescription = "routeTokenDescription",
+  WalletHeader = "walletHeader",
+  ModuleEnableSettings = "moduleEnableSettings",
+  ModuleDisableSettings = "moduleDisableSettings",
+  HeaderChainSelect = "headerChainSelect",
+  SettingsButton = "settingsButton",
+  TokenCategories = "tokenCategories",
+}
+
+export type HiddenUIType = `${HiddenUI}`
+```
+
 #### Required
 
 Ensure users fill out crucial fields before proceeding
@@ -99,6 +126,53 @@ const config = {
   required: ["toAddress"],
 };
 ```
+
+### Style Overrides
+
+Override styles of built-in components without replacing them. This is useful for quick visual tweaks like borders, radii, and spacing while keeping the default behavior.
+
+```ts
+export interface WidgetOverrides {
+  selectTokenCard?: SelectTokenCardStyle;
+  inputBox?: SelectTokenCardHeaderStyle;
+  reciveTokenDetails?: ReciveTokenDetails;
+  amountSlider?: AmountSliderStyle;
+  percentageButtons?: PercentageButtonsStyle;
+  settingsButton?: SettingsButtonStyle;
+  reviewButton?: ReviewButtonOverride;
+}
+```
+
+Usage:
+
+```ts
+const config = {
+  // ...other widget config
+  override: {
+    inputBox: {
+      style: {
+        // add your styles here
+      },
+    },
+    selectTokenCard: {
+      style: {
+        // add your styles here
+      },
+    },
+    reviewButton: {
+      text: "",
+      style: {
+        // add your button styles here
+      },
+    },
+  },
+};
+```
+
+Examples of when to use overrides vs components:
+
+- Use overrides for simple visual changes (borders, spacing, colors)
+- Use custom components when changing structure, layout, or behavior
 
 ## Theme Customizations
 
