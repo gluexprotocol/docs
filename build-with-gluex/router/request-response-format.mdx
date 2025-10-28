@@ -26,12 +26,12 @@ The following parameters may be included in the request payload for `/v1/price` 
 | `surgeProtection`    | boolean        | Optional    | false         | Enable or disable Surge Protection                   |
 | `isPartialFill`      | boolean        | Optional    | false         | Allow partial fill swaps                             |
 | `isPermit2`          | boolean        | Optional    | false         | Use Permit2 for allowance approvals                  |
+| `fastMode`           | boolean        | Optional    | false         | Enable fast response time for the requests           |
 | `slippage`           | string/integer | Optional    |               | Maximum slippage allowed (in basis points)           |
 | `partnerFee`         | string/integer | Optional    | 0             | Fee in bps applied to output                         |
 | `partnerAddress`     | string         | Conditional |               | EOA to receive partner fee and surplus               |
 | `modulesFilter`      | array          | Optional    | []            | Restrict routing to specified liquidity modules      |
 | `modulesDisabled`    | array          | Optional    | []            | Restrict routing via specified liquidity modules     |
-| `activateSurplusFee` | boolean        | Optional    | false         | Enable surplus sharing contract                      |
 
 ## Common Response Fields
 
