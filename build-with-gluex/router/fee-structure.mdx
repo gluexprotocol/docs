@@ -5,17 +5,21 @@ description: "Transparent and fair Router API fees at GlueX"
 
 At GlueX, **transparency and fairness** are core to our philosophy. Our Router API is designed not only for optimal trade execution, but also with a fee model that aligns the incentives of users, integrators, and the protocol itself
 
-We apply a **0.03%–0.05% settlement fee** to all trades, which is shared between GlueX and the integrator. In addition, we implement a flexible **positive slippage sharing**, **partner fee configuration**, and an **surplus sharing mechanism** to ensure equitable outcomes for all parties
+We apply a **settlement fee** to all trades, which varies based on the pair type: **0.15% for volatile pairs** and **0.03% for stable pairs**. This fee is shared between GlueX and the integrator. In addition, we implement a flexible **positive slippage sharing**, **partner fee configuration**, and a **surplus sharing mechanism** to ensure equitable outcomes for all parties
 
 ---
 
 ## Settlement Fees
 
-GlueX applies a **0.03%–0.05% settlement fee** on every trade executed through the Router API. This fee is shared **50/50** between GlueX and the integrator
+GlueX applies a minor settlement fee on every trade executed through the Router API. This fee is shared between GlueX and the integrator.
 
-### Highlights
+**Fee Structure:**
+- **0.15% (15 bps)** on volatile pairs and custom assets
+- **0.03% (3 bps)** on stablecoin swaps
 
-- **Low settlement fees**: Between 0.03% and 0.05% per trade
+> **Note**: Settlement fees can be adjusted based on the expected volume the integrator may drive to GlueX or any other considerations the GlueX team may find important to define a different fee schedule. Please contact us to discuss custom fee arrangements for enterprises.
+
+**Key Details:**
 - **Minimum floor**: 0.2c per trade, split equally between GlueX (0.1c) and integrator (0.1c)
 - **Revenue sharing**: Settlement fees are split equally between GlueX and the integrator
 - **No hidden costs**: What you quote is what the user gets — with all fees accounted for transparently in the returned values
@@ -58,7 +62,7 @@ Partner fees are factored into both `minOutputAmount` and `effectiveOutputAmount
 
 | Recipient  | Share of Surplus |
 | ---------- | ---------------- |
-| User       | ≥ 33%            |
+| User       | < 33%            |
 | Integrator | ≤ 33%            |
 | GlueX      | ≤ 33%            |
 
