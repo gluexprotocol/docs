@@ -97,6 +97,24 @@
         ]
       },
       {
+        "tab": "Terminal",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "gluex-terminal/get-started/introduction",
+              "gluex-terminal/get-started/what-is-gluex-terminal"
+            ]
+          },
+          {
+            "group": "Referral Program",
+            "pages": [
+              "gluex-terminal/referral-program/how-it-works"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Build with GlueX",
         "groups": [
           {
